@@ -3,7 +3,10 @@
   "compilerOptions": {
     "outDir": "../out-tsc/app",
     "module": "es2015",
-    "types": []
+    "types": [],
+    "paths": {
+      "dragula": ["node_modules/dragula/dist/dragula.min.js"]
+    }
   },
   "exclude": [
     "src/test.ts",

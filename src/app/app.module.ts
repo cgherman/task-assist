@@ -5,6 +5,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { QuadrantComponent } from './quadrant/quadrant.component';
 
+import { DragulaModule } from 'ng2-dragula';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -12,7 +14,8 @@ import { QuadrantComponent } from './quadrant/quadrant.component';
   ],
   imports: [
     BrowserModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DragulaModule
   ],
   providers: [],
   bootstrap: [AppComponent]
