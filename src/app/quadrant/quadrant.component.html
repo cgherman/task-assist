@@ -1,0 +1,10 @@
+<h2>Quadrants</h2>
+
+<form [formGroup]="quadrantForm">
+  <div class="form-group">
+    <label class="center-block">Title:
+      <input class="form-control" formControlName="title">
+    </label>
+  </div>
+</form>
+<p>Form value: {{ quadrantForm.value | json }}</p>

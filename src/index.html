@@ -21,6 +21,8 @@
       }
 
       function initClientWithSettings() {
+        // Get API key and OAuth client ID from app-specific JSON file
+        // Create a new project & corresponding credentials here: https://console.developers.google.com/apis/credentials
         $.getJSON('/assets/api_key.json', function(data) {
           initClient(data.api_key, data.client_id);
         });
@@ -65,10 +67,10 @@
       function makeApiCall() {
         gapi.client.tasks.tasklists.list({
         }).then(function(response) {
-//for (TaskList taskList : taskLists.getItems()) {
-//  System.out.println(taskList.getTitle());
-//}
-          console.log('Successful fetch of Task List: "' + response.result.items[0].title + '"');
+          console.log('Successful fetch of Task Lists.');
+          for (index = 0; index < response.result.items.length; index++) {
+            console.log(response.result.items[index].title);
+          }
         }, function(rejectReason) {
           console.log('Error: ' + rejectReason.result.error.message);
         });
@@ -80,6 +82,5 @@
     </script>
     <button id="signin-button" onclick="handleSignInClick()">Sign In</button>
     <button id="signout-button" onclick="handleSignOutClick()">Sign Out</button>
-    <button id="apitest-button" onclick="makeApiCall()">Test API</button>
 </body>
 </html>
