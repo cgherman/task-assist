@@ -1,8 +1,20 @@
-export class TaskList {
+interface ITaskList {
+    id: string;
+    title: string;
+    tasks: Task[];
+}
+
+export class TaskList implements ITaskList {
     id = null;
     title = null;
     tasks: Task[];
     //updated = date...
+
+    constructor (public taskListId: string, title: string, childTasks: Task[]) {
+        this.id = taskListId;
+        this.title = title;
+        this.tasks = childTasks;
+    }
 }
 
 interface ITask {
