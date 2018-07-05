@@ -1,4 +1,22 @@
-<!--The content below is only a placeholder and can be replaced.-->
+<div class="w3-container">
+  <div class="w3-left">
+    <i class="fa fa-hourglass-2 w3-xlarge"></i>
+    &nbsp;
+    <label class="w3-large">Eisenhower Matrix</label>
+  </div>
+  <div class="w3-right">
+    <div class="w3-container">
+      <div class="w3-left" *ngIf="signedInFlag">
+        <button id="signout-button" (click)="onSignOut()">Sign Out</button>&nbsp;&nbsp;
+      </div>
+      <div class="w3-right">
+        <div id="googleSigninButton" (data-onsuccess)="onSignIn"></div>
+      </div>
+    </div>
+  </div>
+</div>  
+
 <div>
   <app-quadrant></app-quadrant>
 </div>
+  
