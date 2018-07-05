@@ -13,6 +13,7 @@ import { DragulaService } from 'ng2-dragula';
 
 export class QuadrantComponent implements OnInit {
   taskService: TaskService;
+  tasks: ITask[];
   taskLists: ITaskList[];
   quadrantForm = new FormGroup ({
     taskList: new FormControl()
@@ -33,10 +34,18 @@ export class QuadrantComponent implements OnInit {
   ngOnInit() {
     // Get user's task lists
     this.taskLists = this.taskService.getTaskLists();
+    this.tasks = this.taskService.getTasks();
   }
 
  onDrop() {
     // do something
   }
 
+  quadrantMatch(task: ITask, quadrant:string): boolean {
+    if (quadrant == null) {
+      return !task.notes.includes("[Quad:");
+    } else {
+      return task.notes.includes("[Quad:" + quadrant + "]");
+    }
+  }
 }
