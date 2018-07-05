@@ -1,41 +1,96 @@
-<form [formGroup]="quadrantForm">
-  <div class="form-group">
-    <label class="center-block">Test box:
-      <input class="form-control" formControlName="title">
-    </label>
-  </div>
-
-  <div>  
-    <label>Task List:</label>
-    <select>
-      <option *ngFor="let taskList of taskLists"
-              value={{taskList.taskListId}}>
-              {{taskList.title}}
-      </option>
-    </select>
-  </div>
-
-</form>
-<p>Form value: {{ quadrantForm.value | json }}</p>
-
-<div>
-  <div class='wrapper'>
-    <div class='container' [dragula]='"first-bag"' [dragulaModel]='items'>
-      <div>You can move these elements between these two containers</div>
-      <div>Moving them anywhere else isn't quite possible</div>
-      <div>There's also the possibility of moving elements around in the same container, changing their position</div>
-
-      <!--
-      <div [attr.id]="item.id" [attr.title]="i" class="card-item" *ngFor="let item of items; let i=index">
-        <item-detail></item-detail> 
-      </div>
-      -->
-
+<div class="w3-panel w3-border">
+  <form [formGroup]="quadrantForm">
+    <div class="form-group">
+      <label class="">Test box:
+        <input class="form-control" formControlName="title">
+      </label>
     </div>
-    <div class='container' [dragula]='"first-bag"' [dragulaModel]='items'>
-      <div>This is the default use case. You only need to specify the containers you want to use</div>
-      <div>More interactive use cases lie ahead</div>
-      <div>Make sure to check out the <a href='https://github.com/bevacqua/dragula#readme'>documentation on GitHub!</a></div>
+
+    <div>  
+      <label>Task List:</label>
+      <select>
+        <option *ngFor="let taskList of taskLists"
+                value={{taskList.taskListId}}>
+                {{taskList.title}}
+        </option>
+      </select>
+    </div>
+  </form>
+  <p>Form value: {{ quadrantForm.value | json }}</p>
+</div>
+
+<div class="split-containerx">
+  <div class="split-thirdx w3-border">
+    <div class="split-container">
+      <div class="split-half w3-red w3-row-padding">
+          <h4>Focus</h4>
+      </div>
+      <div class="split-divider">
+      </div>
+      <div class="split-half w3-yellow w3-row-padding">
+          <h4>Plan</h4>
+      </div>
+    </div>
+    <div class="split-container w3-margin-bottom">
+      <div class="split-half w3-red" [dragula]='"first-bag"' [dragulaModel]='items'>
+        <div class="w3-padding-small w3-hover-white w3-border">Task 1</div>
+        <div class="w3-padding-small w3-hover-white w3-border">Task 3</div>
+        <!--
+        <div [attr.id]="item.id" [attr.title]="i" class="card-item" *ngFor="let item of items; let i=index">
+          <item-detail></item-detail> 
+        </div>
+        -->    
+      </div>
+      <div class="split-divider">
+      </div>
+      <div class="split-half w3-yellow" [dragula]='"first-bag"' [dragulaModel]='items'>
+        <div class="w3-padding-small w3-hover-white w3-border">Task 1</div>
+        <div class="w3-padding-small w3-hover-white w3-border">Task 2</div>
+        <div class="w3-padding-small w3-hover-white w3-border">Task 3</div>
+      </div>
+    </div>  
+    <div class="split-container">
+        <div class="split-half w3-green w3-row-padding">
+            <h4>Delegate</h4>
+        </div>
+        <div class="split-divider">
+        </div>
+        <div class="split-half w3-gray w3-row-padding">
+            <h4>Eliminate</h4>
+        </div>
+      </div>
+      <div class="split-container w3-margin-bottom">
+      <div class="split-half w3-green" [dragula]='"first-bag"' [dragulaModel]='items'>
+        <div class="w3-padding-small w3-hover-white w3-border">Task 1</div>
+        <div class="w3-padding-small w3-hover-white w3-border">Task 3</div>      
+        <!--
+        <div [attr.id]="item.id" [attr.title]="i" class="card-item" *ngFor="let item of items; let i=index">
+          <item-detail></item-detail> 
+        </div>
+        -->    
+      </div>
+      <div class="split-divider">
+      </div>
+      <div class="split-half w3-gray" [dragula]='"first-bag"' [dragulaModel]='items'>
+        <div class="w3-padding-small w3-hover-white w3-border">Task 1</div>
+        <div class="w3-padding-small w3-hover-white w3-border">Task 2</div>
+        <div class="w3-padding-small w3-hover-white w3-border">Task 3</div>
+      </div>
+    </div>
+  </div>
+  <div class="split-divider">
+  </div>
+  <div class="split-thirdtwox">
+    <div class="w3-container">
+      <div class="w3-blue w3-row-padding">
+        <h4>Unspecified</h4>
+      </div>
+    </div>
+    <div class="">
+      <div class="w3-blue" [dragula]='"first-bag"' [dragulaModel]='items'>
+        <div class="w3-padding-small w3-hover-white w3-border">Task 1</div>
+        <div class="w3-padding-small w3-hover-white w3-border">Task 3</div>
+      </div>
     </div>
   </div>
 </div>

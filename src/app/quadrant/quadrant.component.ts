@@ -23,9 +23,9 @@ export class QuadrantComponent implements OnInit {
     this.taskLists = service.getTaskLists();
     dragulaService.drop.subscribe(value => this.onDrop());
     dragulaService.setOptions('bagName', {
-      invalid: () => false
+      invalid: () => false,
+      revertOnSpill: true
     })
-
   }
 
   ngOnInit() {
