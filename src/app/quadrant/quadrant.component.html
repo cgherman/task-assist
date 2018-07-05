@@ -1,4 +1,4 @@
-<div class="w3-panel w3-border">
+<div class="">
   <form [formGroup]="quadrantForm">
     <div class="form-group">
       <label class="">Test box:
@@ -19,20 +19,23 @@
   <p>Form value: {{ quadrantForm.value | json }}</p>
 </div>
 
-<div class="split-containerx">
-  <div class="split-thirdx w3-border">
+<div class="">
+  <div class="w3-twothird">
     <div class="split-container">
-      <div class="split-half w3-red w3-row-padding">
+      <div class="split-half w3-red external-outline w3-row-padding">
           <h4>Focus</h4>
       </div>
       <div class="split-divider">
       </div>
-      <div class="split-half w3-yellow w3-row-padding">
+      <div class="split-half w3-yellow external-outline w3-row-padding">
           <h4>Plan</h4>
+      </div>
+      <div class="right-separator">
+        <!-- vertical static margin (allows responsive) -->
       </div>
     </div>
     <div class="split-container w3-margin-bottom">
-      <div class="split-half w3-red" [dragula]='"first-bag"' [dragulaModel]='items'>
+      <div class="split-half w3-red external-outline" [dragula]='"first-bag"' [dragulaModel]='items'>
         <div class="w3-padding-small w3-hover-white w3-border">Task 1</div>
         <div class="w3-padding-small w3-hover-white w3-border">Task 3</div>
         <!--
@@ -43,24 +46,30 @@
       </div>
       <div class="split-divider">
       </div>
-      <div class="split-half w3-yellow" [dragula]='"first-bag"' [dragulaModel]='items'>
+      <div class="split-half w3-yellow external-outline" [dragula]='"first-bag"' [dragulaModel]='items'>
         <div class="w3-padding-small w3-hover-white w3-border">Task 1</div>
         <div class="w3-padding-small w3-hover-white w3-border">Task 2</div>
         <div class="w3-padding-small w3-hover-white w3-border">Task 3</div>
       </div>
+      <div class="right-separator">
+        <!-- vertical static margin (allows responsive) -->
+      </div>
     </div>  
     <div class="split-container">
-        <div class="split-half w3-green w3-row-padding">
+        <div class="split-half w3-green external-outline w3-row-padding">
             <h4>Delegate</h4>
         </div>
         <div class="split-divider">
         </div>
-        <div class="split-half w3-gray w3-row-padding">
+        <div class="split-half w3-gray external-outline w3-row-padding">
             <h4>Eliminate</h4>
+        </div>
+        <div class="right-separator">
+        <!-- vertical static margin (allows responsive) -->
         </div>
       </div>
       <div class="split-container w3-margin-bottom">
-      <div class="split-half w3-green" [dragula]='"first-bag"' [dragulaModel]='items'>
+      <div class="split-half w3-green external-outline" [dragula]='"first-bag"' [dragulaModel]='items'>
         <div class="w3-padding-small w3-hover-white w3-border">Task 1</div>
         <div class="w3-padding-small w3-hover-white w3-border">Task 3</div>      
         <!--
@@ -71,25 +80,28 @@
       </div>
       <div class="split-divider">
       </div>
-      <div class="split-half w3-gray" [dragula]='"first-bag"' [dragulaModel]='items'>
+      <div class="split-half w3-gray external-outline" [dragula]='"first-bag"' [dragulaModel]='items'>
         <div class="w3-padding-small w3-hover-white w3-border">Task 1</div>
         <div class="w3-padding-small w3-hover-white w3-border">Task 2</div>
         <div class="w3-padding-small w3-hover-white w3-border">Task 3</div>
       </div>
-    </div>
-  </div>
-  <div class="split-divider">
-  </div>
-  <div class="split-thirdtwox">
-    <div class="w3-container">
-      <div class="w3-blue w3-row-padding">
-        <h4>Unspecified</h4>
+      <div class="right-separator">
+        <!-- vertical static margin (allows responsive) -->
       </div>
     </div>
-    <div class="">
-      <div class="w3-blue" [dragula]='"first-bag"' [dragulaModel]='items'>
-        <div class="w3-padding-small w3-hover-white w3-border">Task 1</div>
-        <div class="w3-padding-small w3-hover-white w3-border">Task 3</div>
+  </div>
+  <div class="w3-third">
+    <div style="margin-right: 8px;">
+      <div class="">
+        <div class="w3-blue external-outline w3-row-padding">
+          <h4>Uncategorized</h4>
+        </div>
+      </div>
+      <div class="">
+        <div class="w3-blue external-outline" [dragula]='"first-bag"' [dragulaModel]='items'>
+          <div class="w3-padding-small w3-hover-white w3-border">Task 1</div>
+          <div class="w3-padding-small w3-hover-white w3-border">Task 3</div>
+        </div>
       </div>
     </div>
   </div>

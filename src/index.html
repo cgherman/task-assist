@@ -57,11 +57,27 @@
   <div class="w3-main" style="margin-left:300px;margin-top:43px;">
   
     <!-- Header -->
-    <header class="w3-container w3-border" style="padding-top:22px">
+    <header class="w3-container" style="padding-top:22px">
       <h5><b><i class="fa fa-hourglass-2"></i> Eisenhower Matrix</b></h5>
     </header>
 
+    <div class="w3-panel">
+      <div class="w3-row-padding" style="margin:0 -16px">
+        <div class="w3-container">
+          <button id="signin-button" onclick="handleSignInClick()">Sign In</button>
+          <button id="signout-button" onclick="handleSignOutClick()">Sign Out</button>
+        </div>
+      </div>
+    </div>
 
+    <div class="w3-panel">
+      <div class="w3-row-padding" style="margin:0 -16px">
+        <div class="w3-container">
+          <app-root></app-root>
+        </div>
+      </div>
+    </div>
+  
     <div class="w3-panel">
       <div class="w3-row-padding" style="margin:0 -16px">
         <div class="w3-container">
