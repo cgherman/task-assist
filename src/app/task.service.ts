@@ -6,12 +6,16 @@ import { ITaskList, TaskList, ITask, RootTask, SubTask }       from './data-mode
 })
 
 export class TaskService {
+  gapi: any;
 
-  constructor() { }
+  //constructor(gapi_service: any) { 
+  //  this.gapi = gapi_service;
+  //}
 
   getTasks(): ITask[] {
 
     // TODO: USE DATA FROM API
+    //gapi.
 
     let tasks: ITask[] = [
  

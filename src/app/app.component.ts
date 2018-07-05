@@ -28,11 +28,16 @@ export class AppComponent {
   }
 
   onSignIn(googleUser) {
-    // Listen for sign-in state changes.
-    gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
+    this.zone.run(() => {
+      // Listen for sign-in state changes.
+      gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
 
-    // Handle the initial sign-in state.
-    this.updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+      // Handle the initial sign-in state.
+      this.updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+
+      // Process some test data
+      this.testApiCall();
+    });
   };
 
   onSignOut() {
