@@ -6,15 +6,16 @@
   </div>
   <div class="w3-right">
     <div class="w3-container">
-      <div class="w3-left" *ngIf="signedInFlag">
+      <div class="w3-left" *ngIf="false">
         <button id="signout-button" (click)="onSignOut()">Sign Out</button>&nbsp;&nbsp;
       </div>
       <div class="w3-right">
-        <div id="googleSigninButton" (data-onsuccess)="onSignIn"></div>
+        <div id="glogin" class="g-signin2" data-onsuccess="onSignIn" data-theme="dark">Google Sign In</div>
       </div>
     </div>
   </div>
 </div>  
+
 
 <div>
   <app-quadrant></app-quadrant>

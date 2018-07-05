@@ -22,6 +22,8 @@
     "@angular/router": "^6.0.3",
     "@types/gapi": "0.0.35",
     "@types/gapi.auth2": "0.0.47",
+    "@types/gapi.client": "^1.0.0",
+    "@types/gapi.client.tasks": "^1.0.0",
     "core-js": "^2.5.4",
     "ng2-dragula": "^1.5.0",
     "rxjs": "^6.0.0",
