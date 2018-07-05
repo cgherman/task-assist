@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { TaskService } from '../task.service';
-import { TaskList }       from '../data-model';
+import { ITask, ITaskList }       from '../data-model';
 import { DragulaService } from 'ng2-dragula';
 
 @Component({
@@ -12,15 +12,17 @@ import { DragulaService } from 'ng2-dragula';
 })
 
 export class QuadrantComponent implements OnInit {
-  taskLists: TaskList[];
+  taskService: TaskService;
+  taskLists: ITaskList[];
   quadrantForm = new FormGroup ({
-    title: new FormControl()
+    taskList: new FormControl()
   });
 
-  taskService = new TaskService();
+  constructor(taskService: TaskService, private dragulaService: DragulaService) {
+    // init task service
+    this.taskService = taskService;
 
-  constructor(service: TaskService, private dragulaService: DragulaService) {
-    this.taskLists = service.getTaskLists();
+    // Init drag-n-drop
     dragulaService.drop.subscribe(value => this.onDrop());
     dragulaService.setOptions('bagName', {
       invalid: () => false,
@@ -29,6 +31,8 @@ export class QuadrantComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Get user's task lists
+    this.taskLists = this.taskService.getTaskLists();
   }
 
  onDrop() {

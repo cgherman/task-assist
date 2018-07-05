@@ -1,4 +1,4 @@
-interface ITaskList {
+export interface ITaskList {
     id: string;
     title: string;
     tasks: Task[];
@@ -17,7 +17,7 @@ export class TaskList implements ITaskList {
     }
 }
 
-interface ITask {
+export interface ITask {
     id: string;
     title: string;
     selfLink: string;
@@ -27,7 +27,7 @@ interface ITask {
     isLeaf(): boolean;
 }
 
-abstract class Task implements ITask {
+export abstract class Task implements ITask {
     id = null;
     title = null;
     selfLink = null;

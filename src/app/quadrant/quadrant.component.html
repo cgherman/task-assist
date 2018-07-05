@@ -1,34 +1,37 @@
 <div class="">
   <form [formGroup]="quadrantForm">
     <div class="form-group">
-      <label class="">Test box:
-        <input class="form-control" formControlName="title">
-      </label>
-    </div>
-
-    <div>  
-      <label>Task List:</label>
-      <select>
-        <option *ngFor="let taskList of taskLists"
-                value={{taskList.taskListId}}>
-                {{taskList.title}}
-        </option>
-      </select>
+      <div class="w3-row w3-section w3-row-padding">
+        <div class="w3-container w3-half">
+          <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-book"></i></div>
+          <div class="w3-rest">
+            <select class="w3-select"  formControlName="taskList">
+              <option value="" disabled selected>Choose your option</option>
+              <option *ngFor="let taskList of taskLists"
+                      value={{taskList.taskListId}}>
+                      {{taskList.title}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="w3-container w3-half">
+          Form value: {{ quadrantForm.value | json }}
+        </div>
+      </div>
     </div>
   </form>
-  <p>Form value: {{ quadrantForm.value | json }}</p>
 </div>
 
 <div class="">
   <div class="w3-twothird">
     <div class="split-container">
       <div class="split-half w3-red external-outline w3-row-padding">
-          <h4>Focus</h4>
+          <div class="small-caps w3-xlarge">Focus</div>
       </div>
       <div class="split-divider">
       </div>
       <div class="split-half w3-yellow external-outline w3-row-padding">
-          <h4>Plan</h4>
+          <div class="small-caps w3-xlarge">Plan</div>
       </div>
       <div class="right-separator">
         <!-- vertical static margin (allows responsive) -->
@@ -57,13 +60,13 @@
     </div>  
     <div class="split-container">
         <div class="split-half w3-green external-outline w3-row-padding">
-            <h4>Delegate</h4>
-        </div>
+            <div class="small-caps w3-xlarge">Delegate</div>
+          </div>
         <div class="split-divider">
         </div>
         <div class="split-half w3-gray external-outline w3-row-padding">
-            <h4>Eliminate</h4>
-        </div>
+            <div class="small-caps w3-xlarge">Eliminate</div>
+          </div>
         <div class="right-separator">
         <!-- vertical static margin (allows responsive) -->
         </div>
@@ -94,8 +97,8 @@
     <div style="margin-right: 8px;">
       <div class="">
         <div class="w3-blue external-outline w3-row-padding">
-          <h4>Uncategorized</h4>
-        </div>
+            <div class="small-caps w3-xlarge">Unspecified</div>
+          </div>
       </div>
       <div class="">
         <div class="w3-blue external-outline" [dragula]='"first-bag"' [dragulaModel]='items'>
