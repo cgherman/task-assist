@@ -6,6 +6,9 @@ import { AppComponent } from './app.component';
 import { QuadrantComponent } from './quadrant/quadrant.component';
 
 import { DragulaModule } from 'ng2-dragula';
+import { TaskService } from './task.service';
+import { FakeTaskService } from './fake-task.service';
+import { AuthService } from './auth.service'
 
 @NgModule({
   declarations: [
@@ -17,7 +20,7 @@ import { DragulaModule } from 'ng2-dragula';
     ReactiveFormsModule,
     DragulaModule
   ],
-  providers: [],
+  providers: [TaskService, AuthService],
   bootstrap: [AppComponent]
 })
 

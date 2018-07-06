@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { TaskService } from '../task.service';
 import { ITask, ITaskList }       from '../data-model';
 import { DragulaService } from 'ng2-dragula';
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-quadrant',
@@ -12,16 +13,18 @@ import { DragulaService } from 'ng2-dragula';
 })
 
 export class QuadrantComponent implements OnInit {
+  
   taskService: TaskService;
+  googleTaskService: AppComponent;
   tasks: ITask[];
   taskLists: ITaskList[];
   quadrantForm = new FormGroup ({
     taskList: new FormControl()
   });
 
-  constructor(taskService: TaskService, private dragulaService: DragulaService) {
+  constructor(taskService: TaskService, private dragulaService: DragulaService ) {
     // init task service
-    this.taskService = taskService;
+    //this.taskService = taskService;
 
     // Init drag-n-drop
     dragulaService.drop.subscribe(value => this.onDrop());
@@ -32,12 +35,14 @@ export class QuadrantComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Get user's task lists
-    this.taskLists = this.taskService.getTaskLists();
-    this.tasks = this.taskService.getTasks();
   }
 
- onDrop() {
+  populateModels(taskLists: ITaskList[]) {
+    var index: number;
+
+  }
+
+  onDrop() {
     // do something
   }
 
@@ -48,4 +53,5 @@ export class QuadrantComponent implements OnInit {
       return task.notes.includes("[Quad:" + quadrant + "]");
     }
   }
+
 }

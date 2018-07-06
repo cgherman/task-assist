@@ -6,80 +6,50 @@ import { ITaskList, TaskList, ITask, RootTask, SubTask }       from './data-mode
 })
 
 export class TaskService {
-  gapi: any;
 
-  //constructor(gapi_service: any) { 
-  //  this.gapi = gapi_service;
-  //}
+  TaskService() {
+  }
 
-  getTasks(): ITask[] {
+  getTasks(taskListId: string): ITask[] {
 
-    // TODO: USE DATA FROM API
-    //gapi.
+    var result = null;
 
-    let tasks: ITask[] = [
- 
-      new RootTask(
-        "ID1", //taskId;
-        "Task 1", //title;
-        "https://developers.google.com/apis-explorer/#s/tasks/v1/tasks.tasks.get?tasklist=X&task=Y", //selfLink;
-        "needsAction", //status;
-        "[Quad:1]", //notes;
-        null //childTasks;
-      ),
- 
-      new RootTask(
-        "ID2", //taskId;
-        "Task 2", //title;
-        "https://developers.google.com/apis-explorer/#s/tasks/v1/tasks.tasks.get?tasklist=X&task=Y", //selfLink;
-        "needsAction", //status;
-        "[Quad:2]", //notes;
-        null //childTasks;
-      ),
- 
-      new RootTask(
-        "ID3", //taskId;
-        "Task 3", //title;
-        "https://developers.google.com/apis-explorer/#s/tasks/v1/tasks.tasks.get?tasklist=X&task=Y", //selfLink;
-        "needsAction", //status;
-        "[Quad:3]", //notes;
-        null //childTasks;
-      ),
- 
-      new RootTask(
-        "ID4", //taskId;
-        "Task 4", //title;
-        "https://developers.google.com/apis-explorer/#s/tasks/v1/tasks.tasks.get?tasklist=X&task=Y", //selfLink;
-        "needsAction", //status;
-        "[Quad:4]", //notes;
-        null //childTasks;
-      )
+/*     gapi.client.tasks.list( {tasklist: taskListId
+      }).then(function(response) {
+      if (response.result != null && response.result.items != null && response.result.items.length != 0) {
+        var result = RootTask[response.result.items.length];
 
-     ];
- 
-    return tasks;
+        var index: number;
+        for (index = 0; index < response.result.items.length; index++) {
+          result[index] = new RootTask(response.result.items[index].id,
+                                       response.result.items[index].title,
+                                       response.result.items[index].selfLink,
+                                       response.result.items[index].status,
+                                       response.result.items[index].notes
+                                      );
+        }
+      }
+    });
+ */  
+    return result;
   }
 
   getTaskLists(): ITaskList[] {
+    var result = null;
 
-    // TODO: USE DATA FROM API
- 
-    let taskLists: ITaskList[] = [
- 
-      new TaskList(
-        "ID1", //taskListId
-        "List 1", //title
-        null //childTasks
-      ),
- 
-      new TaskList(
-        "ID2", //taskListId
-        "List 2", //title
-        null //childTasks
-      )
+/*     gapi.client.tasks.tasklists.list({
+    }).then(function(response) {
+      if (response.result != null && response.result.items != null && response.result.items.length != 0) {
+        var result = TaskList[response.result.items.length];
 
-     ];
- 
-    return taskLists;
+        var index: number;
+        for (index = 0; index < response.result.items.length; index++) {
+          result[index] = new TaskList(response.result.items[index].id,
+                                       response.result.items[index].title);
+        }
+      }
+    });
+ */  
+    return result;
   }
 }

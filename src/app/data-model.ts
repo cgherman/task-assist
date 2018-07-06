@@ -10,10 +10,10 @@ export class TaskList implements ITaskList {
     tasks: Task[];
     //updated = date...
 
-    constructor (public taskListId: string, title: string, childTasks: Task[]) {
+    constructor (public taskListId: string, title: string) {
         this.id = taskListId;
         this.title = title;
-        this.tasks = childTasks;
+        //this.Task[] = ...
     }
 }
 
@@ -48,9 +48,9 @@ export abstract class Task implements ITask {
 export class RootTask extends Task {
     children: Task[];
 
-    constructor (public taskId: string, title: string, selfLink: string, status: string, notes: string, childTasks: Task[]) {
+    constructor (public taskId: string, title: string, selfLink: string, status: string, notes: string) {
         super(taskId, title, selfLink, status, notes);
-        this.children = childTasks;
+        //this.children = childTasks;
     }
 
     public isLeaf(): boolean {
