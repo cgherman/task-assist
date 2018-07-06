@@ -10,7 +10,7 @@ import { ITaskService } from '../itask-service';
   selector: 'app-quadrant',
   templateUrl: './quadrant.component.html',
   styleUrls: ['./quadrant.component.css'],
-  providers:  [[TaskService], [DragulaService], [AppComponent]]
+  providers:  [[TaskService], [DragulaService]]
 })
 
 export class QuadrantComponent implements OnInit {
@@ -24,7 +24,7 @@ export class QuadrantComponent implements OnInit {
   constructor(taskService: TaskService, private dragulaService: DragulaService, private appComponent: AppComponent) {
     // init task service
     this.taskService = appComponent;
-    appComponent.onDataLoad.subscribe(item => this.onDataLoad());
+    appComponent.dataLoad.subscribe(item => this.onDataLoad());
 
     // Init drag-n-drop
     dragulaService.drop.subscribe(value => this.onDrop());
@@ -40,7 +40,6 @@ export class QuadrantComponent implements OnInit {
 
   onDataLoad(): void {
     this.loadData();
-    location.reload();
   }
 
   private loadData(): void {

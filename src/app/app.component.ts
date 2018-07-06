@@ -16,7 +16,7 @@ let gapi_listIds = [] as string[];
 })
 
 export class AppComponent implements ITaskService {
-  @Output() onDataLoad: EventEmitter<any> = new EventEmitter();
+  @Output() dataLoad: EventEmitter<any> = new EventEmitter();
 
   title = 'TaskAssist';
   gapi_client:any;
@@ -36,7 +36,7 @@ export class AppComponent implements ITaskService {
   }
 
   dataWasLoaded(): void {
-    this.onDataLoad.emit(null);
+    this.dataLoad.emit(null);
   }
 
   getTasks(): ITask[] {
