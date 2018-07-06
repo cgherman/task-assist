@@ -13,13 +13,16 @@ import { AppComponent } from '../app.component';
 })
 
 export class QuadrantComponent implements OnInit {
+  taskService: TaskService;
   tasks: ITask[];
   taskLists: ITaskList[];
   quadrantForm = new FormGroup ({
     taskList: new FormControl()
   });
 
-  constructor(private taskService: TaskService, private dragulaService: DragulaService, private appComponent: AppComponent ) {
+  constructor(taskService: TaskService, private dragulaService: DragulaService, private appComponent: AppComponent ) {
+    // init task service
+    this.taskService = taskService;
 
     // Init drag-n-drop
     dragulaService.drop.subscribe(value => this.onDrop());
@@ -30,6 +33,9 @@ export class QuadrantComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Get user's task lists
+    this.taskLists = this.taskService.getTaskLists();
+    this.tasks = this.taskService.getTasks();    
   }
 
   onDrop() {

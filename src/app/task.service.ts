@@ -10,16 +10,63 @@ export class TaskService {
   TaskService() {
   }
 
-  getTasks(taskListId: string): ITask[] {
+  getTasks(): ITask[] {
 
-    var result = null;
+    let tasks: ITask[] = [
+ 
+      new RootTask(
+        "ID1", //taskId;
+        "Fake Task 1", //title;
+        "https://developers.google.com/apis-explorer/#s/tasks/v1/tasks.tasks.get?tasklist=X&task=Y", //selfLink;
+        "needsAction", //status;
+        "[Quad:1]", //notes;
+      ),
+ 
+      new RootTask(
+        "ID2", //taskId;
+        "Fake Task 2", //title;
+        "https://developers.google.com/apis-explorer/#s/tasks/v1/tasks.tasks.get?tasklist=X&task=Y", //selfLink;
+        "needsAction", //status;
+        "[Quad:2]", //notes;
+      ),
+ 
+      new RootTask(
+        "ID3", //taskId;
+        "Fake Task 3", //title;
+        "https://developers.google.com/apis-explorer/#s/tasks/v1/tasks.tasks.get?tasklist=X&task=Y", //selfLink;
+        "needsAction", //status;
+        "[Quad:3]", //notes;
+      ),
+ 
+      new RootTask(
+        "ID4", //taskId;
+        "Fake Task 4", //title;
+        "https://developers.google.com/apis-explorer/#s/tasks/v1/tasks.tasks.get?tasklist=X&task=Y", //selfLink;
+        "needsAction", //status;
+        "[Quad:4]", //notes;
+      )
 
-    return result;
+     ];
+ 
+    return tasks;
   }
 
   getTaskLists(): ITaskList[] {
-    var result = null;
 
-    return result;
+    let taskLists: ITaskList[] = [
+ 
+      new TaskList(
+        "ID1", //taskListId
+        "Fake List 1", //title
+      ),
+ 
+      new TaskList(
+        "ID2", //taskListId
+        "Fake List 2", //title
+      )
+
+     ];
+ 
+    return taskLists;
   }
 }

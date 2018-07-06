@@ -33,11 +33,11 @@ export class AppComponent {
       setTimeout(() => this.signIn(), 1000);
   }
 
-  getTasks(): ITask[] {
-    if (gapi_listIds != null && gapi_listIds.length > 0) {
-      return gapi_data[gapi_listIds[0]];
-    }
-  }
+//  getTasks(): ITask[] {
+//    if (gapi_listIds != null && gapi_listIds.length > 0) {
+//      return gapi_data[gapi_listIds[0]];
+//    }
+//  }
 
   signIn() {
     gapi.load('auth2',  () => {
