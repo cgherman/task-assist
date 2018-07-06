@@ -116,11 +116,13 @@ export class AppComponent implements ITaskService {
     gapi.auth2.getAuthInstance().signOut(
     ).then(function(response) {
       console.log('Successful sign-out.');
+      gapi.auth2.getAuthInstance().disconnect();
+      gapi_data = null;
+      gapi_listIds = null;
+      setTimeout(() => location.reload(), 1000);
     }, function(rejectReason) {
       console.log('Error: ' + rejectReason.result.error.message);
     });
-
-    location.reload();
   }
 
   isSignedIn() {
