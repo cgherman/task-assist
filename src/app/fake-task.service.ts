@@ -1,11 +1,12 @@
 import { Injectable }       from '@angular/core';
 import { ITaskList, TaskList, ITask, RootTask, SubTask }       from './data-model';
+import { ITaskService } from './itask-service';
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class FakeTaskService {
+export class FakeTaskService implements ITaskService{
 
   FakeTaskService() {
   }

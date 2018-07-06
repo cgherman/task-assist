@@ -3,11 +3,11 @@ import { Meta } from '@angular/platform-browser';
 import { TaskService } from './task.service';
 import { ITask, TaskList, RootTask } from './data-model';
 import { AuthService } from './auth.service';
+import { ITaskService } from './itask-service';
 
 declare var gapi: any;
 let gapi_data = new Map<string, TaskList>(); 
 let gapi_listIds = [] as string[];
-
 
 @Component({
   selector: 'app-root',
@@ -15,7 +15,7 @@ let gapi_listIds = [] as string[];
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent {
+export class AppComponent implements ITaskService {
   title = 'TaskAssist';
   gapi_client:any;
   auth2:any;
@@ -33,11 +33,11 @@ export class AppComponent {
       setTimeout(() => this.signIn(), 1000);
   }
 
-//  getTasks(): ITask[] {
-//    if (gapi_listIds != null && gapi_listIds.length > 0) {
-//      return gapi_data[gapi_listIds[0]];
-//    }
-//  }
+  getTasks(): ITask[] {
+    if (gapi_listIds != null && gapi_listIds.length > 0) {
+      return gapi_data[gapi_listIds[0]];
+    }
+  }
 
   signIn() {
     gapi.load('auth2',  () => {
