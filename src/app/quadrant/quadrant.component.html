@@ -38,7 +38,7 @@
       </div>
     </div>
     <div class="split-container w3-margin-bottom">
-      <div class="split-half w3-red external-outline" [dragula]='"first-bag"' [dragulaModel]='tasks'>
+      <div class="split-half w3-red external-outline" [dragula]='"taskBag"' [dragulaModel]='tasks'>
         <ng-container *ngFor="let task of tasks">
           <ng-container *ngIf="quadrantMatch(task, 1)">
               <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border">
@@ -49,7 +49,7 @@
       </div>
       <div class="split-divider">
       </div>
-      <div class="split-half w3-yellow external-outline" [dragula]='"first-bag"' [dragulaModel]='tasks'>
+      <div class="split-half w3-yellow external-outline" [dragula]='"taskBag"' [dragulaModel]='tasks'>
         <ng-container *ngFor="let task of tasks">
           <ng-container *ngIf="quadrantMatch(task, 2)">
               <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border">
@@ -76,7 +76,7 @@
         </div>
       </div>
       <div class="split-container w3-margin-bottom">
-      <div class="split-half w3-green external-outline" [dragula]='"first-bag"' [dragulaModel]='tasks'>
+      <div class="split-half w3-green external-outline" [dragula]='"taskBag"' [dragulaModel]='tasks'>
         <ng-container *ngFor="let task of tasks">
           <ng-container *ngIf="quadrantMatch(task, 3)">
               <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border">
@@ -87,7 +87,7 @@
       </div>
       <div class="split-divider">
       </div>
-      <div class="split-half w3-gray external-outline" [dragula]='"first-bag"' [dragulaModel]='tasks'>
+      <div class="split-half w3-gray external-outline" [dragula]='"taskBag"' [dragulaModel]='tasks'>
         <ng-container *ngFor="let task of tasks">
           <ng-container *ngIf="quadrantMatch(task, 4)">
               <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border">
@@ -109,7 +109,7 @@
           </div>
       </div>
       <div class="">
-        <div class="w3-blue external-outline" [dragula]='"first-bag"' [dragulaModel]='tasks'>
+        <div class="w3-blue external-outline" [dragula]='"taskBag"' [dragulaModel]='tasks'>
           <ng-container *ngFor="let task of tasks">
             <ng-container *ngIf="quadrantMatch(task, null)">
                 <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border">

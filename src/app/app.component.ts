@@ -1,7 +1,7 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, Output, EventEmitter, NgZone } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { TaskService } from './task.service';
-import { ITask, TaskList, RootTask } from './data-model';
+import { ITask, ITaskList, TaskList, RootTask } from './data-model';
 import { AuthService } from './auth.service';
 import { ITaskService } from './itask-service';
 
@@ -16,6 +16,8 @@ let gapi_listIds = [] as string[];
 })
 
 export class AppComponent implements ITaskService {
+  @Output() onDataLoad: EventEmitter<any> = new EventEmitter();
+
   title = 'TaskAssist';
   gapi_client:any;
   auth2:any;
@@ -33,10 +35,18 @@ export class AppComponent implements ITaskService {
       setTimeout(() => this.signIn(), 1000);
   }
 
+  dataWasLoaded(): void {
+    this.onDataLoad.emit(null);
+  }
+
   getTasks(): ITask[] {
     if (gapi_listIds != null && gapi_listIds.length > 0) {
       return gapi_data[gapi_listIds[0]];
     }
+  }
+
+  getTaskLists(): ITaskList[]{
+    return null;
   }
 
   signIn() {
@@ -122,7 +132,6 @@ export class AppComponent implements ITaskService {
     // Use the GAPI module to fetch data and build arrays
     // This is a mess because the GAPI object doesn't play nice with services
     console.log("Building the model...");
-
 
     // dig through task lists for data
     gapi.client.tasks.tasklists.list({
