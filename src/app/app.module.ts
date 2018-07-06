@@ -18,7 +18,7 @@ import { AuthService } from './auth.service'
   imports: [
     BrowserModule,
     ReactiveFormsModule,
-    DragulaModule
+    DragulaModule,
   ],
   providers: [TaskService, AuthService],
   bootstrap: [AppComponent]

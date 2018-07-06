@@ -1,11 +1,11 @@
-import { Component, ViewChild, NgZone } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { TaskService } from './task.service';
 import { TaskList, RootTask } from './data-model';
-import { QuadrantComponent } from './quadrant/quadrant.component'
 import { AuthService } from './auth.service';
 
 declare var gapi: any;
+var gapi_data: Map<string, TaskList>;
 
 @Component({
   selector: 'app-root',
@@ -14,18 +14,14 @@ declare var gapi: any;
 })
 
 export class AppComponent {
-  @ViewChild(QuadrantComponent) child: QuadrantComponent;
-  static childref: QuadrantComponent;
   title = 'TaskAssist';
   gapi_client:any;
   auth2:any;
-  taskService: TaskService;
 
-  constructor(private zone: NgZone, private meta: Meta, private authService: AuthService) {
+  constructor(private zone: NgZone, private meta: Meta, private authService: AuthService, private taskService: TaskService) {
     this.meta.addTag({ name: 'google-signin-client_id', content: AuthService.client_id });
     this.meta.addTag({ name: 'google-signin-scope', content: AuthService.scope });
     this.authService = authService;
-    AppComponent.childref = this.child;
   }
 
   ngOnInit() {
@@ -122,6 +118,7 @@ export class AppComponent {
     let taskLists = new Map<string, TaskList>(); 
     let tasks = new Map<string, RootTask>(); 
 
+    // dig through task lists for data
     gapi.client.tasks.tasklists.list({
     }).then(function(response) {
       var index: number;
@@ -136,6 +133,7 @@ export class AppComponent {
                     response.result.items[index].title);
           console.log('Building list: ' + response.result.items[index].title);
 
+          // parse tasks for data
           gapi.client.tasks.tasks.list( {tasklist: response.result.items[index].id }
           ).then(function(response) {
             if (response.result == null || response.result.items == null || response.result.items.length == 0) {
@@ -148,6 +146,8 @@ export class AppComponent {
                                         response.result.items[index].selfLink,
                                         response.result.items[index].status,
                                         response.result.items[index].notes);
+                
+                // Store callbacks against the correct list id
                 var listId = response.result.items[index].selfLink;
                 var firstPos = listId.indexOf("/tasks/v1/lists/");
                 listId = listId.substring(firstPos + 16, listId.length);
@@ -155,9 +155,13 @@ export class AppComponent {
                 listId = listId.substring(0, secondPos);
                 tasks[listId] = task;
 
+                // assemble data
+                taskLists.forEach(function (taskList: TaskList) {
+                  taskList.tasks = tasks[taskList.id];
+                });
+
                 // Done collecting data
-                TaskService.bind("S");
-                //this.child.populateModels();
+                gapi_data = taskLists;
               }
             }
 

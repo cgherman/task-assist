@@ -14,7 +14,6 @@ import { AppComponent } from '../app.component';
 
 export class QuadrantComponent implements OnInit {
   
-  taskService: TaskService;
   googleTaskService: AppComponent;
   tasks: ITask[];
   taskLists: ITaskList[];
@@ -22,9 +21,7 @@ export class QuadrantComponent implements OnInit {
     taskList: new FormControl()
   });
 
-  constructor(taskService: TaskService, private dragulaService: DragulaService ) {
-    // init task service
-    //this.taskService = taskService;
+  constructor(private taskService: TaskService, private dragulaService: DragulaService ) {
 
     // Init drag-n-drop
     dragulaService.drop.subscribe(value => this.onDrop());
@@ -43,7 +40,7 @@ export class QuadrantComponent implements OnInit {
   }
 
   onDrop() {
-    // do something
+    // TODO: Commit to Google API
   }
 
   quadrantMatch(task: ITask, quadrant:string): boolean {

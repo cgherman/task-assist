@@ -6,7 +6,7 @@ This project leverages Google OAuth and the Google Tasks APIs to allow for simpl
 
 ### The Eisenhower Matrix
 
-This app allows you to rearrange your "to do" list using an Eisenhower Matrix.  This method allows you to set your real priorities so you can meet your true goals.
+This app is currently in read-only mode.  This intent is to create an app that allows people rearrange their priorities using  an "Eisenhower Matrix".
 
 ### Logging in
 
@@ -16,15 +16,21 @@ This app does not have any remote data servers, and no task information is colle
 
 You must have a Google Task List set up to use this app.  Tasks must be added via the various apps that Google provides.  Links to those UIs are available in the menu of this app.
 
-## To-do List
+## Feature To-do List
 
-* Rig up API to fetch tasks and display
-* Rig up API to modify items upon drag/drop
+* Save quadrant edits to Google's Task repository
 * Support list selection for users with multiple lists
-* Commit resorting order if user drags items up/down
+* Turn off "demo mode"
 * Tool tips to preview task details (due date, notes, links, etc.)
+* Save resorts and edits to Google's Task repository
 * Enable auto-refresh when data is edited elsewhere
 * Flesh out UI for tighter integration with task creation
 * Ability to tag items with cost/complexity and identify items that may not be in the right quadrant
+
+## Technical To-do List
+
+* Clean up code and comments
+* Refactor.  This was a code jam that got stuck in some pretty deep holes.
+* Maybe switch away from Angular Google API calls and focus 100% on a Javascript pattern, as it's more "native" at the moment
 * Utilize [Karma](https://karma-runner.github.io) for unit testing
 * Utilize [Protractor](http://www.protractortest.org/) for  end-to-end testing
