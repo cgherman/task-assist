@@ -41,12 +41,20 @@ export class AppComponent implements ITaskService {
 
   getTasks(): ITask[] {
     if (gapi_listIds != null && gapi_listIds.length > 0) {
-      return gapi_data[gapi_listIds[0]];
+      var taskList = this.getSelectedTaskList();
+      return taskList.tasks;
     }
   }
-
+  
+  getSelectedTaskList(): ITaskList{
+    return gapi_data[gapi_listIds[0]];
+  }
   getTaskLists(): ITaskList[]{
-    return null;
+    return Array.from( gapi_data.values() );
+  }
+
+  getTaskListIds(): string[]{
+    return Array.from( gapi_data.keys() );
   }
 
   signIn() {

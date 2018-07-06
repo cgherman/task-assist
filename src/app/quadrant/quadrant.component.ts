@@ -28,10 +28,6 @@ export class QuadrantComponent implements OnInit {
 
     // Init drag-n-drop
     dragulaService.drop.subscribe(value => this.onDrop());
-    dragulaService.setOptions('taskBag', {
-      invalid: () => false,
-      revertOnSpill: true
-    })
   }
 
   ngOnInit() {
@@ -53,11 +49,14 @@ export class QuadrantComponent implements OnInit {
   }
 
   quadrantMatch(task: ITask, quadrant:string): boolean {
-    if (quadrant == null) {
-      return !task.notes.includes("[Quad:");
+    if (task == null || task.notes == null) {
+      return quadrant == null;
     } else {
-      return task.notes.includes("[Quad:" + quadrant + "]");
+      if (quadrant == null) {
+        return !task.notes.includes("[Quad:");
+      } else {
+        return task.notes.includes("[Quad:" + quadrant + "]");
+      }
     }
   }
-
 }
