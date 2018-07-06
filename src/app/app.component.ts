@@ -5,7 +5,7 @@ import { TaskList, RootTask } from './data-model';
 import { AuthService } from './auth.service';
 
 declare var gapi: any;
-var gapi_data: Map<string, TaskList>;
+let gapi_data = new Map<string, TaskList>(); 
 
 @Component({
   selector: 'app-root',
@@ -115,9 +115,6 @@ export class AppComponent {
     // This is a mess because the GAPI object doesn't play nice with services
     console.log("Building the model...");
 
-    let taskLists = new Map<string, TaskList>(); 
-    let tasks = new Map<string, RootTask>(); 
-
     // dig through task lists for data
     gapi.client.tasks.tasklists.list({
     }).then(function(response) {
@@ -128,11 +125,16 @@ export class AppComponent {
         console.log('Found ' + response.result.items.length + ' Task LISTS.');
         var index: number;
         for (index = 0; index < response.result.items.length; index++) {
-          taskLists[response.result.items[index].id] =
+          gapi_data[response.result.items[index].id] =
                     new TaskList(response.result.items[index].id,
                     response.result.items[index].title);
+          if (gapi_data[response.result.items[index].id].tasks == null){
+            let taskArray = [] as RootTask[];
+            gapi_data[response.result.items[index].id].tasks = taskArray;
+          }
           console.log('Building list: ' + response.result.items[index].title);
 
+          // move on from lists
           // parse tasks for data
           gapi.client.tasks.tasks.list( {tasklist: response.result.items[index].id }
           ).then(function(response) {
@@ -153,22 +155,26 @@ export class AppComponent {
                 listId = listId.substring(firstPos + 16, listId.length);
                 var secondPos = listId.indexOf("/tasks/");
                 listId = listId.substring(0, secondPos);
-                tasks[listId] = task;
-
-                // assemble data
-                taskLists.forEach(function (taskList: TaskList) {
-                  taskList.tasks = tasks[taskList.id];
-                });
-
-                // Done collecting data
-                gapi_data = taskLists;
+                gapi_data[listId].tasks.push(task);
               }
-            }
 
+/*               // ASSEMBLE DATA
+              var nextId;
+              for (index = 0; index < gapi_data.length; index++) {
+                let taskArray = [] as RootTask[];
+                nextId = gapi_data[index].id;
+                gapi_data[index].tasks.push 
+
+                gapi_data[index].tasks = tasks[gapi_data[index].id];
+              }
+ */              console.log(gapi_data);
+
+      
+            }
           }), function(rejectReason) {
             console.log('Error: ' + rejectReason.result.error.message);
           };
-        }
+        }        
       }
     }), function(rejectReason) {
       console.log('Error: ' + rejectReason.result.error.message);
