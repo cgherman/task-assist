@@ -27,7 +27,7 @@ export class FakeTaskService {
         "Fake Task 2", //title;
         "https://developers.google.com/apis-explorer/#s/tasks/v1/tasks.tasks.get?tasklist=X&task=Y", //selfLink;
         "needsAction", //status;
-        "[Quad:2]", //notes;
+        "[Quad:1]", //notes;
       ),
  
       new RootTask(
