@@ -9,19 +9,17 @@ import { AppComponent } from '../app.component';
   selector: 'app-quadrant',
   templateUrl: './quadrant.component.html',
   styleUrls: ['./quadrant.component.css'],
-  providers:  [[TaskService], [DragulaService]]
+  providers:  [[TaskService], [DragulaService], [AppComponent]]
 })
 
 export class QuadrantComponent implements OnInit {
-  
-  googleTaskService: AppComponent;
   tasks: ITask[];
   taskLists: ITaskList[];
   quadrantForm = new FormGroup ({
     taskList: new FormControl()
   });
 
-  constructor(private taskService: TaskService, private dragulaService: DragulaService ) {
+  constructor(private taskService: TaskService, private dragulaService: DragulaService, private appComponent: AppComponent ) {
 
     // Init drag-n-drop
     dragulaService.drop.subscribe(value => this.onDrop());
@@ -32,11 +30,6 @@ export class QuadrantComponent implements OnInit {
   }
 
   ngOnInit() {
-  }
-
-  populateModels(taskLists: ITaskList[]) {
-    var index: number;
-
   }
 
   onDrop() {

@@ -1,11 +1,13 @@
 import { Component, NgZone } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { TaskService } from './task.service';
-import { TaskList, RootTask } from './data-model';
+import { ITask, TaskList, RootTask } from './data-model';
 import { AuthService } from './auth.service';
 
 declare var gapi: any;
 let gapi_data = new Map<string, TaskList>(); 
+let gapi_listIds = [] as string[];
+
 
 @Component({
   selector: 'app-root',
@@ -29,6 +31,12 @@ export class AppComponent {
 
   ngAfterViewInit(): void {
       setTimeout(() => this.signIn(), 1000);
+  }
+
+  getTasks(): ITask[] {
+    if (gapi_listIds != null && gapi_listIds.length > 0) {
+      return gapi_data[gapi_listIds[0]];
+    }
   }
 
   signIn() {
@@ -115,6 +123,7 @@ export class AppComponent {
     // This is a mess because the GAPI object doesn't play nice with services
     console.log("Building the model...");
 
+
     // dig through task lists for data
     gapi.client.tasks.tasklists.list({
     }).then(function(response) {
@@ -125,6 +134,7 @@ export class AppComponent {
         console.log('Found ' + response.result.items.length + ' Task LISTS.');
         var index: number;
         for (index = 0; index < response.result.items.length; index++) {
+          gapi_listIds.push(response.result.items[index].id);
           gapi_data[response.result.items[index].id] =
                     new TaskList(response.result.items[index].id,
                     response.result.items[index].title);
@@ -158,18 +168,9 @@ export class AppComponent {
                 gapi_data[listId].tasks.push(task);
               }
 
-/*               // ASSEMBLE DATA
-              var nextId;
-              for (index = 0; index < gapi_data.length; index++) {
-                let taskArray = [] as RootTask[];
-                nextId = gapi_data[index].id;
-                gapi_data[index].tasks.push 
-
-                gapi_data[index].tasks = tasks[gapi_data[index].id];
-              }
- */              console.log(gapi_data);
-
-      
+              // Data aggregation is complete
+              console.log(gapi_data);
+              console.log(gapi_listIds);
             }
           }), function(rejectReason) {
             console.log('Error: ' + rejectReason.result.error.message);
