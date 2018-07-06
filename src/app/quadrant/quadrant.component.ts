@@ -31,7 +31,6 @@ export class QuadrantComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadData();
   }
 
   onDataLoad(): void {

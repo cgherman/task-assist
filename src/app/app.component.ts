@@ -32,7 +32,6 @@ export class AppComponent implements ITaskService {
   }
 
   ngAfterViewInit(): void {
-      setTimeout(() => this.signIn(), 1000);
   }
 
   dataWasLoaded(): void {
