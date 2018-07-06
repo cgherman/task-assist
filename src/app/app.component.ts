@@ -186,8 +186,7 @@ export class AppComponent implements ITaskService {
               }
 
               // Data aggregation is complete
-              console.log(gapi_data);
-              console.log(gapi_listIds);
+              window['signalDataWasLoaded'].click();
             }
           }), function(rejectReason) {
             console.log('Error: ' + rejectReason.result.error.message);
