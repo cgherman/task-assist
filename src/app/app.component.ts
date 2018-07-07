@@ -220,7 +220,8 @@ export class AppComponent implements ITaskService {
             console.log('Error: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
           };
         }
-        
+
+        // Load the data so it can be consumed
         this.onDataLoad();
       }
     }), function(errorHandler) {
