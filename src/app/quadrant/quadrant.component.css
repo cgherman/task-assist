@@ -4,3 +4,61 @@
 .null-as-blank:after {
     content: '\200b';
 }
+
+.quad-1 {
+    background-color: #e76;
+}
+
+.quad-2 {
+    background-color: #ed5;
+}
+
+.quad-3 {
+    background-color: #7c6;
+}
+
+.quad-4 {
+    background-color: #aaa;
+}
+
+.quad-0 {
+    background-color: #6af;
+}
+
+.quad-title {
+    font-variant: small-caps;
+}
+
+.right-separator {
+    margin-left: 8px;
+}
+
+.external-outline {
+    outline: 1px solid #ccc;
+    outline-offset: 1px;
+}
+
+.split-container {
+    display: table; /* Make the container element behave like a table */
+    width: 100%; /* Set full-width to expand the whole page */
+}
+
+.split-divider {
+    display: table-cell; /* Make elements inside the container behave like table cells */
+    width: 1.9999%;
+}
+
+.split-half {
+    display: table-cell; /* Make elements inside the container behave like table cells */
+    width: 48.9999%;
+}
+
+.split-third {
+    display: table-cell; /* Make elements inside the container behave like table cells */
+    width: 31.9999%;
+}
+
+.split-third {
+    display: table-cell; /* Make elements inside the container behave like table cells */
+    width: 65.9999%;
+}

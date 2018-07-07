@@ -4,40 +4,6 @@
 @import url('https://fonts.googleapis.com/css?family=Raleway');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
 
-.small-caps {
+.menu-title-font {
     font-variant: small-caps;
-}
-
-.right-separator {
-    margin-left: 8px;
-}
-
-.external-outline {
-    outline: 1px solid #ccc;
-    outline-offset: 1px;
-}
-
-.split-container {
-    display: table; /* Make the container element behave like a table */
-    width: 100%; /* Set full-width to expand the whole page */
-}
-
-.split-divider {
-    display: table-cell; /* Make elements inside the container behave like table cells */
-    width: 1.9999%;
-}
-
-.split-half {
-    display: table-cell; /* Make elements inside the container behave like table cells */
-    width: 48.9999%;
-}
-
-.split-third {
-    display: table-cell; /* Make elements inside the container behave like table cells */
-    width: 31.9999%;
-}
-
-.split-third {
-    display: table-cell; /* Make elements inside the container behave like table cells */
-    width: 65.9999%;
 }
