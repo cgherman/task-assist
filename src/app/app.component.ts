@@ -94,15 +94,10 @@ export class AppComponent implements ITaskService {
   updateSigninStatus(isSignedIn) {
     if (isSignedIn) {
       console.log("GoogleAuth: Status change, user IS signed in");
-      this.onGoogleAuthIsSignedIn();
+      window['onGoogleAuthIsSignedIn'].click();
     } else {
       console.log("GoogleAuth: Status change, NOT signed in.");
     }
-  }
-
-  onGoogleAuthIsSignedIn() {
-    // trigger googleAuthInitialized() with local scope
-    window['onGoogleAuthIsSignedIn'].click();
   }
 
   googleAuthIsSignedIn() {
@@ -173,7 +168,7 @@ export class AppComponent implements ITaskService {
     console.log("Building the model...");
 
     // dig through task lists for data
-    gapi.client.tasks.tasklists.list({
+    gapi.client.tasks.tasklists.list({ 
     }).then((response) => {
       var index: number;
       if (response.result == null || response.result.items == null || response.result.items.length == 0) {
@@ -194,7 +189,8 @@ export class AppComponent implements ITaskService {
 
           // move on from lists
           // parse tasks for data
-          gapi.client.tasks.tasks.list( {tasklist: response.result.items[index].id }
+          gapi.client.tasks.tasks.list( {tasklist: response.result.items[index].id,
+                                         showCompleted: "false" }
           ).then((response) => {
             if (response.result == null || response.result.items == null || response.result.items.length == 0) {
               console.log('Empty List.');
