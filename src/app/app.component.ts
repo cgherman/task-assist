@@ -221,7 +221,7 @@ export class AppComponent implements ITaskService {
           };
         }
 
-        // Load the data so it can be consumed
+        // Alert consumers that data has been updated
         this.onDataLoad();
       }
     }), function(errorHandler) {
