@@ -1,2 +1,6 @@
 @import url('node_modules/dragula/dist/dragula.css');
 @import url('node_modules/dragula/dist/dragula.min.css');
+
+.null-as-blank:after {
+    content: '\200b';
+}
