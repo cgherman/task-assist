@@ -18,9 +18,7 @@ You must have a Google Task List set up to use this app.  Tasks must be added vi
 
 ## Feature To-do List
 
-* Save quadrant edits to Google's Task repository
-* Support list selection for users with multiple lists
-* Turn off "demo mode"
+* Save quadrant edits to Google's Task repository (Turn off "demo mode")
 * Tool tips to preview task details (due date, notes, links, etc.)
 * Save resorts and edits to Google's Task repository
 * Enable auto-refresh when data is edited elsewhere
@@ -29,8 +27,6 @@ You must have a Google Task List set up to use this app.  Tasks must be added vi
 
 ## Technical To-do List
 
-* Clean up code and comments
-* Refactor.  This was a code jam that got stuck in some pretty deep holes.
-* Maybe switch away from Angular Google API calls and focus 100% on a Javascript pattern, as it's more "native" at the moment
+* Handle all error cases, tidy up, and add comments
 * Utilize [Karma](https://karma-runner.github.io) for unit testing
 * Utilize [Protractor](http://www.protractortest.org/) for  end-to-end testing

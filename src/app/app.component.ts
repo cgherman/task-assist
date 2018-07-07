@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 import { ITaskService } from './itask-service';
 
 declare var gapi: any;
-let gapi_data = new Map<string, TaskList>(); 
+let gapi_data: Map<string, TaskList>;
 let gapi_listIds = [] as string[];
 
 @Component({
@@ -19,8 +19,7 @@ export class AppComponent implements ITaskService {
   @Output() dataLoad: EventEmitter<any> = new EventEmitter();
 
   title = 'TaskAssist';
-  gapi_client:any;
-  auth2:any;
+  gapi_client: any;
 
   constructor(private zone: NgZone, private meta: Meta, private authService: AuthService, private taskService: TaskService) {
     this.meta.addTag({ name: 'google-signin-client_id', content: AuthService.client_id });
@@ -32,10 +31,10 @@ export class AppComponent implements ITaskService {
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.signIn(), 1000);
+    this.signIn();
   }
 
-  dataWasLoaded(): void {
+  onDataLoad(): void {
     this.dataLoad.emit(null);
   }
 
@@ -58,70 +57,93 @@ export class AppComponent implements ITaskService {
   }
 
   signIn() {
-    gapi.load('auth2',  () => {
-      this.auth2 = gapi.auth2.init({
+    gapi.load('client:auth2',  () => {
+      var googleAuth = gapi.auth2.init({
         client_id: AuthService.client_id,
         scope: AuthService.scope
+      }).then((response) => {
+        console.log('Success initializing gapi.auth2.');
+      }, function(errorHandler) {
+        console.log('Error: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
       });
-      this.attachSignin(document.getElementById('glogin'));
-    });
-  
-    gapi.load('client:auth2',  () => {
-      this.gapi_client = gapi.client.load('tasks', 'v1', () => {
-        gapi.auth.authorize({ client_id: AuthService.client_id, scope: AuthService.scope }, authResult => {
-          if (authResult && !authResult.error) {
 
-            // Listen for sign-in state changes.
-            gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
-
-            // Handle the initial sign-in state.
-            this.updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-            
-          } else {
-            console.log("Unable to connect: " + authResult.error);
-            /* TODO: handle authorization error */
-          }
-        });        
-      });
+      console.log("Wiring up auth events.");
+      googleAuth.then(this.onGoogleAuthInit, this.onGoogleAuthError);
     });
   }
 
-  attachSignin(element) {
-    this.auth2.attachClickHandler(element, {},
-      (loggedInUser) => {  
-        console.log( loggedInUser);
-      }, function (error) {
-        // alert(JSON.stringify(error, undefined, 2));
-      });
+  onGoogleAuthInit() {
+    // trigger googleAuthInitialized() with local scope
+    window['onGoogleAuthInitialized'].click();
+  }
+
+  onGoogleAuthError(error:any){
+    console.log("Error from GoogleAuth!");
+    // TODO: Handle this case
+    // https://developers.google.com/identity/sign-in/web/reference#gapiauth2clientconfig
+  }
+
+  googleAuthInitialized(){
+    // Wire up listener to watch for sign-in state change
+    gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
+    
+    // Handle the initial sign-in state.
+    this.updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
   }
 
   updateSigninStatus(isSignedIn) {
-    // When signin status changes, this function is called.
-    console.log('isSignedIn=' + isSignedIn);
-
-    // test some data
     if (isSignedIn) {
-      console.log('Successful sign-in.');
-
-      // Let's build the model while we have the chance
-      this.BuildModel();
-
+      console.log("GoogleAuth: Status change, user IS signed in");
+      this.onGoogleAuthIsSignedIn();
+    } else {
+      console.log("GoogleAuth: Status change, NOT signed in.");
     }
   }
 
-  onSignIn(googleUser) {
+  onGoogleAuthIsSignedIn() {
+    // trigger googleAuthInitialized() with local scope
+    window['onGoogleAuthIsSignedIn'].click();
+  }
+
+  googleAuthIsSignedIn() {
+      this.loadGapiClient();
+  }
+
+  loadGapiClient() {
+    console.log('Loading GAPI client.');    
+    console.log("apiKey:" + AuthService.api_key);
+    console.log("discoveryDocs:" + AuthService.discoveryDocs);
+    console.log("clientId:" + AuthService.client_id);
+    console.log("scope:" + AuthService.scope);
+    gapi.client.init({
+      apiKey: AuthService.api_key,
+      discoveryDocs: AuthService.discoveryDocs,
+      clientId: AuthService.client_id,
+      scope: AuthService.scope
+    }).then(function () {
+      window['onGoogleGapiClientInitialized'].click();
+    }, function(errorHandler) {
+      console.log('Error: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
+    });
+  }
+
+  googleGapiClientInitialized() {
+    this.BuildModel();
   }
 
   onSignOut() {
+    // clear data
+    gapi_data = null;
+    gapi_listIds = null;
+
+    // log out
+    gapi.auth2.getAuthInstance().disconnect();
     gapi.auth2.getAuthInstance().signOut(
-    ).then(function(response) {
+    ).then((response) => {
       console.log('Successful sign-out.');
-      gapi.auth2.getAuthInstance().disconnect();
-      gapi_data = null;
-      gapi_listIds = null;
       setTimeout(() => location.reload(), 1000);
-    }, function(rejectReason) {
-      console.log('Error: ' + rejectReason.result.error.message);
+    }, function(errorHandler) {
+      console.log('Error: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
     });
   }
 
@@ -139,13 +161,20 @@ export class AppComponent implements ITaskService {
   }
 
   BuildModel() {
+
+    // Initialize data package
+    if (gapi_data != null) {
+      return;
+    }
+    gapi_data = new Map<string, TaskList>(); 
+
     // Use the GAPI module to fetch data and build arrays
     // This is a mess because the GAPI object doesn't play nice with services
     console.log("Building the model...");
 
     // dig through task lists for data
     gapi.client.tasks.tasklists.list({
-    }).then(function(response) {
+    }).then((response) => {
       var index: number;
       if (response.result == null || response.result.items == null || response.result.items.length == 0) {
         console.log('No Task Lists found.');
@@ -166,7 +195,7 @@ export class AppComponent implements ITaskService {
           // move on from lists
           // parse tasks for data
           gapi.client.tasks.tasks.list( {tasklist: response.result.items[index].id }
-          ).then(function(response) {
+          ).then((response) => {
             if (response.result == null || response.result.items == null || response.result.items.length == 0) {
               console.log('Empty List.');
             } else {
@@ -186,17 +215,16 @@ export class AppComponent implements ITaskService {
                 listId = listId.substring(0, secondPos);
                 gapi_data[listId].tasks.push(task);
               }
-
-              // Data aggregation is complete
-              window['signalDataWasLoaded'].click();
-            }
-          }), function(rejectReason) {
-            console.log('Error: ' + rejectReason.result.error.message);
+            }   
+          }), function(errorHandler) {
+            console.log('Error: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
           };
-        }        
+        }
+        
+        this.onDataLoad();
       }
-    }), function(rejectReason) {
-      console.log('Error: ' + rejectReason.result.error.message);
+    }), function(errorHandler) {
+      console.log('Error: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
     };
   }
 
