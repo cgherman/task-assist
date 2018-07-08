@@ -1,3 +1,4 @@
+import { Output, EventEmitter } from '@angular/core';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -5,6 +6,9 @@ import { Injectable } from '@angular/core';
 })
 
 export class AuthService {
+  @Output() googleGapiClientInitialized: EventEmitter<any> = new EventEmitter();
+  @Output() googleGapiSignedIn: EventEmitter<any> = new EventEmitter();
+
   static client_id = "782561556087-8vrgbd6393gagmenk100qmv4lfbpulrg.apps.googleusercontent.com";
   static scope = "https://www.googleapis.com/auth/tasks";
   static discoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest"];
@@ -20,13 +24,13 @@ export class AuthService {
   constructor() {
   }
 
-  signIn(gapi: any) {
+  signIn(gapi: any, onGoogleAuthInit: Function, onGoogleAuthError: Function) {
     gapi.load('client:auth2', () => {
-      this.onGoogleLoad(gapi);
+      this.onGoogleLoad(gapi, onGoogleAuthInit, onGoogleAuthError);
     });
   }
 
-  onGoogleLoad(gapi: any) {
+  private onGoogleLoad(gapi: any, onGoogleAuthInit: Function, onGoogleAuthError: Function) {
     var googleAuth = gapi.auth2.init({
       client_id: AuthService.client_id,
       scope: AuthService.scope
@@ -37,18 +41,7 @@ export class AuthService {
     });
 
     console.log("Wiring up auth events.");
-    googleAuth.then(this.onGoogleAuthInit, this.onGoogleAuthError);
-  }
-
-  onGoogleAuthInit() {
-    // trigger method with local scope
-    window['triggerGoogleAuthInitialized'].click();
-  }
-
-  onGoogleAuthError(error:any){
-    console.log("Error from GoogleAuth!");
-    // TODO: Handle this case
-    // https://developers.google.com/identity/sign-in/web/reference#gapiauth2clientconfig
+    googleAuth.then(onGoogleAuthInit, onGoogleAuthError);
   }
 
   onGoogleAuthInitialized(gapi: any){
@@ -62,8 +55,7 @@ export class AuthService {
   updateSigninStatus(isSignedIn) {
     if (isSignedIn) {
       console.log("GoogleAuth: Status change, user IS signed in");
-      // trigger method with local scope
-      window['triggerGoogleAuthIsSignedIn'].click();
+      this.googleGapiSignedIn.emit();
     } else {
       console.log("GoogleAuth: Status change, NOT signed in.");
     }
@@ -82,8 +74,8 @@ export class AuthService {
       discoveryDocs: AuthService.discoveryDocs,
       clientId: AuthService.client_id,
       scope: AuthService.scope
-    }).then(function () {
-      // trigger method with local scope
+    }).then((response) => {
+      // TODO: current method forces refresh, but not ideal
       window['triggerGoogleGapiClientInitialized'].click();
     }).catch((errorHandler) => {
       console.log('Error in AppComponent.loadGapiClient: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
@@ -92,6 +84,7 @@ export class AuthService {
 
   // Triggered by GAPI client via form
   onGoogleGapiClientInitialized() {
+    this.googleGapiClientInitialized.emit();
   }
 
   onSignOut(gapi: any) {
