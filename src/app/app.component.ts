@@ -1,4 +1,5 @@
 import { Component, Output, EventEmitter, NgZone } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Meta } from '@angular/platform-browser';
 import { TaskService } from './task.service';
 import { AuthService } from './auth.service';
@@ -18,10 +19,12 @@ export class AppComponent {
   title = 'TaskAssist';
   gapi_client: any;
 
-  constructor(private zone: NgZone, private meta: Meta, private authService: AuthService, private taskService: TaskService) {
+  constructor(private fb: FormBuilder, private zone: NgZone, private meta: Meta, private authService: AuthService, private taskService: TaskService) {
+    // set up required meta tags for GAPI login
     this.meta.addTag({ name: 'google-signin-client_id', content: authService.client_id });
     this.meta.addTag({ name: 'google-signin-scope', content: authService.scope });
 
+    // track key auth event
     authService.googleGapiClientInitialized.subscribe(item => this.onGoogleGapiClientInitialized());
   }
 

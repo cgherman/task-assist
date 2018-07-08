@@ -1,27 +1,26 @@
+<!-- Form Elements -->
 <div class="">
   <form [formGroup]="quadrantForm">
     <div class="form-group">
       <div class="w3-row w3-section w3-row-padding">
-        <div class="w3-container w3-half">
+        <div class="w3-container">
           <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-book"></i></div>
-          <div class="w3-rest">
-            <select class="w3-select"  formControlName="taskList">
-              <option value="" disabled selected>Choose your option</option>
-              <option *ngFor="let taskList of taskLists"
-                      value={{taskList.taskListId}}>
+          <div class="w3-rest" >
+            <select class="w3-select" formControlName="taskList" id="taskListDropDown">
+              <option *ngFor="let taskList of taskLists; let i = index"
+                      [value]="taskList.id"
+                      [attr.selected]="i == 0 ? 'true' : null">
                       {{taskList.title}}
               </option>
             </select>
           </div>
-        </div>
-        <div class="w3-container w3-half">
-          Form value: {{ quadrantForm.value | json }}
         </div>
       </div>
     </div>
   </form>
 </div>
 
+<!-- Quadrants -->
 <div class="">
   <div class="w3-twothird">
     <div class="split-container">
