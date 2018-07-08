@@ -49,16 +49,15 @@ export class TaskService {
     return promise;
   }
 
-  getTasks(taskList: any): Promise<RootTask[]> {
+  getTasks(request: any): Promise<RootTask[]> {
     var promise: Promise<RootTask[]>;
-
     promise = new Promise((resolve, reject) => {
       if (gapi_tasks == null) {
         reject("GAPI client object is not fully initialized.");
       }
-
+      
       // Use Google API to get tasks
-      gapi_tasks( {tasklist: taskList.taskList.id,
+      gapi_tasks( {tasklist: request.taskListId,
                    showCompleted: "false" 
       }).then((response) => {
         if (response.result == null || response.result.items == null || response.result.items.length == 0) {

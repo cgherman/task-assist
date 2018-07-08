@@ -6,7 +6,7 @@
         <div class="w3-container">
           <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-book"></i></div>
           <div class="w3-rest" >
-            <select class="w3-select" formControlName="taskList" id="taskListDropDown">
+            <select class="w3-select" (ngModelChange)="onChangeTaskList($event)" formControlName="taskList" id="taskListDropDown">
               <option *ngFor="let taskList of taskLists; let i = index"
                       [value]="taskList.id"
                       [attr.selected]="i == 0 ? 'true' : null">
