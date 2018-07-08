@@ -13,6 +13,7 @@ export class CanActivateViaAuthGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+      
       //TODO: move auth code into auth service
       ////return this.authService.isLoggedIn();
 

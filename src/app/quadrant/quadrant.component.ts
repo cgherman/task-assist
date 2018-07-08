@@ -53,7 +53,7 @@ export class QuadrantComponent implements OnInit {
       });  
     }).catch((errorHandler) => {
       console.log('Error in QuadrantComponent.loadData: getTaskLists: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
-    });    
+    });  
   }
 
   onDrop() {
