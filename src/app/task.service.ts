@@ -1,5 +1,6 @@
 import { Injectable, Output, EventEmitter} from '@angular/core';
 import { ITaskList, TaskList, ITask, RootTask, SubTask } from './data-model';
+import { Observable, of, from } from 'rxjs';
 
 let gapi_tasks: Function;
 let gapi_tasklists: Function;
@@ -24,8 +25,10 @@ export class TaskService {
     this.onProvidersSet();
   }
 
-  getTaskLists(): Promise<TaskList[]>{
+  getTaskLists(): Observable<TaskList[]>{
+    var observable: Observable<TaskList[]>
     var promise: Promise<TaskList[]>;
+
     promise = new Promise((resolve, reject) => {
       if (gapi_tasklists == null) {
         reject("GAPI client object is not fully initialized.");
@@ -44,20 +47,24 @@ export class TaskService {
       }).catch((errorHandler) => {
         reject(errorHandler);
       });
+
     });
 
-    return promise;
+    observable = from(promise);
+    return observable
   }
 
-  getTasks(request: any): Promise<RootTask[]> {
+  getTasks(taskList: any): Observable<RootTask[]> {
+    var observable: Observable<RootTask[]>
     var promise: Promise<RootTask[]>;
+
     promise = new Promise((resolve, reject) => {
       if (gapi_tasks == null) {
         reject("GAPI client object is not fully initialized.");
       }
-      
+
       // Use Google API to get tasks
-      gapi_tasks( {tasklist: request.taskListId,
+      gapi_tasks( {tasklist: taskList,
                    showCompleted: "false" 
       }).then((response) => {
         if (response.result == null || response.result.items == null || response.result.items.length == 0) {
@@ -70,9 +77,11 @@ export class TaskService {
       }).catch((errorHandler) => {
         reject(errorHandler);
       });
+
     });
 
-    return promise;
+    observable = from(promise);
+    return from(observable);
   }
 
   private parseTaskLists(response: any): TaskList[] {

@@ -7,7 +7,7 @@
           <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-book"></i></div>
           <div class="w3-rest" >
             <select class="w3-select" (ngModelChange)="onChangeTaskList($event)" formControlName="taskList" id="taskListDropDown">
-              <option *ngFor="let taskList of taskLists; let i = index"
+              <option *ngFor="let taskList of taskLists | async; let i = index "
                       [value]="taskList.id"
                       [attr.selected]="i == 0 ? 'true' : null">
                       {{taskList.title}}
@@ -38,7 +38,7 @@
     </div>
     <div class="split-container w3-margin-bottom" style="min-height: 30px;">
       <div class="split-half quad-1 external-outline" [dragula]='"taskBag"' [dragulaModel]='tasks'>
-        <ng-container *ngFor="let task of tasks">
+        <ng-container *ngFor="let task of tasks | async">
           <ng-container *ngIf="quadrantMatch(task, 1)">
               <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border">
                   {{task.title}}
@@ -49,7 +49,7 @@
       <div class="split-divider">
       </div>
       <div class="split-half quad-2 external-outline" [dragula]='"taskBag"' [dragulaModel]='tasks'>
-        <ng-container *ngFor="let task of tasks">
+        <ng-container *ngFor="let task of tasks | async">
           <ng-container *ngIf="quadrantMatch(task, 2)">
               <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border">
                   {{task.title}}
@@ -76,7 +76,7 @@
       </div>
       <div class="split-container w3-margin-bottom" style="min-height: 30px;">
       <div class="split-half quad-3 external-outline" [dragula]='"taskBag"' [dragulaModel]='tasks'>
-        <ng-container *ngFor="let task of tasks">
+        <ng-container *ngFor="let task of tasks | async">
           <ng-container *ngIf="quadrantMatch(task, 3)">
               <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border">
                   {{task.title}}
@@ -87,7 +87,7 @@
       <div class="split-divider">
       </div>
       <div class="split-half quad-4 external-outline" [dragula]='"taskBag"' [dragulaModel]='tasks'>
-        <ng-container *ngFor="let task of tasks">
+        <ng-container *ngFor="let task of tasks | async">
           <ng-container *ngIf="quadrantMatch(task, 4)">
               <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border">
                   {{task.title}}
@@ -109,7 +109,7 @@
       </div>
       <div class="">
         <div class="quad-0 external-outline" style="min-height: 30px;" [dragula]='"taskBag"' [dragulaModel]='tasks'>
-          <ng-container *ngFor="let task of tasks">
+          <ng-container *ngFor="let task of tasks | async">
             <ng-container *ngIf="quadrantMatch(task, null)">
                 <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border null-as-blank">
                     {{task.title}}

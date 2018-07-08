@@ -1,9 +1,14 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { FormBuilder,FormControl, FormGroup } from '@angular/forms';
+import { AppComponent } from '../app.component';
+
 import { TaskService } from '../task.service';
 import { ITask, ITaskList, TaskList }       from '../data-model';
+
 import { DragulaService } from 'ng2-dragula';
-import { AppComponent } from '../app.component';
+
 
 @Component({
   selector: 'app-quadrant',
@@ -13,13 +18,15 @@ import { AppComponent } from '../app.component';
 })
 
 export class QuadrantComponent implements OnInit {
-  tasks: ITask[];
-  taskLists: ITaskList[];
+  tasks: Observable<ITask[]>;
+  taskLists: Observable<ITaskList[]>;
+  selectedTaskList: TaskList;
+
   quadrantForm = new FormGroup ({
     taskList: new FormControl()
   });
 
-  constructor(private fb: FormBuilder, private zone: NgZone, private taskService: TaskService, private dragulaService: DragulaService, private appComponent: AppComponent) {
+  constructor(private fb: FormBuilder, private taskService: TaskService, private dragulaService: DragulaService, private appComponent: AppComponent) {
  
     this.createForm();
 
@@ -28,6 +35,9 @@ export class QuadrantComponent implements OnInit {
     
     // Init drag-n-drop
     dragulaService.drop.subscribe(value => this.onDrop());
+  }
+
+  ngOnInit() {
   }
 
   createForm() {
@@ -39,16 +49,14 @@ export class QuadrantComponent implements OnInit {
   // upon task list selection
   onChangeTaskList($event) {
     var formValues = this.quadrantForm.get('taskList').value;
+    console.log("Changing to a different list: " + formValues);
     //.set('some value');
-    this.loadTasks(formValues);
+    this.getTasks(formValues);
   }
 
-  ngOnInit() {
-  }
-
-  private onDataReadyToLoad(): void {
+  p/* rivate onDataReadyToLoad(): void {
     // We're now authorized, let's load up the data
-    this.loadData().then((response) => {
+    this.getTaskLists().then((response) => {
     }).then((response) => {
       // Select first task list
       var taskList = this.taskLists[0];
@@ -60,10 +68,26 @@ export class QuadrantComponent implements OnInit {
     }).catch((errorHandler) => {
       console.log('Error in QuadrantComponent.onDataReadyToLoad: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
     });  
+  } */
+
+  private onDataReadyToLoad(): void {
+    this.getTaskLists();
   }
 
-  private loadData(): Promise<any> {
-    console.log("!!!!!!!!!! 2");
+  getTaskLists() {
+    // TODO: error handling
+    this.taskLists = this.taskService.getTaskLists()
+      .pipe(finalize((() => { this.onTaskListsLoaded(); })));
+  }
+
+  onTaskListsLoaded() {
+    //getTasks();
+
+    //this.isLoading = false
+  }
+
+
+ /*  private loadData(): Promise<any> {
     return this.taskService.getTaskLists(
     ).then((response) => {
       // Load task lists
@@ -71,9 +95,19 @@ export class QuadrantComponent implements OnInit {
     }).catch((errorHandler) => {
       console.log('Error in QuadrantComponent.loadData: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
     });  
+  } */
+
+  getTasks(taskListId: string) {
+    // TODO: error handling
+    this.tasks = this.taskService.getTasks(taskListId)
+      .pipe(finalize((() => { this.onTasksLoaded(); })));
   }
 
-  private loadTasks(taskListId: string) {
+  onTasksLoaded() {
+
+  }
+
+/*   private loadTasks(taskListId: string) {
     console.log("Loading task list into UI: " + taskListId);
     this.taskService.getTasks({ taskListId: taskListId
     }).then((response) => {
@@ -86,7 +120,7 @@ export class QuadrantComponent implements OnInit {
     }).catch((errorHandler) => {
       console.log('Error in QuadrantComponent.loadTasks: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
     });
-  }
+  } */
 
   onDrop() {
     // TODO: Commit to Google API
