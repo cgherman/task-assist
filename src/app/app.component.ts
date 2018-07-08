@@ -19,8 +19,8 @@ export class AppComponent {
   gapi_client: any;
 
   constructor(private zone: NgZone, private meta: Meta, private authService: AuthService, private taskService: TaskService) {
-    this.meta.addTag({ name: 'google-signin-client_id', content: AuthService.client_id });
-    this.meta.addTag({ name: 'google-signin-scope', content: AuthService.scope });
+    this.meta.addTag({ name: 'google-signin-client_id', content: authService.client_id });
+    this.meta.addTag({ name: 'google-signin-scope', content: authService.scope });
 
     authService.googleGapiClientInitialized.subscribe(item => this.onGoogleGapiClientInitialized());
   }

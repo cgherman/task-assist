@@ -1,5 +1,8 @@
 import { Output, EventEmitter } from '@angular/core';
 import { Injectable } from '@angular/core';
+import { Observable, empty } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { map, delay, catchError, first } from 'rxjs/operators'; 
 
 @Injectable({
   providedIn: 'root'
@@ -10,22 +13,59 @@ export class AuthService {
   @Output() googleAuthInit: EventEmitter<any> = new EventEmitter();
   @Output() googleAuthError: EventEmitter<any> = new EventEmitter();
 
-  static client_id = "782561556087-8vrgbd6393gagmenk100qmv4lfbpulrg.apps.googleusercontent.com";
-  static scope = "https://www.googleapis.com/auth/tasks";
-  static discoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest"];
-  static api_key = "AIzaSyBke1n7BqFee0XcM7_WbIg337YsPrROgh0";
+  private _client_id: string = null;
+  private _scope: string = null;
+  private _api_key: string = null;
+  private _discoveryDocs: string[] = null;
 
-  //TODO: Put config files in private JSON object to avoid checking in to Git
-  //// Get API key and OAuth client ID from app-specific JSON file
-  //// Create a new project & corresponding credentials here: https://console.developers.google.com/apis/credentials
-  //$.getJSON('/assets/api_key.json', function(data) {
-  //  initClient(data.api_key, data.client_id);
-  //});
+  constructor(private http: HttpClient) {
+  }
 
-  constructor() {
+  get api_key(): string {
+    if (this._api_key == null) {
+      this._api_key = "AIzaSyBke1n7BqFee0XcM7_WbIg337YsPrROgh0";
+      }
+    return this._api_key;
+  }
+
+  get client_id(): string {
+    if (this._client_id == null) {
+      this._client_id =  "782561556087-8vrgbd6393gagmenk100qmv4lfbpulrg.apps.googleusercontent.com";
+    }
+    return this._client_id;
+  }
+
+  get discoveryDocs(): string[]{
+    if (this._discoveryDocs == null) {
+      this._discoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest"];
+    }
+    return this._discoveryDocs;
+  }
+
+  get scope(): string{
+    if (this._scope == null) {
+      this._scope = "https://www.googleapis.com/auth/tasks";
+    }
+    return this._scope;
+  }
+
+  // TODO: Fetch values and put into meta tags for Google Auth in AppComponent
+  // Method to fetch app-specific JSON file for GAPI config
+  // Create a new project & corresponding credentials here: https://console.developers.google.com/apis/credentials
+  public getJSON(filename: string): Observable<any> {
+    return this.http.get(filename)
+      .pipe(
+        map((response: Response) => {
+          return response;
+        })
+      );
   }
 
   signIn(gapi: any) {
+    this.loadGoogleClients(gapi);
+  }
+
+  private loadGoogleClients(gapi: any) {
     gapi.load('client:auth2', () => {
       this.onGoogleLoad(gapi);
     });
@@ -33,12 +73,12 @@ export class AuthService {
 
   private onGoogleLoad(gapi: any) {
     var googleAuth = gapi.auth2.init({
-      client_id: AuthService.client_id,
-      scope: AuthService.scope
+      client_id: this.client_id,
+      scope: this.scope
     }).then((response) => {
       console.log('Success initializing gapi.auth2.');
     }).catch((errorHandler) => {
-      console.log('Error in AppComponent.signIn: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
+      console.log('Error in AuthService.onGoogleLoad: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
     });
 
     console.log("Wiring up auth events.");
@@ -51,10 +91,10 @@ export class AuthService {
     googleAuth = gapi.auth2.getAuthInstance();
 
     // Wire up listener to watch for sign-in state change
-    googleAuth.isSignedIn.listen((() => { this.updateSigninStatus3(gapi); }));
+    googleAuth.isSignedIn.listen((() => { this.updateSigninStatus(gapi); }));
     
     // Handle the initial sign-in state.
-    this.updateSigninStatus3(gapi);
+    this.updateSigninStatus(gapi);
   }
 
   onGoogleAuthError(error:any){
@@ -63,7 +103,7 @@ export class AuthService {
     // https://developers.google.com/identity/sign-in/web/reference#gapiauth2clientconfig
   }
 
-  updateSigninStatus3(gapi: any) {
+  updateSigninStatus(gapi: any) {
     var googleAuth: any; 
     googleAuth = gapi.auth2.getAuthInstance();
 
@@ -77,13 +117,13 @@ export class AuthService {
 
   private loadGapiClient(gapi: any) {
     console.log('Loading GAPI client.');    
-    console.log("discoveryDocs:" + AuthService.discoveryDocs);
-    console.log("scope:" + AuthService.scope);
+    console.log("discoveryDocs:" + this.discoveryDocs);
+    console.log("scope:" + this.scope);
     gapi.client.init({
-      apiKey: AuthService.api_key,
-      discoveryDocs: AuthService.discoveryDocs,
-      clientId: AuthService.client_id,
-      scope: AuthService.scope
+      apiKey: this.api_key,
+      discoveryDocs: this.discoveryDocs,
+      clientId: this.client_id,
+      scope: this.scope
     }).then((response) => {
       // TODO: current method uses window handle to force UI load
       window['triggerGoogleGapiClientInitialized'].click();
@@ -106,27 +146,8 @@ export class AuthService {
       console.log('Successful sign-out.');
       setTimeout(() => location.reload(), 1000);
     }).catch((errorHandler) => {
-      console.log('Error in AppComponent.onSignOut: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
+      console.log('Error in AuthService.onSignOut: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
     });  
   }
 
-  /* isSignedIn(gapi: any): boolean {
-    if (gapi == null) {
-      console.log("GAPI object cannot be verified during sign-in.");
-      return false;
-    }
-    if (gapi.auth2 == null) {
-      console.log("GAPI Auth2 object cannot be verified during sign-in.");
-      return false;
-    }
-
-    var authInstance = gapi.auth2.getAuthInstance();
-    if (authInstance == null) {
-      console.log("GAPI auth instance cannot be verified.");
-      return false;
-    }
-
-    return authInstance.isSignedIn.get();
-  } */
-  
 }
