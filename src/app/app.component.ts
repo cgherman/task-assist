@@ -45,11 +45,6 @@ export class AppComponent {
 
   onGoogleAuthInit() {
     // trigger method via JS to get back to local scope & get GAPI handle
-    window['triggerGoogleAuthInitialized'].click();
-  }
-
-  // Triggered by GAPI client via form
-  onGoogleAuthInitialized(){
     this.authService.onGoogleAuthInitialized(gapi);
   }
 
