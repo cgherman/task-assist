@@ -23,7 +23,6 @@ export class AppComponent {
     this.meta.addTag({ name: 'google-signin-scope', content: AuthService.scope });
 
     authService.googleGapiClientInitialized.subscribe(item => this.onGoogleGapiClientInitialized());
-    authService.googleGapiSignedIn.subscribe(item => this.onGoogleGapiSignedIn());
   }
 
   ngOnInit() {
@@ -35,10 +34,6 @@ export class AppComponent {
 
   signIn() {
     this.authService.signIn(gapi);
-  }
-
-  onGoogleGapiSignedIn() {
-    this.authService.onGoogleAuthIsSignedIn(gapi);
   }
 
   // Triggered by GAPI client via form

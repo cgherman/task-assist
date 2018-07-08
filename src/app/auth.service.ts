@@ -7,7 +7,6 @@ import { Injectable } from '@angular/core';
 
 export class AuthService {
   @Output() googleGapiClientInitialized: EventEmitter<any> = new EventEmitter();
-  @Output() googleGapiSignedIn: EventEmitter<any> = new EventEmitter();
   @Output() googleAuthInit: EventEmitter<any> = new EventEmitter();
   @Output() googleAuthError: EventEmitter<any> = new EventEmitter();
 
@@ -70,14 +69,10 @@ export class AuthService {
 
     if (googleAuth.isSignedIn.get()) {
       console.log("GoogleAuth: Status check: user IS signed in");
-      this.googleGapiSignedIn.emit();
+      this.loadGapiClient(gapi);
     } else {
       console.log("GoogleAuth: Status check: NOT signed in yet.");
     }
-  }
-
-  onGoogleAuthIsSignedIn(gapi: any) {
-    this.loadGapiClient(gapi);
   }
 
   private loadGapiClient(gapi: any) {
@@ -90,8 +85,9 @@ export class AuthService {
       clientId: AuthService.client_id,
       scope: AuthService.scope
     }).then((response) => {
-      // TODO: current method forces refresh, but not ideal
+      // TODO: current method uses window handle to force UI load
       window['triggerGoogleGapiClientInitialized'].click();
+      //this.onGoogleGapiClientInitialized();
     }).catch((errorHandler) => {
       console.log('Error in AppComponent.loadGapiClient: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
     });
