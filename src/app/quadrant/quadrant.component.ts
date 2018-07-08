@@ -4,7 +4,6 @@ import { TaskService } from '../task.service';
 import { ITask, ITaskList }       from '../data-model';
 import { DragulaService } from 'ng2-dragula';
 import { AppComponent } from '../app.component';
-import { ITaskService } from '../itask-service';
 
 @Component({
   selector: 'app-quadrant',
@@ -14,18 +13,16 @@ import { ITaskService } from '../itask-service';
 })
 
 export class QuadrantComponent implements OnInit {
-  taskService: ITaskService;
   tasks: ITask[];
   taskLists: ITaskList[];
   quadrantForm = new FormGroup ({
     taskList: new FormControl()
   });
 
-  constructor(taskService: TaskService, private dragulaService: DragulaService, private appComponent: AppComponent) {
+  constructor(private taskService: TaskService, private dragulaService: DragulaService, private appComponent: AppComponent) {
     // init task service
-    this.taskService = appComponent;
-    appComponent.dataLoad.subscribe(item => this.onDataLoad());
-
+    appComponent.dataReadyToLoad.subscribe(item => this.onDataReadyToLoad());
+    
     // Init drag-n-drop
     dragulaService.drop.subscribe(value => this.onDrop());
   }
@@ -33,14 +30,30 @@ export class QuadrantComponent implements OnInit {
   ngOnInit() {
   }
 
-  onDataLoad(): void {
+  private onDataReadyToLoad(): void {
     this.loadData();
   }
 
   private loadData(): void {
-    // Get user's task lists
-    this.taskLists = this.taskService.getTaskLists();
-    this.tasks = this.taskService.getTasks();    
+    this.taskService.getTaskLists(
+    ).then((response) => {
+      
+      // Load task lists
+      this.taskLists = response;
+
+      // TODO: Load selected task list
+      // Load first task list
+      var taskList = this.taskLists[0];
+      this.taskService.getTasks({ taskList: taskList
+      }).then((response) => {
+        // Capture tasks
+        this.tasks = response;
+      }).catch((errorHandler) => {
+        console.log('Error in QuadrantComponent.loadData: getTasks: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
+      });  
+    }).catch((errorHandler) => {
+      console.log('Error in QuadrantComponent.loadData: getTaskLists: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
+    });    
   }
 
   onDrop() {
