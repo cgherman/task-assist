@@ -34,18 +34,7 @@ export class AppComponent {
   }
 
   signIn() {
-    this.authService.signIn(gapi, this.onGoogleAuthInit, this.onGoogleAuthError);
-  }
-
-  onGoogleAuthError(error:any){
-    console.log("Error from GoogleAuth!");
-    // TODO: Handle this case
-    // https://developers.google.com/identity/sign-in/web/reference#gapiauth2clientconfig
-  }
-
-  onGoogleAuthInit() {
-    // trigger method via JS to get back to local scope & get GAPI handle
-    this.authService.onGoogleAuthInitialized(gapi);
+    this.authService.signIn(gapi);
   }
 
   onGoogleGapiSignedIn() {
@@ -67,9 +56,4 @@ export class AppComponent {
   onSignOut() {
     this.authService.onSignOut(gapi);
   }
-
-  isSignedIn(): boolean {
-    return this.authService.isSignedIn(gapi);
-  }
-
 }

@@ -8,6 +8,8 @@ import { Injectable } from '@angular/core';
 export class AuthService {
   @Output() googleGapiClientInitialized: EventEmitter<any> = new EventEmitter();
   @Output() googleGapiSignedIn: EventEmitter<any> = new EventEmitter();
+  @Output() googleAuthInit: EventEmitter<any> = new EventEmitter();
+  @Output() googleAuthError: EventEmitter<any> = new EventEmitter();
 
   static client_id = "782561556087-8vrgbd6393gagmenk100qmv4lfbpulrg.apps.googleusercontent.com";
   static scope = "https://www.googleapis.com/auth/tasks";
@@ -24,13 +26,13 @@ export class AuthService {
   constructor() {
   }
 
-  signIn(gapi: any, onGoogleAuthInit: Function, onGoogleAuthError: Function) {
+  signIn(gapi: any) {
     gapi.load('client:auth2', () => {
-      this.onGoogleLoad(gapi, onGoogleAuthInit, onGoogleAuthError);
+      this.onGoogleLoad(gapi);
     });
   }
 
-  private onGoogleLoad(gapi: any, onGoogleAuthInit: Function, onGoogleAuthError: Function) {
+  private onGoogleLoad(gapi: any) {
     var googleAuth = gapi.auth2.init({
       client_id: AuthService.client_id,
       scope: AuthService.scope
@@ -41,23 +43,36 @@ export class AuthService {
     });
 
     console.log("Wiring up auth events.");
-    googleAuth.then(onGoogleAuthInit, onGoogleAuthError);
+    googleAuth.then(() => this.onGoogleAuthInitialized(gapi), () => this.onGoogleAuthError);
   }
 
   onGoogleAuthInitialized(gapi: any){
     // Wire up listener to watch for sign-in state change
-    gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
+    var googleAuth: any; 
+    googleAuth = gapi.auth2.getAuthInstance();
+
+    // Wire up listener to watch for sign-in state change
+    googleAuth.isSignedIn.listen((() => { this.updateSigninStatus3(gapi); }));
     
     // Handle the initial sign-in state.
-    this.updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+    this.updateSigninStatus3(gapi);
   }
 
-  updateSigninStatus(isSignedIn) {
-    if (isSignedIn) {
-      console.log("GoogleAuth: Status change, user IS signed in");
+  onGoogleAuthError(error:any){
+    console.log("Error from GoogleAuth!");
+    // TODO: Handle this case
+    // https://developers.google.com/identity/sign-in/web/reference#gapiauth2clientconfig
+  }
+
+  updateSigninStatus3(gapi: any) {
+    var googleAuth: any; 
+    googleAuth = gapi.auth2.getAuthInstance();
+
+    if (googleAuth.isSignedIn.get()) {
+      console.log("GoogleAuth: Status check: user IS signed in");
       this.googleGapiSignedIn.emit();
     } else {
-      console.log("GoogleAuth: Status change, NOT signed in.");
+      console.log("GoogleAuth: Status check: NOT signed in yet.");
     }
   }
 
@@ -99,17 +114,23 @@ export class AuthService {
     });  
   }
 
-  isSignedIn(gapi: any): boolean {
-    if (gapi == null || gapi.auth2 == null) {
+  /* isSignedIn(gapi: any): boolean {
+    if (gapi == null) {
+      console.log("GAPI object cannot be verified during sign-in.");
+      return false;
+    }
+    if (gapi.auth2 == null) {
+      console.log("GAPI Auth2 object cannot be verified during sign-in.");
       return false;
     }
 
-    var auth2 = gapi.auth2.getAuthInstance();
-    if (auth2 == null) {
+    var authInstance = gapi.auth2.getAuthInstance();
+    if (authInstance == null) {
+      console.log("GAPI auth instance cannot be verified.");
       return false;
     }
 
-    return auth2.isSignedIn.get();
-  }
+    return authInstance.isSignedIn.get();
+  } */
   
 }
