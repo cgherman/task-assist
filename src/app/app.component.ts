@@ -50,7 +50,6 @@ export class AppComponent {
   private onDataReadyToLoad() {
     console.log("GAPI client initialized.  Ready for data load.");
     this.dataReadyToLoad.emit(null);
-    window['triggerRefresh'].click();
   }
 
   onSignOut() {
