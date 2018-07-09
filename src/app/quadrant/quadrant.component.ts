@@ -20,7 +20,7 @@ import { DragulaService } from 'ng2-dragula';
 export class QuadrantComponent implements OnInit {
   tasks: Observable<ITask[]>;
   taskLists: Observable<ITaskList[]>;
-  selectedTaskList: TaskList;
+  selectedTaskList: string;
 
   quadrantForm = new FormGroup ({
     taskList: new FormControl()
@@ -42,60 +42,43 @@ export class QuadrantComponent implements OnInit {
 
   createForm() {
     this.quadrantForm = this.fb.group({
-      taskList: null
+      taskList: this.selectedTaskList
     });
   }
 
-  // upon task list selection
+  // fired upon task list selection
   onChangeTaskList($event) {
-    var formValues = this.quadrantForm.get('taskList').value;
-    console.log("Changing to a different list: " + formValues);
-    //.set('some value');
-    this.getTasks(formValues);
+    var taskListId: string = this.quadrantForm.get('taskList').value;
+    console.log("Changing to a different list: " + taskListId);
+    this.selectedTaskList = taskListId;
+    this.getTasks(taskListId);
   }
 
-  p/* rivate onDataReadyToLoad(): void {
-    // We're now authorized, let's load up the data
-    this.getTaskLists().then((response) => {
-    }).then((response) => {
-      // Select first task list
-      var taskList = this.taskLists[0];
-      console.log(this.quadrantForm.get('taskList'));
-
-      // TODO: This hould ultimately not be necessary if change event is working
-      // Force load first task list
-      this.loadTasks(taskList.id);
-    }).catch((errorHandler) => {
-      console.log('Error in QuadrantComponent.onDataReadyToLoad: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
-    });  
-  } */
-
   private onDataReadyToLoad(): void {
+    // We're now authorized, let's load up the data
     this.getTaskLists();
+
+    // TODO: current method uses window handle to force UI load
+    window['triggerRefresh'].click();
   }
 
   getTaskLists() {
     // TODO: error handling
     this.taskLists = this.taskService.getTaskLists()
       .pipe(finalize((() => { this.onTaskListsLoaded(); })));
+    
+    // TODO: execution order not guaranteed, above call may finish early
+    this.taskLists.subscribe(value => this.onTaskListInitialSelection(value));
   }
 
   onTaskListsLoaded() {
-    //getTasks();
-
-    //this.isLoading = false
+    // select first list by default
   }
 
-
- /*  private loadData(): Promise<any> {
-    return this.taskService.getTaskLists(
-    ).then((response) => {
-      // Load task lists
-      this.taskLists = response;
-    }).catch((errorHandler) => {
-      console.log('Error in QuadrantComponent.loadData: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
-    });  
-  } */
+  onTaskListInitialSelection(value: ITaskList[]){
+    // select first list
+    this.quadrantForm.get('taskList').setValue(value[0].id);
+  }
 
   getTasks(taskListId: string) {
     // TODO: error handling
@@ -104,26 +87,10 @@ export class QuadrantComponent implements OnInit {
   }
 
   onTasksLoaded() {
-
   }
 
-/*   private loadTasks(taskListId: string) {
-    console.log("Loading task list into UI: " + taskListId);
-    this.taskService.getTasks({ taskListId: taskListId
-    }).then((response) => {
-      // Capture tasks
-      this.tasks = response;
-
-      // TODO: Implement this correctly using proper binding
-      // Touch the dropdown control to force UI update
-      window['taskListDropDown'].innerHTML=window['taskListDropDown'].innerHTML;
-    }).catch((errorHandler) => {
-      console.log('Error in QuadrantComponent.loadTasks: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
-    });
-  } */
-
   onDrop() {
-    // TODO: Commit to Google API
+    // TODO: Commit quadrant change to Google API
   }
 
   quadrantMatch(task: ITask, quadrant:string): boolean {

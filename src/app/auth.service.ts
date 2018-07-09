@@ -125,9 +125,7 @@ export class AuthService {
       clientId: this.client_id,
       scope: this.scope
     }).then((response) => {
-      // TODO: current method uses window handle to force UI load
-      window['triggerGoogleGapiClientInitialized'].click();
-      //this.onGoogleGapiClientInitialized();
+      this.onGoogleGapiClientInitialized();
     }).catch((errorHandler) => {
       console.log('Error in AppComponent.loadGapiClient: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
     });
