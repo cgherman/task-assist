@@ -24,6 +24,12 @@ export class AppComponent {
     this.meta.addTag({ name: 'google-signin-client_id', content: authService.client_id });
     this.meta.addTag({ name: 'google-signin-scope', content: authService.scope });
 
+    // Wire up GAPI Auth
+    const _self = this;
+    window['onSignIn'] = function (googleUser) {
+      _self.onSignIn(googleUser);
+    };
+
     // track key auth event
     authService.googleGapiClientInitialized.subscribe(item => this.onGoogleGapiClientInitialized());
   }
@@ -32,6 +38,9 @@ export class AppComponent {
   }
 
   ngAfterViewInit(): void {
+  }
+
+  onSignIn(googleUser) {
     this.signIn();
   }
 

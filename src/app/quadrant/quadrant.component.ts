@@ -80,6 +80,7 @@ export class QuadrantComponent implements OnInit {
     }
 
     // Current method uses div element to force UI load.
+    // TODO: Look into $scope.$digest so angular is aware of model changes from 3rd party
     this.triggerRefresh.nativeElement.click();
   }
 
