@@ -25,7 +25,7 @@ export class TaskService {
     this.onProvidersSet();
   }
 
-  getTaskLists(): Observable<TaskList[]>{
+  getTaskLists(subscriber?): Observable<TaskList[]>{
     var observable: Observable<TaskList[]>
     var promise: Promise<TaskList[]>;
 
@@ -51,6 +51,10 @@ export class TaskService {
     });
 
     observable = from(promise);
+    if (subscriber != null) {
+      observable.subscribe(subscriber);
+    }
+    
     return observable
   }
 

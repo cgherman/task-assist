@@ -2,6 +2,7 @@ export interface ITaskList {
     id: string;
     title: string;
     tasks: Task[];
+    taskCount: number;
 }
 
 export class TaskList implements ITaskList {
@@ -14,6 +15,14 @@ export class TaskList implements ITaskList {
         this.id = taskListId;
         this.title = title;
         //this.Task[] = ...
+    }
+
+    get taskCount(): number {
+      if (this.tasks == null) {
+        return 0;
+      }
+
+      return this.tasks.length;
     }
 }
 

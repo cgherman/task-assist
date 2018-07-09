@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Observable, PartialObserver } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { FormBuilder,FormControl, FormGroup } from '@angular/forms';
 import { AppComponent } from '../app.component';
 
 import { TaskService } from '../task.service';
-import { ITask, ITaskList, TaskList }       from '../data-model';
+import { ITask, ITaskList, TaskList, RootTask }       from '../data-model';
 
 import { DragulaService } from 'ng2-dragula';
 
@@ -18,18 +18,22 @@ import { DragulaService } from 'ng2-dragula';
 })
 
 export class QuadrantComponent implements OnInit {
+  @ViewChild('triggerRefresh') triggerRefresh: ElementRef;
+
   tasks: Observable<ITask[]>;
   taskLists: Observable<ITaskList[]>;
+
   selectedTaskList: string;
+  openingStatement: string;
 
   quadrantForm = new FormGroup ({
     taskList: new FormControl()
   });
 
-  constructor(private fb: FormBuilder, private taskService: TaskService, private dragulaService: DragulaService, private appComponent: AppComponent) {
- 
+  constructor(private formBuilder: FormBuilder, private taskService: TaskService, private dragulaService: DragulaService, private appComponent: AppComponent) {
     this.createForm();
-
+    this.openingStatement = "Choose a task list here after you've logged in!";
+  
     // init task service
     appComponent.dataReadyToLoad.subscribe(item => this.onDataReadyToLoad());
     
@@ -41,8 +45,8 @@ export class QuadrantComponent implements OnInit {
   }
 
   createForm() {
-    this.quadrantForm = this.fb.group({
-      taskList: this.selectedTaskList
+    this.quadrantForm = this.formBuilder.group({
+      taskList: ''
     });
   }
 
@@ -57,29 +61,31 @@ export class QuadrantComponent implements OnInit {
   private onDataReadyToLoad(): void {
     // We're now authorized, let's load up the data
     this.getTaskLists();
-
-    // TODO: current method uses window handle to force UI load
-    window['triggerRefresh'].click();
   }
 
   getTaskLists() {
+    var subscriber = (taskLists => this.onTaskListInitialSelection(taskLists));
+
     // TODO: error handling
-    this.taskLists = this.taskService.getTaskLists()
-      .pipe(finalize((() => { this.onTaskListsLoaded(); })));
-    
-    // TODO: execution order not guaranteed, above call may finish early
-    this.taskLists.subscribe(value => this.onTaskListInitialSelection(value));
+    this.taskLists = this.taskService.getTaskLists(subscriber);
   }
 
-  onTaskListsLoaded() {
-    // select first list by default
-  }
-
-  onTaskListInitialSelection(value: ITaskList[]){
+  onTaskListInitialSelection(taskLists: ITaskList[]){
     // select first list
-    this.quadrantForm.get('taskList').setValue(value[0].id);
+    if (taskLists.length == 0) {
+      this.openingStatement = "Please create a Google task list first, and then refresh this page!";
+    } else {
+      this.openingStatement = "Choose a task list";
+      this.quadrantForm.get('taskList').patchValue(taskLists[0].id);
+    }
+
+    // Current method uses div element to force UI load.
+    this.triggerRefresh.nativeElement.click();
   }
 
+  onRefresh() {
+  }
+    
   getTasks(taskListId: string) {
     // TODO: error handling
     this.tasks = this.taskService.getTasks(taskListId)
