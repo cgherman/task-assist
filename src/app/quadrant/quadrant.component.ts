@@ -32,7 +32,7 @@ export class QuadrantComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private taskService: TaskService, private dragulaService: DragulaService, private appComponent: AppComponent) {
     this.createForm();
-    this.openingStatement = "Choose a task list here after you've logged in!";
+    this.openingStatement = "Sign in!  Then choose here!";
   
     // init task service
     appComponent.dataReadyToLoad.subscribe(item => this.onDataReadyToLoad());
@@ -73,7 +73,7 @@ export class QuadrantComponent implements OnInit {
   onTaskListInitialSelection(taskLists: ITaskList[]){
     // select first list
     if (taskLists.length == 0) {
-      this.openingStatement = "Please create a Google task list first, and then refresh this page!";
+      this.openingStatement = "No task lists found!";
     } else {
       this.openingStatement = "Choose a task list";
       this.quadrantForm.get('taskList').patchValue(taskLists[0].id);
