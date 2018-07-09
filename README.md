@@ -18,15 +18,17 @@ You must have a Google Task List set up to use this app.  Tasks must be added vi
 
 ## Feature To-do List
 
+* Paging mechanism, or similar, to account for large number of tasks
 * Save quadrant edits to Google's Task repository (Turn off "demo mode")
 * Tool tips to preview task details (due date, notes, links, etc.)
-* Save resorts and edits to Google's Task repository
+* Enable text edits and resorts and save to Google's Task repository
 * Enable auto-refresh when data is edited elsewhere
 * Flesh out UI for tighter integration with task creation
 * Ability to tag items with cost/complexity and identify items that may not be in the right quadrant
 
 ## Technical To-do List
 
-* Handle all error cases, tidy up, and add comments
+* Handle error cases, tidy up, and add code comments
+* Clean up some data binding behavior
 * Utilize [Karma](https://karma-runner.github.io) for unit testing
 * Utilize [Protractor](http://www.protractortest.org/) for  end-to-end testing
