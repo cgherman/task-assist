@@ -100,9 +100,16 @@ export class QuadrantComponent implements OnInit {
   }
 
   quadrantMatch(task: ITask, quadrant:string): boolean {
+    if (task.title == null || task.title.trimLeft().length == 0) {
+      // do not show "empty" tasks
+      return false;
+    }
+
     if (task == null || task.notes == null) {
+      // declare match with "unspecified" quadrant
       return quadrant == null;
     } else {
+      // match up specific quadrants
       if (quadrant == null) {
         return !task.notes.includes("[Quad:");
       } else {
