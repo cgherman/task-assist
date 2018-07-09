@@ -100,7 +100,7 @@ export class QuadrantComponent implements OnInit {
   }
 
   quadrantMatch(task: ITask, quadrant:string): boolean {
-    if (task.title == null || task.title.trimLeft().length == 0) {
+    if (task.title == null || task.title.trim().length == 0) {
       // do not show "empty" tasks
       return false;
     }
