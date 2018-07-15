@@ -7,9 +7,9 @@ import { AppComponent } from './app.component';
 import { QuadrantComponent } from './quadrant/quadrant.component';
 
 import { DragulaModule } from 'ng2-dragula';
-import { CanActivateViaAuthGuard } from './can-activate-via-auth.guard';
 import { AuthService } from './auth.service';
 import { HttpClientModule } from '@angular/common/http';
+import { AppRoutingModule } from './/app-routing.module';
 
 
 @NgModule({
@@ -22,15 +22,9 @@ import { HttpClientModule } from '@angular/common/http';
     ReactiveFormsModule,
     DragulaModule,
     HttpClientModule,
-    RouterModule.forRoot([
-      {
-        path: 'quadrant',
-        component: QuadrantComponent,
-        canActivate: [CanActivateViaAuthGuard]
-      }
-    ])
+    AppRoutingModule
   ],
-  providers: [AuthService, CanActivateViaAuthGuard],
+  providers: [AuthService],
   bootstrap: [AppComponent]
 })
 

@@ -61,6 +61,13 @@ export class AuthService {
       );
   }
 
+  public isAuthenticated(): boolean {
+
+    // TODO: Use gapi instance to check auth status
+
+    return true;
+  }
+
   signIn(gapi: any) {
     this.loadGoogleClients(gapi);
   }
