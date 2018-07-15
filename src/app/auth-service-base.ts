@@ -1,13 +1,6 @@
 import { EventEmitter } from "@angular/core";
 
-export interface IAuthService {
-    signIn();
-    isAuthenticated(): boolean;
-    onSignOut();
-    Authenticated : EventEmitter<any>;
-}
-
-export abstract class AuthServiceBase implements IAuthService {
+export abstract class AuthServiceBase {
     abstract signIn();
     abstract isAuthenticated(): boolean;
     abstract onSignOut();
