@@ -1,6 +1,10 @@
 import { Injectable, Output, EventEmitter} from '@angular/core';
-import { ITaskList, TaskList, ITask, RootTask, SubTask } from './data-model';
+import { ITask } from './models/itask';
+import { Task } from './models/task';
+import { ITaskList } from './models/itask-list';
+import { TaskList } from './models/task-list';
 import { Observable, of, from } from 'rxjs';
+import { TaskServiceBase } from './task-service-base';
 
 let gapi_tasks: Function;
 let gapi_tasklists: Function;
@@ -9,7 +13,7 @@ let gapi_tasklists: Function;
   providedIn: 'root'
 })
 
-export class TaskService {
+export class TaskService implements TaskServiceBase {
   @Output() providersSet: EventEmitter<any> = new EventEmitter();
   
   TaskService() {  
@@ -19,13 +23,13 @@ export class TaskService {
     this.providersSet.emit(null);
   }
 
-  setProviders(gapi_client_tasks_tasklists_list: Function, gapi_client_tasks_tasks_list: Function) {
+  setGapiFunctions(gapi_client_tasks_tasklists_list: Function, gapi_client_tasks_tasks_list: Function) {
     gapi_tasklists = gapi_client_tasks_tasklists_list;
     gapi_tasks = gapi_client_tasks_tasks_list;
     this.onProvidersSet();
   }
 
-  getTaskLists(subscriber?): Observable<TaskList[]>{
+  getTaskLists(subscriber?): Observable<ITaskList[]>{
     var observable: Observable<TaskList[]>
     var promise: Promise<TaskList[]>;
 
@@ -58,9 +62,9 @@ export class TaskService {
     return observable
   }
 
-  getTasks(taskList: any): Observable<RootTask[]> {
-    var observable: Observable<RootTask[]>
-    var promise: Promise<RootTask[]>;
+  getTasks(taskList: any): Observable<ITask[]> {
+    var observable: Observable<Task[]>
+    var promise: Promise<Task[]>;
 
     promise = new Promise((resolve, reject) => {
       if (gapi_tasks == null) {
@@ -74,7 +78,7 @@ export class TaskService {
         if (response.result == null || response.result.items == null || response.result.items.length == 0) {
           resolve(null);
         } else {
-          var tasks: RootTask[];
+          var tasks: Task[];
           tasks = this.parseTasks(response);
           resolve(tasks);
         }
@@ -110,12 +114,12 @@ export class TaskService {
     }
   }
 
-  private parseTasks(response: any): RootTask[] {
+  private parseTasks(response: any): Task[] {
     var index: number;
-    var tasks = [] as RootTask[];
+    var tasks = [] as Task[];
 
     for (index = 0; index < response.result.items.length; index++) {
-      var task = new RootTask(response.result.items[index].id,
+      var task = new Task(response.result.items[index].id,
                               response.result.items[index].title,
                               response.result.items[index].selfLink,
                               response.result.items[index].status,

@@ -4,8 +4,10 @@ import { finalize } from 'rxjs/operators';
 import { FormBuilder,FormControl, FormGroup } from '@angular/forms';
 import { AppComponent } from '../app.component';
 
+import { TaskServiceBase } from '../task-service-base';
 import { TaskService } from '../task.service';
-import { ITask, ITaskList, TaskList, RootTask }       from '../data-model';
+import { ITaskList } from '../models/itask-list';
+import { ITask } from '../models/itask';
 
 import { DragulaService } from 'ng2-dragula';
 
@@ -14,7 +16,8 @@ import { DragulaService } from 'ng2-dragula';
   selector: 'app-quadrant',
   templateUrl: './quadrant.component.html',
   styleUrls: ['./quadrant.component.css'],
-  providers:  [[TaskService], [DragulaService]]
+  providers:  [[DragulaService],
+               { provide: TaskServiceBase, useClass: TaskService }]
 })
 
 export class QuadrantComponent implements OnInit {
@@ -30,11 +33,12 @@ export class QuadrantComponent implements OnInit {
     taskList: new FormControl()
   });
 
-  constructor(private formBuilder: FormBuilder, private taskService: TaskService, private dragulaService: DragulaService, private appComponent: AppComponent) {
+  constructor(private taskService: TaskServiceBase, private formBuilder: FormBuilder, private dragulaService: DragulaService, private appComponent: AppComponent) {
+    // initialize form
     this.createForm();
     this.openingStatement = "Sign in!  Then choose here!";
   
-    // init task service
+    // wire up event
     appComponent.dataReadyToLoad.subscribe(item => this.onDataReadyToLoad());
     
     // Init drag-n-drop

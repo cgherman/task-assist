@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { Observable, empty } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, delay, catchError, first } from 'rxjs/operators'; 
+import { AuthServiceBase } from './auth-service-base';
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class AuthService {
-  @Output() googleGapiClientInitialized: EventEmitter<any> = new EventEmitter();
+export class AuthService implements AuthServiceBase {
+  @Output() Authenticated: EventEmitter<any> = new EventEmitter();
   @Output() googleAuthInit: EventEmitter<any> = new EventEmitter();
   @Output() googleAuthError: EventEmitter<any> = new EventEmitter();
 
@@ -17,6 +18,8 @@ export class AuthService {
   private _scope: string = null;
   private _api_key: string = null;
   private _discoveryDocs: string[] = null;
+
+  private _gapi_reference = null;
 
   constructor(private http: HttpClient) {
   }
@@ -61,25 +64,31 @@ export class AuthService {
       );
   }
 
+  public SetGapi(gapi: any) {
+    this._gapi_reference = gapi;
+  }
+
   public isAuthenticated(): boolean {
+    if (this._gapi_reference == null) {
+      return false;
+    }
 
-    // TODO: Use gapi instance to check auth status
-
-    return true;
+    var googleAuth = this._gapi_reference.auth2.getAuthInstance();
+    return googleAuth.isSignedIn.get();
   }
 
-  signIn(gapi: any) {
-    this.loadGoogleClients(gapi);
+  signIn() {
+    this.loadGoogleClients();
   }
 
-  private loadGoogleClients(gapi: any) {
-    gapi.load('client:auth2', () => {
-      this.onGoogleLoad(gapi);
+  private loadGoogleClients() {
+    this._gapi_reference.load('client:auth2', () => {
+      this.onGoogleLoad();
     });
   }
 
-  private onGoogleLoad(gapi: any) {
-    var googleAuth = gapi.auth2.init({
+  private onGoogleLoad() {
+    var googleAuth = this._gapi_reference.auth2.init({
       client_id: this.client_id,
       scope: this.scope
     }).then((response) => {
@@ -89,19 +98,19 @@ export class AuthService {
     });
 
     console.log("Wiring up auth events.");
-    googleAuth.then(() => this.onGoogleAuthInitialized(gapi), () => this.onGoogleAuthError);
+    googleAuth.then(() => this.onGoogleAuthInitialized(), () => this.onGoogleAuthError);
   }
 
-  onGoogleAuthInitialized(gapi: any){
+  onGoogleAuthInitialized(){
     // Wire up listener to watch for sign-in state change
     var googleAuth: any; 
-    googleAuth = gapi.auth2.getAuthInstance();
+    googleAuth = this._gapi_reference.auth2.getAuthInstance();
 
     // Wire up listener to watch for sign-in state change
-    googleAuth.isSignedIn.listen((() => { this.updateSigninStatus(gapi); }));
+    googleAuth.isSignedIn.listen((() => { this.updateSigninStatus(); }));
     
     // Handle the initial sign-in state.
-    this.updateSigninStatus(gapi);
+    this.updateSigninStatus();
   }
 
   onGoogleAuthError(error:any){
@@ -110,43 +119,40 @@ export class AuthService {
     // https://developers.google.com/identity/sign-in/web/reference#gapiauth2clientconfig
   }
 
-  updateSigninStatus(gapi: any) {
-    var googleAuth: any; 
-    googleAuth = gapi.auth2.getAuthInstance();
-
-    if (googleAuth.isSignedIn.get()) {
+  updateSigninStatus() {
+    if (this.isAuthenticated()) {
       console.log("GoogleAuth: Status check: user IS signed in");
-      this.loadGapiClient(gapi);
+      this.loadGapiClient();
     } else {
       console.log("GoogleAuth: Status check: NOT signed in yet.");
     }
   }
 
-  private loadGapiClient(gapi: any) {
+  private loadGapiClient() {
     console.log('Loading GAPI client.');    
     console.log("discoveryDocs:" + this.discoveryDocs);
     console.log("scope:" + this.scope);
-    gapi.client.init({
+    this._gapi_reference.client.init({
       apiKey: this.api_key,
       discoveryDocs: this.discoveryDocs,
       clientId: this.client_id,
       scope: this.scope
     }).then((response) => {
-      this.onGoogleGapiClientInitialized();
+      this.onAuthenticated();
     }).catch((errorHandler) => {
       console.log('Error in AppComponent.loadGapiClient: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
     });
   }
 
   // Triggered by GAPI client via form
-  onGoogleGapiClientInitialized() {
-    this.googleGapiClientInitialized.emit();
+  onAuthenticated() {
+    this.Authenticated.emit();
   }
 
-  onSignOut(gapi: any) {
+  onSignOut() {
     // log out
-    gapi.auth2.getAuthInstance().disconnect();
-    gapi.auth2.getAuthInstance().signOut(
+    this._gapi_reference.auth2.getAuthInstance().disconnect();
+    this._gapi_reference.auth2.getAuthInstance().signOut(
     ).then((response) => {
       console.log('Successful sign-out.');
       setTimeout(() => location.reload(), 1000);

@@ -1,7 +1,9 @@
-import { Component, Output, EventEmitter, NgZone } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
+
+import { TaskServiceBase } from './task-service-base';
 import { TaskService } from './task.service';
+import { AuthServiceBase } from './auth-service-base';
 import { AuthService } from './auth.service';
 
 declare var gapi: any;
@@ -19,10 +21,10 @@ export class AppComponent {
   title = 'TaskAssist';
   gapi_client: any;
 
-  constructor(private fb: FormBuilder, private zone: NgZone, private meta: Meta, private authService: AuthService, private taskService: TaskService) {
+  constructor(private authService: AuthServiceBase, private taskService: TaskServiceBase, private meta: Meta) {
     // set up required meta tags for GAPI login
-    this.meta.addTag({ name: 'google-signin-client_id', content: authService.client_id });
-    this.meta.addTag({ name: 'google-signin-scope', content: authService.scope });
+    this.meta.addTag({ name: 'google-signin-client_id', content: (this.authService as AuthService).client_id });
+    this.meta.addTag({ name: 'google-signin-scope', content: (this.authService as AuthService).scope });
 
     // Wire up GAPI Auth
     const _self = this;
@@ -31,7 +33,7 @@ export class AppComponent {
     };
 
     // track key auth event
-    authService.googleGapiClientInitialized.subscribe(item => this.onGoogleGapiClientInitialized());
+    this.authService.Authenticated.subscribe(item => this.onGoogleGapiClientInitialized());
   }
 
   ngOnInit() {
@@ -45,12 +47,13 @@ export class AppComponent {
   }
 
   signIn() {
-    this.authService.signIn(gapi);
+    (this.authService as AuthService).SetGapi(gapi);
+    this.authService.signIn();
   }
 
   // Triggered by GAPI client via form
   onGoogleGapiClientInitialized() {
-    this.taskService.setProviders(gapi.client.tasks.tasklists.list, gapi.client.tasks.tasks.list);
+    (this.taskService as TaskService).setGapiFunctions(gapi.client.tasks.tasklists.list, gapi.client.tasks.tasks.list);
     this.onDataReadyToLoad();
   }
 
@@ -60,6 +63,6 @@ export class AppComponent {
   }
 
   onSignOut() {
-    this.authService.onSignOut(gapi);
+    this.authService.onSignOut();
   }
 }
