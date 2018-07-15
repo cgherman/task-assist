@@ -64,7 +64,7 @@ export class AuthService implements AuthServiceBase {
       );
   }
 
-  public SetGapi(gapi: any) {
+  public SetGapiReference(gapi: any) {
     this._gapi_reference = gapi;
   }
 

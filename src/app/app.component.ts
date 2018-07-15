@@ -47,7 +47,7 @@ export class AppComponent {
   }
 
   signIn() {
-    (this.authService as AuthService).SetGapi(gapi);
+    (this.authService as AuthService).SetGapiReference(gapi);
     this.authService.signIn();
   }
 

@@ -13,20 +13,14 @@ let gapi_tasklists: Function;
   providedIn: 'root'
 })
 
-export class TaskService implements TaskServiceBase {
-  @Output() providersSet: EventEmitter<any> = new EventEmitter();
-  
-  TaskService() {  
-  }
+export class TaskService implements TaskServiceBase {  
 
-  private onProvidersSet(): void {
-    this.providersSet.emit(null);
+  TaskService() {  
   }
 
   setGapiFunctions(gapi_client_tasks_tasklists_list: Function, gapi_client_tasks_tasks_list: Function) {
     gapi_tasklists = gapi_client_tasks_tasklists_list;
     gapi_tasks = gapi_client_tasks_tasks_list;
-    this.onProvidersSet();
   }
 
   getTaskLists(subscriber?): Observable<ITaskList[]>{
