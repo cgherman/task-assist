@@ -123,13 +123,14 @@ export class QuadrantComponent implements OnInit {
 
     console.log("Element " + element.id + " moved (" + QuadrantOld + "->" + QuadrantNew + ")");
 
-    this.taskService.getTask(element.id).pipe(take(1)).subscribe(
-      (task: ITask) => {
+    this.taskService.getTask(element.id, this.selectedTaskList)
+    .pipe(take(1)).subscribe((task: ITask) => 
+      {
         // modify notes of fresh task
         this.taskModifierServiceBase.setQuadrant(task, QuadrantNew);
 
         // Update task notes via Google API
-        this.taskService.updateTask( task
+        this.taskService.updateTask( task, this.selectedTaskList
         ).then((task) => {
           console.log("Task " + task.id + " successfully updated via API.");
         }).catch((errorHandler) => {

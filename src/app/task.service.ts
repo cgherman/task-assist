@@ -88,7 +88,7 @@ export class TaskService implements TaskServiceBase {
     return this.makeObservable(myPromise);
   }
 
-  getTask(taskId: string): Observable<ITask> {
+  getTask(taskId: string, taskListId: string): Observable<ITask> {
     var myPromise: Promise<Task>;
 
     myPromise = new Promise((resolve, reject) => {
@@ -98,7 +98,7 @@ export class TaskService implements TaskServiceBase {
 
       // Use Google API to get tasks
       _gapi_reference.client.tasks.tasks.get( { task: taskId,
-                                                tasklist: "@default"
+                                                tasklist: taskListId
       }).then((response) => {
         if (response == null || response.result == null) {
           resolve(null);
@@ -115,7 +115,7 @@ export class TaskService implements TaskServiceBase {
     return this.makeObservable(myPromise);
   }
 
-  updateTask(task: ITask): Promise<ITask> {
+  updateTask(task: ITask, taskListId: string): Promise<ITask> {
     var myPromise: Promise<Task>;
 
     myPromise = new Promise((resolve, reject) => {
@@ -125,7 +125,7 @@ export class TaskService implements TaskServiceBase {
 
       // Use Google API to get tasks
       _gapi_reference.client.tasks.tasks.patch( { task: task.id,
-                                                  tasklist: "@default",
+                                                  tasklist: taskListId,
                                                   notes: task.notes
       }).then((response) => {
         if (response == null || response.result == null) {

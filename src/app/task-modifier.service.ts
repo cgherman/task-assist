@@ -10,9 +10,13 @@ export class TaskModifierService implements TaskModifierServiceBase {
   constructor() { }
 
   setQuadrant(task: ITask, targetQuadrant: string) {
-    var tagPositionStart = task.notes.toUpperCase().indexOf("[QUAD");
+    var tagPositionStart = -1;
     var tagPositionEnd = -1;
     var newTaskNotes;
+
+    if (task.notes != null) {
+      tagPositionStart = task.notes.toUpperCase().indexOf("[QUAD");
+    }
 
     // generate new prefix
     if (tagPositionStart >= 0) {
