@@ -1,5 +1,6 @@
 import { ITaskList } from './itask-list';
 
+// task list definition (does not contain tasks)
 export class TaskList implements ITaskList {
     id = null;
     title = null;

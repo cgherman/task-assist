@@ -1,5 +1,6 @@
 import { ITask } from './itask';
 
+// basic task object; could be either a parent or child
 export class Task implements ITask {
     id = null;
     title = null;

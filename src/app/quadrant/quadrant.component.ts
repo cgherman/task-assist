@@ -62,11 +62,12 @@ export class QuadrantComponent implements OnInit {
     this.getTasks(taskListId);
   }
 
+  // Fired from app component after user is authorized
   private onDataReadyToLoad(): void {
-    // We're now authorized, let's load up the data
     this.getTaskLists();
   }
 
+  // let's fetch the task lists
   getTaskLists() {
     var subscriber = (taskLists => this.onTaskListInitialSelection(taskLists));
 
@@ -74,6 +75,7 @@ export class QuadrantComponent implements OnInit {
     this.taskLists = this.taskService.getTaskLists(subscriber);
   }
 
+  // Fired after initial task list is loaded
   onTaskListInitialSelection(taskLists: ITaskList[]){
     // select first list
     if (taskLists.length == 0) {
@@ -84,26 +86,34 @@ export class QuadrantComponent implements OnInit {
     }
 
     // Current method uses div element to force UI load.
-    // TODO: Look into $scope.$digest so angular is aware of model changes from 3rd party
+    // TODO: Use native refresh calls
+    //       Look into $scope.$digest
+    //       Angular must be made aware of model changes from 3rd party.
     this.triggerRefresh.nativeElement.click();
   }
 
+  // Triggered by triggerRefresh click event
   onRefresh() {
+    // TODO: See triggerRefresh click event
   }
-    
+
+  // let's get the tasks
   getTasks(taskListId: string) {
     // TODO: error handling
     this.tasks = this.taskService.getTasks(taskListId)
       .pipe(finalize((() => { this.onTasksLoaded(); })));
   }
 
+  // Fired after tasks are loaded up
   onTasksLoaded() {
+    // TODO: Handle any necessary log-in dialog here
   }
 
   onDrop() {
     // TODO: Commit quadrant change to Google API
   }
 
+  // Called by repeater to determine appropriate quadrant for each task
   quadrantMatch(task: ITask, quadrant:string): boolean {
     if (task.title == null || task.title.trim().length == 0) {
       // do not show "empty" tasks

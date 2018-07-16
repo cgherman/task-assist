@@ -2,6 +2,7 @@ import { ITask } from './itask';
 import { TaskList } from './task-list';
 import { ITaskContainer } from './itask-container';
 
+// task list that contains task object data
 export class TaskListPopulated extends TaskList implements ITaskContainer {
 
     tasks: ITask[];

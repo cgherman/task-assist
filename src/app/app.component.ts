@@ -42,27 +42,35 @@ export class AppComponent {
   ngAfterViewInit(): void {
   }
 
+  // Triggered by Google login button
   onSignIn(googleUser) {
     this.signIn();
   }
 
+  // begin the sign-in/authorization process
   signIn() {
     (this.authService as AuthService).SetGapiReference(gapi);
     this.authService.signIn();
   }
 
-  // Triggered by GAPI client via form
+  // Triggered by authorization service
   onGoogleGapiClientInitialized() {
+    // wire up task service dependencies
     (this.taskService as TaskService).setGapiFunctions(gapi.client.tasks.tasklists.list, gapi.client.tasks.tasks.list);
+
+    // proceed to load data
     this.onDataReadyToLoad();
   }
 
+  // handed control from above
   private onDataReadyToLoad() {
+    // fire event indicating data service is ready
     console.log("GAPI client initialized.  Ready for data load.");
     this.dataReadyToLoad.emit(null);
   }
 
+  // Triggered by form button
   onSignOut() {
-    this.authService.onSignOut();
+    this.authService.signOut();
   }
 }

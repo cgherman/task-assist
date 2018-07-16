@@ -64,10 +64,12 @@ export class AuthService implements AuthServiceBase {
       );
   }
 
+  // Set reference to Google API
   public SetGapiReference(gapi: any) {
     this._gapi_reference = gapi;
   }
 
+  // return auth status
   public isAuthenticated(): boolean {
     if (this._gapi_reference == null) {
       return false;
@@ -77,6 +79,7 @@ export class AuthService implements AuthServiceBase {
     return googleAuth.isSignedIn.get();
   }
 
+  // trigger sign-in
   signIn() {
     this.loadGoogleClients();
   }
@@ -87,21 +90,18 @@ export class AuthService implements AuthServiceBase {
     });
   }
 
+  // Upon API initial load, initialize OAuth2
   private onGoogleLoad() {
     var googleAuth = this._gapi_reference.auth2.init({
       client_id: this.client_id,
       scope: this.scope
-    }).then((response) => {
-      console.log('Success initializing gapi.auth2.');
-    }).catch((errorHandler) => {
-      console.log('Error in AuthService.onGoogleLoad: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
-    });
-
-    console.log("Wiring up auth events.");
-    googleAuth.then(() => this.onGoogleAuthInitialized(), () => this.onGoogleAuthError);
+    }).then(() => this.onGoogleAuthInitialized(), () => this.onGoogleAuthError);
   }
 
+  // Upon successful OAuth2 init
   onGoogleAuthInitialized(){
+    console.log('Success initializing gapi.auth2.');
+
     // Wire up listener to watch for sign-in state change
     var googleAuth: any; 
     googleAuth = this._gapi_reference.auth2.getAuthInstance();
@@ -113,21 +113,24 @@ export class AuthService implements AuthServiceBase {
     this.updateSigninStatus();
   }
 
+  // upon failed OAuth2 init
   onGoogleAuthError(error:any){
     console.log("Error from GoogleAuth!");
     // TODO: Handle this case
     // https://developers.google.com/identity/sign-in/web/reference#gapiauth2clientconfig
   }
 
+  // Triggered when sign-in status changes
   updateSigninStatus() {
     if (this.isAuthenticated()) {
       console.log("GoogleAuth: Status check: user IS signed in");
       this.loadGapiClient();
     } else {
-      console.log("GoogleAuth: Status check: NOT signed in yet.");
+      console.log("GoogleAuth: Status check: NOT signed in.");
     }
   }
 
+  // If user is authenticated, then let's load the API client
   private loadGapiClient() {
     console.log('Loading GAPI client.');    
     console.log("discoveryDocs:" + this.discoveryDocs);
@@ -144,12 +147,13 @@ export class AuthService implements AuthServiceBase {
     });
   }
 
-  // Triggered by GAPI client via form
+  // Triggered when API client is fully authorized and loaded
   onAuthenticated() {
     this.Authenticated.emit();
   }
 
-  onSignOut() {
+  // Method used to sign out of Google and revoke app access
+  signOut() {
     // log out
     this._gapi_reference.auth2.getAuthInstance().disconnect();
     this._gapi_reference.auth2.getAuthInstance().signOut(
