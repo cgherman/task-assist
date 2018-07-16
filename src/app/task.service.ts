@@ -34,7 +34,7 @@ export class TaskService implements TaskServiceBase {
     return myObservable;
   }
 
-  getTaskLists(observer?: PartialObserver<ITaskList[]>): Observable<ITaskList[]>{
+  getTaskLists(subscriber?: any): Observable<ITaskList[]> {
     var myPromise: Promise<TaskList[]>;
 
     myPromise = new Promise((resolve, reject) => {
@@ -58,7 +58,7 @@ export class TaskService implements TaskServiceBase {
 
     });
 
-    return this.makeObservable(myPromise, observer);
+    return this.makeObservable(myPromise, subscriber);
   }
 
   getTasks(taskList: any): Observable<ITask[]> {

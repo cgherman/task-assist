@@ -20,9 +20,16 @@ import { DragulaService } from 'ng2-dragula';
   providers:  [[DragulaService],
                { provide: TaskServiceBase, useClass: TaskService }]
 })
-
+  
 export class QuadrantComponent implements OnInit {
   @ViewChild('triggerRefresh') triggerRefresh: ElementRef;
+
+  // TODO: Attempt to clean up after Dragula (bug with list change)
+  @ViewChild('quad1') quad1: ElementRef;
+  @ViewChild('quad2') quad2: ElementRef;
+  @ViewChild('quad3') quad3: ElementRef;
+  @ViewChild('quad4') quad4: ElementRef;
+  @ViewChild('quad0') quad0: ElementRef;
 
   tasks: Observable<ITask[]>;
   taskLists: Observable<ITaskList[]>;
@@ -30,11 +37,14 @@ export class QuadrantComponent implements OnInit {
   selectedTaskList: string;
   openingStatement: string;
 
-  quadrantForm = new FormGroup ({
-    taskList: new FormControl()
-  });
+  quadrantForm: FormGroup;
 
-  constructor(private taskService: TaskServiceBase, private taskModifierServiceBase: TaskModifierServiceBase, private formBuilder: FormBuilder, private dragulaService: DragulaService, private appComponent: AppComponent) {
+  constructor(private taskService: TaskServiceBase, 
+              private taskModifierServiceBase: TaskModifierServiceBase, 
+              private formBuilder: FormBuilder, 
+              private dragulaService: DragulaService, 
+              private appComponent: AppComponent) {
+
     // initialize form
     this.createForm();
     this.openingStatement = "Sign in!  Then choose here!";
@@ -42,11 +52,8 @@ export class QuadrantComponent implements OnInit {
     // wire up event
     appComponent.dataReadyToLoad.subscribe(item => this.onDataReadyToLoad());
     
-    // Init drag-n-drop
+    // Init Dragula drag-n-drop
     dragulaService.drop.subscribe(args => this.onDrop(args));
-  }
-
-  ngOnInit() {
   }
 
   createForm() {
@@ -55,10 +62,21 @@ export class QuadrantComponent implements OnInit {
     });
   }
 
+  ngOnInit() {
+  }
+
+  ngDoCheck() {
+  }
+
   // fired upon task list selection
   onChangeTaskList($event) {
     // TODO: Ensure divs are cleared/updated upon list change
+    // Create objects and re-push template, or clean up child elements?
+    // Eliminate errors by marking data as clean?
+    //thought: for each task ID under quads, remove
+    //thought: this.quad1.nativeElement.removeChild;
     
+        
     // load the new task list
     var taskListId: string = this.quadrantForm.get('taskList').value;
     console.log("Changing to a different list: " + taskListId);
@@ -90,16 +108,15 @@ export class QuadrantComponent implements OnInit {
       this.quadrantForm.get('taskList').patchValue(taskLists[0].id);
     }
 
-    // Current method uses div element to force UI load.
-    // TODO: Use native refresh calls
-    //       Look into $scope.$digest
-    //       Angular must be made aware of model changes from 3rd party.
+    // Trigger UI update to notify Angular of GAPI model change
+    // Method markForCheck() is not effective at this stage
+    // this is preferable to polling
     this.triggerRefresh.nativeElement.click();
   }
 
-  // Triggered by triggerRefresh click event
+  // Triggered by triggerRefresh event
   onRefresh() {
-    // TODO: See triggerRefresh click event
+    // TODO: Handle any necessary user dialog here
   }
 
   // let's get the tasks
@@ -111,23 +128,27 @@ export class QuadrantComponent implements OnInit {
 
   // Fired after tasks are loaded up
   onTasksLoaded() {
-    // TODO: Handle any necessary log-in dialog here
+    // TODO: Handle any necessary user dialog here
   }
 
   onDrop(args) {
     // Update data model
     let [bagName, element, target, source] = args;
 
-    var QuadrantOld = source.id.substring(target.id.length - 1)
-    var QuadrantNew = target.id.substring(target.id.length - 1)
+    var quadrantOld = source.id.substring(target.id.length - 1)
+    var quadrantNew = target.id.substring(target.id.length - 1)
 
-    console.log("Element " + element.id + " moved (" + QuadrantOld + "->" + QuadrantNew + ")");
+    console.log("Element " + element.id + " moved (" + quadrantOld + "->" + quadrantNew + ")");
+    this.UpdateTask(element.id, quadrantNew);
+  }
 
-    this.taskService.getTask(element.id, this.selectedTaskList)
-    .pipe(take(1)).subscribe((task: ITask) => 
+  private UpdateTask(taskId: string, targetQuadrant: string){
+    this.taskService.getTask(taskId, this.selectedTaskList)
+    .pipe(take(1))
+    .subscribe((task: ITask) => 
       {
         // modify notes of fresh task
-        this.taskModifierServiceBase.setQuadrant(task, QuadrantNew);
+        this.taskModifierServiceBase.setQuadrant(task, targetQuadrant);
 
         // Update task notes via Google API
         this.taskService.updateTask( task, this.selectedTaskList
@@ -136,7 +157,6 @@ export class QuadrantComponent implements OnInit {
         }).catch((errorHandler) => {
           console.log('Error in QuadrantComponent.onDrop: UpdateTask: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
         });
-  
       }
     );
   }
