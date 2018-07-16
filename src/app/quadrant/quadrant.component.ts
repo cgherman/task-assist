@@ -42,7 +42,7 @@ export class QuadrantComponent implements OnInit {
     appComponent.dataReadyToLoad.subscribe(item => this.onDataReadyToLoad());
     
     // Init drag-n-drop
-    dragulaService.drop.subscribe(value => this.onDrop());
+    dragulaService.drop.subscribe(args => this.onDrop(args));
   }
 
   ngOnInit() {
@@ -56,6 +56,9 @@ export class QuadrantComponent implements OnInit {
 
   // fired upon task list selection
   onChangeTaskList($event) {
+    // TODO: Ensure divs are cleared/updated upon list change
+    
+    // load the new task list
     var taskListId: string = this.quadrantForm.get('taskList').value;
     console.log("Changing to a different list: " + taskListId);
     this.selectedTaskList = taskListId;
@@ -109,8 +112,14 @@ export class QuadrantComponent implements OnInit {
     // TODO: Handle any necessary log-in dialog here
   }
 
-  onDrop() {
+  onDrop(args) {
+    // Update data model
+    let [bagName, el, target, source] = args;
+    console.log("Element " + el.id + " moved (" + source.id + "->" + target.id + ")");
+
     // TODO: Commit quadrant change to Google API
+    // getTask(taskId: string): Observable<ITask>
+    // updateTask(task: ITask)
   }
 
   // Called by repeater to determine appropriate quadrant for each task

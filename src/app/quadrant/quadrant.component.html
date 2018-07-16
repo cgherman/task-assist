@@ -39,19 +39,19 @@
       </div>
     </div>
     <div class="split-container w3-margin-bottom" style="min-height: 30px;">
-      <div class="split-half quad-1 external-outline" [dragula]='"taskBag"' [dragulaModel]='tasks'>
-        <ng-container *ngFor="let task of tasks | async">
+      <div id="QUAD1" class="split-half quad-1 external-outline" [dragula]='"taskBag"' [dragulaModel]='tasks'>
+        <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
           <ng-container *ngIf="quadrantMatch(task, 1)">
-              <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border w3-small">
-                  {{task.title}}
-              </div>
+            <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border w3-small">
+              {{task.title}}
+            </div>
           </ng-container>
         </ng-container>
       </div>
       <div class="split-divider">
       </div>
-      <div class="split-half quad-2 external-outline" [dragula]='"taskBag"' [dragulaModel]='tasks'>
-        <ng-container *ngFor="let task of tasks | async">
+      <div id="QUAD2" class="split-half quad-2 external-outline" [dragula]='"taskBag"' [dragulaModel]='tasks'>
+        <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
           <ng-container *ngIf="quadrantMatch(task, 2)">
               <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border w3-small">
                   {{task.title}}
@@ -77,8 +77,8 @@
         </div>
       </div>
       <div class="split-container w3-margin-bottom" style="min-height: 30px;">
-        <div class="split-half quad-3 external-outline" [dragula]='"taskBag"' [dragulaModel]='tasks'>
-          <ng-container *ngFor="let task of tasks | async">
+        <div id="QUAD3" class="split-half quad-3 external-outline" [dragula]='"taskBag"' [dragulaModel]='tasks'>
+        <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
             <ng-container *ngIf="quadrantMatch(task, 3)">
               <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border w3-small">
                   {{task.title}}
@@ -88,8 +88,8 @@
         </div>
         <div class="split-divider">
         </div>
-        <div class="split-half quad-4 external-outline" [dragula]='"taskBag"' [dragulaModel]='tasks'>
-          <ng-container *ngFor="let task of tasks | async">
+        <div id="QUAD4" class="split-half quad-4 external-outline" [dragula]='"taskBag"' [dragulaModel]='tasks'>
+        <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
             <ng-container *ngIf="quadrantMatch(task, 4)">
               <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border w3-small">
                   {{task.title}}
@@ -110,8 +110,8 @@
           </div>
       </div>
       <div class="w3-small">
-        <div class="quad-0 external-outline" style="min-height: 30px;" [dragula]='"taskBag"' [dragulaModel]='tasks'>
-          <ng-container *ngFor="let task of tasks | async">
+        <div id="QUAD0" class="quad-0 external-outline" style="min-height: 30px;" [dragula]='"taskBag"' [dragulaModel]='tasks'>
+        <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
             <ng-container *ngIf="quadrantMatch(task, null)">
                 <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border null-as-blank w3-small">
                     {{task.title}}
