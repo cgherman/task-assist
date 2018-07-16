@@ -125,11 +125,19 @@ export class QuadrantComponent implements OnInit {
 
     this.taskService.getTask(element.id).pipe(take(1)).subscribe(
       (task: ITask) => {
-
+        // modify notes of fresh task
         this.taskModifierServiceBase.setQuadrant(task, QuadrantNew);
 
-        // TODO: UPDATE VIA GAPI
-        //this.taskService.updateTask(value);
+        /*
+        // Update task notes via Google API
+        this.taskService.updateTask( task
+        ).then((task) => {
+          console.log("Task " + task.id + " successfully updated via API.");
+        }).catch((errorHandler) => {
+          console.log('Error in QuadrantComponent.onDrop: UpdateTask: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
+        });
+        */ 
+  
       }
     );
   }

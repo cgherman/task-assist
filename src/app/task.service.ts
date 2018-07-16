@@ -115,7 +115,7 @@ export class TaskService implements TaskServiceBase {
     return this.makeObservable(myPromise);
   }
 
-  updateTask(task: ITask) {
+  updateTask(task: ITask): Promise<ITask> {
     var myPromise: Promise<Task>;
 
     myPromise = new Promise((resolve, reject) => {
@@ -139,6 +139,8 @@ export class TaskService implements TaskServiceBase {
         reject(errorHandler);
       });
     });
+
+    return myPromise;
   }
 
   private parseTaskLists(response: any): TaskList[] {

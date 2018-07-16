@@ -11,5 +11,5 @@ export abstract class TaskServiceBase {
 
     abstract getTask(taskId: string): Observable<ITask>;
 
-    abstract updateTask(task: ITask);
+    abstract updateTask(task: ITask): Promise<ITask>;
 }

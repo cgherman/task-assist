@@ -41,7 +41,7 @@ export class TaskModifierService implements TaskModifierServiceBase {
     task.notes = newTaskNotes;
   }
 
-  checkQuadrantMatch(task: ITask, quadrant:string): boolean {
+  checkQuadrantMatch(task: ITask, quadrantChar:string): boolean {
     if (task.title == null || task.title.trim().length == 0) {
       // do not show "empty" tasks
       return false;
@@ -49,13 +49,13 @@ export class TaskModifierService implements TaskModifierServiceBase {
 
     if (task == null || task.notes == null) {
       // declare match with "unspecified" quadrant
-      return quadrant == null;
+      return quadrantChar == null;
     } else {
       // match up specific quadrants
-      if (quadrant == null) {
+      if (quadrantChar == null) {
         return !task.notes.includes("[Quad:");
       } else {
-        return task.notes.includes("[Quad:" + quadrant + "]");
+        return task.notes.includes("[Quad:" + quadrantChar + "]");
       }
     }
   }
