@@ -136,21 +136,6 @@ export class QuadrantComponent implements OnInit {
 
   // Called by repeater to determine appropriate quadrant for each task
   quadrantMatch(task: ITask, quadrant:string): boolean {
-    if (task.title == null || task.title.trim().length == 0) {
-      // do not show "empty" tasks
-      return false;
-    }
-
-    if (task == null || task.notes == null) {
-      // declare match with "unspecified" quadrant
-      return quadrant == null;
-    } else {
-      // match up specific quadrants
-      if (quadrant == null) {
-        return !task.notes.includes("[Quad:");
-      } else {
-        return task.notes.includes("[Quad:" + quadrant + "]");
-      }
-    }
+    return this.taskModifierServiceBase.checkQuadrantMatch(task, quadrant);
   }
 }

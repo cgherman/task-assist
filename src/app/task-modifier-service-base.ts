@@ -4,4 +4,5 @@ import { Observable } from 'rxjs';
 
 export abstract class TaskModifierServiceBase {
     abstract setQuadrant(task: ITask, targetQuadrant: string);
+    abstract checkQuadrantMatch(task: ITask, quadrant:string);
 }
