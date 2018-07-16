@@ -57,7 +57,7 @@ export class TaskModifierService implements TaskModifierServiceBase {
     } else {
       // match up specific quadrants
       if (quadrantChar == null) {
-        return !task.notes.includes("[Quad:");
+        return task.notes.includes("[Quad:0]") || !task.notes.includes("[Quad:");
       } else {
         return task.notes.includes("[Quad:" + quadrantChar + "]");
       }
