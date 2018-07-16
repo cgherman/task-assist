@@ -128,7 +128,6 @@ export class QuadrantComponent implements OnInit {
         // modify notes of fresh task
         this.taskModifierServiceBase.setQuadrant(task, QuadrantNew);
 
-        /*
         // Update task notes via Google API
         this.taskService.updateTask( task
         ).then((task) => {
@@ -136,7 +135,6 @@ export class QuadrantComponent implements OnInit {
         }).catch((errorHandler) => {
           console.log('Error in QuadrantComponent.onDrop: UpdateTask: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
         });
-        */ 
   
       }
     );
