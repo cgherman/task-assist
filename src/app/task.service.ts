@@ -3,11 +3,10 @@ import { ITask } from './models/itask';
 import { Task } from './models/task';
 import { ITaskList } from './models/itask-list';
 import { TaskList } from './models/task-list';
-import { Observable, of, from } from 'rxjs';
+import { Observable, PartialObserver, of, from } from 'rxjs';
 import { TaskServiceBase } from './task-service-base';
 
-let gapi_tasks: Function;
-let gapi_tasklists: Function;
+let _gapi_reference = null;
 
 @Injectable({
   providedIn: 'root'
@@ -15,27 +14,38 @@ let gapi_tasklists: Function;
 
 export class TaskService implements TaskServiceBase {  
 
+
   TaskService() {  
   }
 
-  setGapiFunctions(gapi_client_tasks_tasklists_list: Function, gapi_client_tasks_tasks_list: Function) {
-    gapi_tasklists = gapi_client_tasks_tasklists_list;
-    gapi_tasks = gapi_client_tasks_tasks_list;
+  // Set reference to Google API
+  public setGapiReference(gapi: any) {
+    _gapi_reference = gapi;
   }
 
-  getTaskLists(subscriber?): Observable<ITaskList[]>{
-    var observable: Observable<TaskList[]>
-    var promise: Promise<TaskList[]>;
+  private makeObservable<T>(promise: Promise<T>, observer?): Observable<T> {
+    var myObservable: Observable<T>;
 
-    promise = new Promise((resolve, reject) => {
-      if (gapi_tasklists == null) {
+    myObservable = from(promise);
+    if (observer != null) {
+      myObservable.subscribe(observer);
+    }
+
+    return myObservable;
+  }
+
+  getTaskLists(observer?: PartialObserver<ITaskList[]>): Observable<ITaskList[]>{
+    var myPromise: Promise<TaskList[]>;
+
+    myPromise = new Promise((resolve, reject) => {
+      if (_gapi_reference == null || _gapi_reference.client == null) {
         reject("GAPI client object is not fully initialized.");
       }
 
       // Use Google API to get task lists
-      gapi_tasklists({
+      _gapi_reference.client.tasks.tasklists.list({
       }).then((response) => {
-        if (response.result == null || response.result.items == null || response.result.items.length == 0) {
+        if (response == null || response.result == null || response.result.items == null || response.result.items.length == 0) {
           resolve(null);
         } else {
           var taskLists: TaskList[];
@@ -48,28 +58,22 @@ export class TaskService implements TaskServiceBase {
 
     });
 
-    observable = from(promise);
-    if (subscriber != null) {
-      observable.subscribe(subscriber);
-    }
-    
-    return observable
+    return this.makeObservable(myPromise, observer);
   }
 
   getTasks(taskList: any): Observable<ITask[]> {
-    var observable: Observable<Task[]>
-    var promise: Promise<Task[]>;
+    var myPromise: Promise<Task[]>;
 
-    promise = new Promise((resolve, reject) => {
-      if (gapi_tasks == null) {
+    myPromise = new Promise((resolve, reject) => {
+      if (_gapi_reference == null || _gapi_reference.client == null) {
         reject("GAPI client object is not fully initialized.");
       }
 
       // Use Google API to get tasks
-      gapi_tasks( {tasklist: taskList,
-                   showCompleted: "false" 
+      _gapi_reference.client.tasks.tasks.list( { tasklist: taskList,
+                                                 showCompleted: "false" 
       }).then((response) => {
-        if (response.result == null || response.result.items == null || response.result.items.length == 0) {
+        if (response == null || response.result == null || response.result.items == null || response.result.items.length == 0) {
           resolve(null);
         } else {
           var tasks: Task[];
@@ -79,11 +83,62 @@ export class TaskService implements TaskServiceBase {
       }).catch((errorHandler) => {
         reject(errorHandler);
       });
-
     });
 
-    observable = from(promise);
-    return from(observable);
+    return this.makeObservable(myPromise);
+  }
+
+  getTask(taskId: string): Observable<ITask> {
+    var myPromise: Promise<Task>;
+
+    myPromise = new Promise((resolve, reject) => {
+      if (_gapi_reference == null || _gapi_reference.client == null) {
+        reject("GAPI client object is not fully initialized.");
+      }
+
+      // Use Google API to get tasks
+      _gapi_reference.client.tasks.tasks.get( { task: taskId,
+                                                tasklist: "@default"
+      }).then((response) => {
+        if (response == null || response.result == null) {
+          resolve(null);
+        } else {
+          var task: Task;
+          task = this.parseTask(response);
+          resolve(task);
+        }
+      }).catch((errorHandler) => {
+        reject(errorHandler);
+      });
+    });
+
+    return this.makeObservable(myPromise);
+  }
+
+  updateTask(task: ITask) {
+    var myPromise: Promise<Task>;
+
+    myPromise = new Promise((resolve, reject) => {
+      if (_gapi_reference == null || _gapi_reference.client == null) {
+        reject("GAPI client object is not fully initialized.");
+      }
+
+      // Use Google API to get tasks
+      _gapi_reference.client.tasks.tasks.patch( { task: task.id,
+                                                  tasklist: "@default",
+                                                  notes: task.notes
+      }).then((response) => {
+        if (response == null || response.result == null) {
+          resolve(null);
+        } else {
+          var task: Task;
+          task = this.parseTask(response);
+          resolve(task);
+        }
+      }).catch((errorHandler) => {
+        reject(errorHandler);
+      });
+    });
   }
 
   private parseTaskLists(response: any): TaskList[] {
@@ -113,16 +168,24 @@ export class TaskService implements TaskServiceBase {
     var tasks = [] as Task[];
 
     for (index = 0; index < response.result.items.length; index++) {
-      var task = new Task(response.result.items[index].id,
-                              response.result.items[index].title,
-                              response.result.items[index].selfLink,
-                              response.result.items[index].status,
-                              response.result.items[index].notes);
-
-      tasks.push(task);
+      tasks.push(this.newTask(response.result.items[index]));
     }
 
     return tasks;
+  }
+
+  private parseTask(response: any): Task {
+    return this.newTask(response.result);
+  }
+
+  // create a Task from a Google task Resource
+  // https://developers.google.com/tasks/v1/reference/tasks#resource
+  private newTask(taskResource: any): Task {
+    return new Task(taskResource.id,
+                    taskResource.title,
+                    taskResource.selfLink,
+                    taskResource.status,
+                    taskResource.notes);
   }
 
 }

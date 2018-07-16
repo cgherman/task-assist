@@ -11,8 +11,10 @@ import { AppRoutingModule } from './/app-routing.module';
 
 import { AuthService } from './auth.service';
 import { AuthServiceBase } from './auth-service-base';
-import { TaskServiceBase } from './task-service-base';
 import { TaskService } from './task.service';
+import { TaskServiceBase } from './task-service-base';
+import { TaskModifierService } from './task-modifier.service';
+import { TaskModifierServiceBase } from './task-modifier-service-base';
 
 
 @NgModule({
@@ -28,7 +30,8 @@ import { TaskService } from './task.service';
     AppRoutingModule
   ],
   providers: [{ provide: AuthServiceBase, useClass: AuthService },
-    { provide: TaskServiceBase, useClass: TaskService }],
+              { provide: TaskModifierServiceBase, useClass: TaskModifierService },
+              { provide: TaskServiceBase, useClass: TaskService }],
   bootstrap: [AppComponent]
 })
 

@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable, PartialObserver } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, take } from 'rxjs/operators';
 import { FormBuilder,FormControl, FormGroup } from '@angular/forms';
 import { AppComponent } from '../app.component';
 
+import { TaskModifierServiceBase } from '../task-modifier-service-base';
 import { TaskServiceBase } from '../task-service-base';
 import { TaskService } from '../task.service';
 import { ITaskList } from '../models/itask-list';
@@ -33,7 +34,7 @@ export class QuadrantComponent implements OnInit {
     taskList: new FormControl()
   });
 
-  constructor(private taskService: TaskServiceBase, private formBuilder: FormBuilder, private dragulaService: DragulaService, private appComponent: AppComponent) {
+  constructor(private taskService: TaskServiceBase, private taskModifierServiceBase: TaskModifierServiceBase, private formBuilder: FormBuilder, private dragulaService: DragulaService, private appComponent: AppComponent) {
     // initialize form
     this.createForm();
     this.openingStatement = "Sign in!  Then choose here!";
@@ -72,7 +73,8 @@ export class QuadrantComponent implements OnInit {
 
   // let's fetch the task lists
   getTaskLists() {
-    var subscriber = (taskLists => this.onTaskListInitialSelection(taskLists));
+    var subscriber: Function;
+    subscriber = (taskLists => this.onTaskListInitialSelection(taskLists));
 
     // TODO: error handling
     this.taskLists = this.taskService.getTaskLists(subscriber);
@@ -114,12 +116,22 @@ export class QuadrantComponent implements OnInit {
 
   onDrop(args) {
     // Update data model
-    let [bagName, el, target, source] = args;
-    console.log("Element " + el.id + " moved (" + source.id + "->" + target.id + ")");
+    let [bagName, element, target, source] = args;
 
-    // TODO: Commit quadrant change to Google API
-    // getTask(taskId: string): Observable<ITask>
-    // updateTask(task: ITask)
+    var QuadrantOld = source.id.substring(target.id.length - 1)
+    var QuadrantNew = target.id.substring(target.id.length - 1)
+
+    console.log("Element " + element.id + " moved (" + QuadrantOld + "->" + QuadrantNew + ")");
+
+    this.taskService.getTask(element.id).pipe(take(1)).subscribe(
+      (task: ITask) => {
+
+        this.taskModifierServiceBase.setQuadrant(task, QuadrantNew);
+
+        // TODO: UPDATE VIA GAPI
+        //this.taskService.updateTask(value);
+      }
+    );
   }
 
   // Called by repeater to determine appropriate quadrant for each task

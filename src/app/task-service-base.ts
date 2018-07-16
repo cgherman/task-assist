@@ -8,4 +8,8 @@ export abstract class TaskServiceBase {
     
     // method to fetch tasks for a given task list
     abstract getTasks(taskList: any): Observable<ITask[]>;
+
+    abstract getTask(taskId: string): Observable<ITask>;
+
+    abstract updateTask(task: ITask);
 }

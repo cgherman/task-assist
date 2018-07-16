@@ -56,7 +56,7 @@ export class AppComponent {
   // Triggered by authorization service
   onGoogleGapiClientInitialized() {
     // wire up task service dependencies
-    (this.taskService as TaskService).setGapiFunctions(gapi.client.tasks.tasklists.list, gapi.client.tasks.tasks.list);
+    (this.taskService as TaskService).setGapiReference(gapi);
 
     // proceed to load data
     this.onDataReadyToLoad();
