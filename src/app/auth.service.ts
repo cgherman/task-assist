@@ -161,7 +161,7 @@ export class AuthService implements AuthServiceBase {
       console.log('Successful sign-out.');
       setTimeout(() => location.reload(), 1000);
     }).catch((errorHandler) => {
-      console.log('Error in AuthService.onSignOut: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
+      console.log('Error in AuthService.signOut: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
     });  
   }
 
