@@ -1,16 +1,37 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { QuadrantComponent } from './quadrant/quadrant.component';
+import { FrameComponent } from './frame/frame.component';
 import { CanActivateViaAuthGuard } from './can-activate-via-auth.guard';
+import { ConfigResolver } from './resolvers/config-resolver.service';
+import { QuadrantComponent } from './quadrant/quadrant.component';
 
-const routes: Routes = [
-  { path: '', redirectTo: '/quadrant', pathMatch: 'full' },
-  { path: 'quadrant', component: QuadrantComponent, canActivate: [CanActivateViaAuthGuard] }
+const appRoutes: Routes = [
+  {
+    path: '',
+    redirectTo: '/quadrant', 
+    pathMatch: 'full',
+  }, {
+    path: '', 
+    component: FrameComponent, 
+    canActivate: [CanActivateViaAuthGuard], 
+    resolve: {
+      config: ConfigResolver
+    },
+    children: [ {
+        path: 'quadrant',
+        component: QuadrantComponent
+      }
+    ]
+  }
 ];
 
 
 @NgModule({
-  imports: [ RouterModule.forRoot(routes) ],
-  exports: [ RouterModule ]
+  imports: [ RouterModule.forRoot(appRoutes) ],
+  exports: [ RouterModule ],
+  providers: [ ConfigResolver ]
 })
-export class AppRoutingModule {}
+
+export class AppRoutingModule {
+  constructor(){}
+}

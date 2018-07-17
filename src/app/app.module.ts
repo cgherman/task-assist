@@ -15,14 +15,18 @@ import { TaskService } from './task.service';
 import { TaskServiceBase } from './task-service-base';
 import { TaskModifierService } from './task-modifier.service';
 import { TaskModifierServiceBase } from './task-modifier-service-base';
+import { ConfigService } from './config.service';
+import { FrameComponent } from './frame/frame.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
+    FrameComponent,
     QuadrantComponent
   ],
   imports: [
+
     BrowserModule,
     ReactiveFormsModule,
     DragulaModule,
@@ -31,7 +35,8 @@ import { TaskModifierServiceBase } from './task-modifier-service-base';
   ],
   providers: [{ provide: AuthServiceBase, useClass: AuthService },
               { provide: TaskModifierServiceBase, useClass: TaskModifierService },
-              { provide: TaskServiceBase, useClass: TaskService }],
+              { provide: TaskServiceBase, useClass: TaskService },
+              { provide: ConfigService, useClass: ConfigService }],
   bootstrap: [AppComponent]
 })
 

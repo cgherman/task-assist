@@ -1,6 +1,5 @@
 import { Output, EventEmitter } from '@angular/core';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { AuthServiceBase } from './auth-service-base';
 
 @Injectable({
@@ -19,7 +18,7 @@ export class AuthService implements AuthServiceBase {
 
   private _gapiReference = null;
 
-  constructor(private http: HttpClient) {
+  constructor() {
   }
 
   set api_key(newValue: string) {

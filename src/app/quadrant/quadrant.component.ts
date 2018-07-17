@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/co
 import { Observable, Subscription } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import { FormBuilder,FormControl, FormGroup } from '@angular/forms';
-import { AppComponent } from '../app.component';
+import { FrameComponent } from '../frame/frame.component';
 
 import { TaskModifierServiceBase } from '../task-modifier-service-base';
 import { TaskServiceBase } from '../task-service-base';
@@ -49,7 +49,7 @@ export class QuadrantComponent implements OnInit, OnDestroy {
               private taskModifierServiceBase: TaskModifierServiceBase, 
               private formBuilder: FormBuilder, 
               private dragulaService: DragulaService, 
-              private appComponent: AppComponent) {
+              private frameComponent: FrameComponent) {
 
     // initialize form
     this.createForm();
@@ -68,7 +68,7 @@ export class QuadrantComponent implements OnInit, OnDestroy {
     this.subscriptions.push(sub); // capture for destruction
 
     // wire up data event
-    var sub = this.appComponent.dataReadyToLoad.subscribe(item => this.onDataReadyToLoad());
+    var sub = this.frameComponent.dataReadyToLoad.subscribe(item => this.onDataReadyToLoad());
     this.subscriptions.push(sub); // capture for destruction
   }
 
