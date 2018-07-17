@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
-import { FormBuilder,FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { FrameComponent } from '../frame/frame.component';
 
 import { TaskModifierServiceBase } from '../task-modifier-service-base';

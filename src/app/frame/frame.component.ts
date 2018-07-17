@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Output, ViewChild, ElementRef, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -43,7 +43,7 @@ export class FrameComponent implements OnInit, OnDestroy {
     // track key auth event
     var sub = this.authService.Authenticated.subscribe(item => this.onAuthenticated());
     this.subscriptions.push(sub); // capture for destruction
-
+    
     this.configureServices();
   }
 
