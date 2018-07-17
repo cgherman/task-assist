@@ -1,8 +1,6 @@
 import { Output, EventEmitter } from '@angular/core';
 import { Injectable } from '@angular/core';
-import { Observable, empty } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { map, delay, catchError, first } from 'rxjs/operators'; 
 import { AuthServiceBase } from './auth-service-base';
 
 @Injectable({
@@ -14,68 +12,44 @@ export class AuthService implements AuthServiceBase {
   @Output() googleAuthInit: EventEmitter<any> = new EventEmitter();
   @Output() googleAuthError: EventEmitter<any> = new EventEmitter();
 
+  private _api_key: string = null;
   private _client_id: string = null;
   private _scope: string = null;
-  private _api_key: string = null;
   private _discoveryDocs: string[] = null;
 
-  private _gapi_reference = null;
+  private _gapiReference = null;
 
   constructor(private http: HttpClient) {
   }
 
-  get api_key(): string {
-    if (this._api_key == null) {
-      this._api_key = "AIzaSyBke1n7BqFee0XcM7_WbIg337YsPrROgh0";
-      }
-    return this._api_key;
+  set api_key(newValue: string) {
+    this._api_key = newValue;
   }
 
-  get client_id(): string {
-    if (this._client_id == null) {
-      this._client_id =  "782561556087-8vrgbd6393gagmenk100qmv4lfbpulrg.apps.googleusercontent.com";
-    }
-    return this._client_id;
+  set client_id(newValue: string) {
+    this._client_id = newValue;
   }
 
-  get discoveryDocs(): string[]{
-    if (this._discoveryDocs == null) {
-      this._discoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest"];
-    }
-    return this._discoveryDocs;
+  set scope(newValue: string) {
+    this._scope = newValue;
   }
 
-  get scope(): string{
-    if (this._scope == null) {
-      this._scope = "https://www.googleapis.com/auth/tasks";
-    }
-    return this._scope;
-  }
-
-  // TODO: Fetch values and put into meta tags for Google Auth in AppComponent
-  // Method to fetch app-specific JSON file for GAPI config
-  // Create a new project & corresponding credentials here: https://console.developers.google.com/apis/credentials
-  public getJSON(filename: string): Observable<any> {
-    return this.http.get(filename)
-      .pipe(
-        map((response: Response) => {
-          return response;
-        })
-      );
+  set discoveryDocs(newValue: string[]) {
+    this._discoveryDocs = newValue;
   }
 
   // Set reference to Google API
-  public SetGapiReference(gapi: any) {
-    this._gapi_reference = gapi;
+  public setGapiReference(gapi: any) {
+    this._gapiReference = gapi;
   }
 
   // return auth status
   public isAuthenticated(): boolean {
-    if (this._gapi_reference == null) {
+    if (this._gapiReference == null) {
       return false;
     }
 
-    var googleAuth = this._gapi_reference.auth2.getAuthInstance();
+    var googleAuth = this._gapiReference.auth2.getAuthInstance();
     return googleAuth.isSignedIn.get();
   }
 
@@ -85,16 +59,16 @@ export class AuthService implements AuthServiceBase {
   }
 
   private loadGoogleClients() {
-    this._gapi_reference.load('client:auth2', () => {
+    this._gapiReference.load('client:auth2', () => {
       this.onGoogleLoad();
     });
   }
 
   // Upon API initial load, initialize OAuth2
   private onGoogleLoad() {
-    var googleAuth = this._gapi_reference.auth2.init({
-      client_id: this.client_id,
-      scope: this.scope
+    var googleAuth = this._gapiReference.auth2.init({
+      client_id: this._client_id,
+      scope: this._scope
     }).then(() => this.onGoogleAuthInitialized(), () => this.onGoogleAuthError);
   }
 
@@ -104,7 +78,7 @@ export class AuthService implements AuthServiceBase {
 
     // Wire up listener to watch for sign-in state change
     var googleAuth: any; 
-    googleAuth = this._gapi_reference.auth2.getAuthInstance();
+    googleAuth = this._gapiReference.auth2.getAuthInstance();
 
     // Wire up listener to watch for sign-in state change
     googleAuth.isSignedIn.listen((() => { this.updateSigninStatus(); }));
@@ -133,13 +107,15 @@ export class AuthService implements AuthServiceBase {
   // If user is authenticated, then let's load the API client
   private loadGapiClient() {
     console.log('Loading GAPI client.');    
-    console.log("discoveryDocs:" + this.discoveryDocs);
-    console.log("scope:" + this.scope);
-    this._gapi_reference.client.init({
-      apiKey: this.api_key,
-      discoveryDocs: this.discoveryDocs,
-      clientId: this.client_id,
-      scope: this.scope
+    console.log("discoveryDocs: " + this._discoveryDocs);
+    console.log("scope: " + this._scope);
+
+    // initialize GAPI client
+    this._gapiReference.client.init({
+      apiKey: this._api_key,
+      discoveryDocs: this._discoveryDocs,
+      clientId: this._client_id,
+      scope: this._scope
     }).then((response) => {
       this.onAuthenticated();
     }).catch((errorHandler) => {
@@ -155,8 +131,8 @@ export class AuthService implements AuthServiceBase {
   // Method used to sign out of Google and revoke app access
   signOut() {
     // log out
-    this._gapi_reference.auth2.getAuthInstance().disconnect();
-    this._gapi_reference.auth2.getAuthInstance().signOut(
+    this._gapiReference.auth2.getAuthInstance().disconnect();
+    this._gapiReference.auth2.getAuthInstance().signOut(
     ).then((response) => {
       console.log('Successful sign-out.');
       setTimeout(() => location.reload(), 1000);

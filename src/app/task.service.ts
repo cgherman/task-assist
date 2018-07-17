@@ -6,7 +6,7 @@ import { TaskList } from './models/task-list';
 import { Observable, PartialObserver, of, from } from 'rxjs';
 import { TaskServiceBase } from './task-service-base';
 
-let _gapi_reference = null;
+let _gapiReference = null;
 
 @Injectable({
   providedIn: 'root'
@@ -14,13 +14,23 @@ let _gapi_reference = null;
 
 export class TaskService implements TaskServiceBase {  
 
+  private _discoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest"];
+  private _scope = "https://www.googleapis.com/auth/tasks";
+
+  public get discoveryDocs(): string[] {
+    return this._discoveryDocs;
+  }
+
+  get scope(): string{
+    return this._scope;
+  }
 
   TaskService() {  
   }
 
   // Set reference to Google API
   public setGapiReference(gapi: any) {
-    _gapi_reference = gapi;
+    _gapiReference = gapi;
   }
 
   private makeObservable<T>(promise: Promise<T>, observer?): Observable<T> {
@@ -38,12 +48,12 @@ export class TaskService implements TaskServiceBase {
     var myPromise: Promise<TaskList[]>;
 
     myPromise = new Promise((resolve, reject) => {
-      if (_gapi_reference == null || _gapi_reference.client == null) {
+      if (_gapiReference == null || _gapiReference.client == null) {
         reject("GAPI client object is not fully initialized.");
       }
 
       // Use Google API to get task lists
-      _gapi_reference.client.tasks.tasklists.list({
+      _gapiReference.client.tasks.tasklists.list({
       }).then((response) => {
         if (response == null || response.result == null || response.result.items == null || response.result.items.length == 0) {
           resolve(null);
@@ -65,12 +75,12 @@ export class TaskService implements TaskServiceBase {
     var myPromise: Promise<Task[]>;
 
     myPromise = new Promise((resolve, reject) => {
-      if (_gapi_reference == null || _gapi_reference.client == null) {
+      if (_gapiReference == null || _gapiReference.client == null) {
         reject("GAPI client object is not fully initialized.");
       }
 
       // Use Google API to get tasks
-      _gapi_reference.client.tasks.tasks.list( { tasklist: taskList,
+      _gapiReference.client.tasks.tasks.list( { tasklist: taskList,
                                                  showCompleted: "false" 
       }).then((response) => {
         if (response == null || response.result == null || response.result.items == null || response.result.items.length == 0) {
@@ -92,12 +102,12 @@ export class TaskService implements TaskServiceBase {
     var myPromise: Promise<Task>;
 
     myPromise = new Promise((resolve, reject) => {
-      if (_gapi_reference == null || _gapi_reference.client == null) {
+      if (_gapiReference == null || _gapiReference.client == null) {
         reject("GAPI client object is not fully initialized.");
       }
 
       // Use Google API to get tasks
-      _gapi_reference.client.tasks.tasks.get( { task: taskId,
+      _gapiReference.client.tasks.tasks.get( { task: taskId,
                                                 tasklist: taskListId
       }).then((response) => {
         if (response == null || response.result == null) {
@@ -119,12 +129,12 @@ export class TaskService implements TaskServiceBase {
     var myPromise: Promise<Task>;
 
     myPromise = new Promise((resolve, reject) => {
-      if (_gapi_reference == null || _gapi_reference.client == null) {
+      if (_gapiReference == null || _gapiReference.client == null) {
         reject("GAPI client object is not fully initialized.");
       }
 
       // Use Google API to get tasks
-      _gapi_reference.client.tasks.tasks.patch( { task: task.id,
+      _gapiReference.client.tasks.tasks.patch( { task: task.id,
                                                   tasklist: taskListId,
                                                   notes: task.notes
       }).then((response) => {
