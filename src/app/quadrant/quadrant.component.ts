@@ -28,13 +28,6 @@ export class QuadrantComponent implements OnInit, OnDestroy {
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
-  // TODO: Attempt to clean up after Dragula (bug with list change)
-  @ViewChild('quad1') quad1: ElementRef;
-  @ViewChild('quad2') quad2: ElementRef;
-  @ViewChild('quad3') quad3: ElementRef;
-  @ViewChild('quad4') quad4: ElementRef;
-  @ViewChild('quad0') quad0: ElementRef;
-
   // Dragula options
   dragulaOptions: any = {
     revertOnSpill: true,
