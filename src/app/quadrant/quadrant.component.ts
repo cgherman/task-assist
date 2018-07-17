@@ -35,6 +35,13 @@ export class QuadrantComponent implements OnInit, OnDestroy {
   @ViewChild('quad4') quad4: ElementRef;
   @ViewChild('quad0') quad0: ElementRef;
 
+  // Dragula options
+  dragulaOptions: any = {
+    revertOnSpill: true,
+    removeOnSpill: false,
+    copy: false,
+    ignoreInputTextSelection: true
+  }
 
   // data
   tasks: Observable<ITask[]>;
@@ -81,13 +88,6 @@ export class QuadrantComponent implements OnInit, OnDestroy {
 
   // fired upon task list selection
   onChangeTaskList($event) {
-    // TODO: Ensure divs are cleared/updated upon list change
-    // Create objects and re-push template, or clean up child elements?
-    // Eliminate errors by marking data as clean?
-    //thought: for each task ID under quads, remove
-    //thought: this.quad1.nativeElement.removeChild;
-    
-        
     // load the new task list
     var taskListId: string = this.quadrantForm.get('taskList').value;
     console.log("Changing to a different list: " + taskListId);
@@ -143,27 +143,41 @@ export class QuadrantComponent implements OnInit, OnDestroy {
   }
 
   onDrop(args) {
-    // Update data model
     let [bagName, element, target, source] = args;
     var quadrantOld = source.id.substring(target.id.length - 1)
     var quadrantNew = target.id.substring(target.id.length - 1)
 
     console.log("Element " + element.id + " moved (" + quadrantOld + "->" + quadrantNew + ")");
-    this.updateTask(element.id, quadrantNew);
+
+    // Get Dragula "drake" API reference (ng2-dragula doc refers to dragula)
+    // https://github.com/bevacqua/dragula#readme
+    var drake = this.dragulaService.find('taskBag').drake;
+
+    // Undo the Dragula div update to prevent rendering errors
+    drake.cancel(true);
+
+    // Write update to API and refresh data model
+    this.updateTask(element.id, quadrantNew, drake);
   }
 
-  private updateTask(taskId: string, targetQuadrant: string){
+  private updateTask(taskId: string, targetQuadrant: string, dragulaDrake: any){
+    // get fresh task to work upon
     this.taskService.getTask(taskId, this.selectedTaskList)
     .pipe(take(1))
     .subscribe((task: ITask) => 
       {
-        // modify notes of fresh task
+        // Update notes of fresh task
         this.taskModifierServiceBase.setQuadrant(task, targetQuadrant);
 
-        // Update task notes via Google API
+        // Commit updated task notes via Google API
         this.taskService.updateTask( task, this.selectedTaskList
         ).then((task) => {
           console.log("Task " + task.id + " successfully updated via API.");
+
+          // TODO: Optimize reload to remove flicker
+          // Update model with committed data
+          this.loadTasks(this.selectedTaskList);
+
         }).catch((errorHandler) => {
           console.log('Error in QuadrantComponent.onDrop: UpdateTask: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
         });
