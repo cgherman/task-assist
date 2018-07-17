@@ -12,31 +12,32 @@ export class TaskModifierService implements TaskModifierServiceBase {
   setQuadrant(task: ITask, targetQuadrant: string) {
     var tagPositionStart = -1;
     var tagPositionEnd = -1;
-    var newTaskNotes;
+    var newTaskNotes = "";
 
-    if (task.notes != null) {
+    if (task.notes != null && task.notes.length > 0) {
       tagPositionStart = task.notes.toUpperCase().indexOf("[QUAD");
     }
 
-    // generate new prefix
+    // If tag was found then
     if (tagPositionStart >= 0) {
+      // find end of tag
       tagPositionEnd = task.notes.toUpperCase().indexOf("]", tagPositionStart);
 
+      // if characters exist left of tag then
       if (tagPositionStart > 0) {
+        // capture prefix characters
         newTaskNotes = task.notes.substring(0, tagPositionStart - 1);
-      }
-      else {
-        newTaskNotes = "";
       }
     }
     else {
-      newTaskNotes = task.notes + " ";
+      // we will append a new tag to the existing notes
+      newTaskNotes = (task.notes == null ? "" : task.notes + " ");
     }
     
     // add on new Quadrant identifier
     newTaskNotes += "[Quad:" + targetQuadrant + "]"
     
-    // add on new suffix
+    // add on suffix characters
     if (tagPositionEnd > 0 && tagPositionEnd < task.notes.length - 1) {
       newTaskNotes += task.notes.substring(tagPositionEnd + 1);
     }
