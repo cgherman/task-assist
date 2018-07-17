@@ -12,7 +12,8 @@ export class ConfigService {
   }
 
   // Method to fetch app-specific JSON file for Google API config
-  // Create a new project & corresponding credentials here: https://console.developers.google.com/apis/credentials
+  // Create a project & API credentials here: https://console.developers.google.com/apis/credentials
+  // File api_key.json contains two elements: api_key & client_id
   public getApiKeys(): Observable<any> {
     return this.getJson("./assets/api_key.json");
   }
