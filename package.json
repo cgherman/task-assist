@@ -24,6 +24,7 @@
     "@types/gapi.auth2": "0.0.47",
     "core-js": "^2.5.4",
     "ng2-dragula": "^1.5.0",
+    "ngx-auto-unsubscribe": "^2.4.1",
     "rxjs": "^6.0.0",
     "zone.js": "^0.8.26"
   },

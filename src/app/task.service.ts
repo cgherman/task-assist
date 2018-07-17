@@ -1,21 +1,27 @@
-import { Injectable, Output, EventEmitter} from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Observable, Subscription, from } from 'rxjs';
+import { TaskServiceBase } from './task-service-base';
+import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
+
 import { ITask } from './models/itask';
 import { Task } from './models/task';
 import { ITaskList } from './models/itask-list';
 import { TaskList } from './models/task-list';
-import { Observable, PartialObserver, of, from } from 'rxjs';
-import { TaskServiceBase } from './task-service-base';
 
 let _gapiReference = null;
 
+@AutoUnsubscribe({includeArrays: true})
 @Injectable({
   providedIn: 'root'
 })
 
-export class TaskService implements TaskServiceBase {  
+export class TaskService implements TaskServiceBase, OnDestroy {  
 
   private _discoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest"];
   private _scope = "https://www.googleapis.com/auth/tasks";
+
+  // these subscriptions will be cleaned up by @AutoUnsubscribe
+  private subscriptions: Subscription[] = [];
 
   public get discoveryDocs(): string[] {
     return this._discoveryDocs;
@@ -28,6 +34,10 @@ export class TaskService implements TaskServiceBase {
   TaskService() {  
   }
 
+  // ngOnDestroy needs to be present for @AutoUnsubscribe to function
+  ngOnDestroy() {
+  }  
+
   // Set reference to Google API
   public setGapiReference(gapi: any) {
     _gapiReference = gapi;
@@ -38,7 +48,8 @@ export class TaskService implements TaskServiceBase {
 
     myObservable = from(promise);
     if (observer != null) {
-      myObservable.subscribe(observer);
+      var sub = myObservable.subscribe(observer);
+      this.subscriptions.push(sub); // capture for destruction
     }
 
     return myObservable;
@@ -163,9 +174,8 @@ export class TaskService implements TaskServiceBase {
     } else {
       console.log('Found ' + response.result.items.length + ' Task LISTS.');
 
-      var index: number;
       var task;
-      for (index = 0; index < response.result.items.length; index++) {
+      for (var index = 0; index < response.result.items.length; index++) {
         task = new TaskList(response.result.items[index].id,
                             response.result.items[index].title);
         taskLists.push(task);
@@ -176,10 +186,9 @@ export class TaskService implements TaskServiceBase {
   }
 
   private parseTasks(response: any): Task[] {
-    var index: number;
     var tasks = [] as Task[];
 
-    for (index = 0; index < response.result.items.length; index++) {
+    for (var index = 0; index < response.result.items.length; index++) {
       tasks.push(this.newTask(response.result.items[index]));
     }
 

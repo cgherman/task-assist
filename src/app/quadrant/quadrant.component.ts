@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Observable, PartialObserver } from 'rxjs';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 import { FormBuilder,FormControl, FormGroup } from '@angular/forms';
 import { AppComponent } from '../app.component';
@@ -11,8 +11,9 @@ import { ITaskList } from '../models/itask-list';
 import { ITask } from '../models/itask';
 
 import { DragulaService } from 'ng2-dragula';
+import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
-
+@AutoUnsubscribe({includeArrays: true})
 @Component({
   selector: 'app-quadrant',
   templateUrl: './quadrant.component.html',
@@ -21,8 +22,11 @@ import { DragulaService } from 'ng2-dragula';
                { provide: TaskServiceBase, useClass: TaskService }]
 })
   
-export class QuadrantComponent implements OnInit {
+export class QuadrantComponent implements OnInit, OnDestroy {
   @ViewChild('triggerRefresh') triggerRefresh: ElementRef;
+
+  // these subscriptions will be cleaned up by @AutoUnsubscribe
+  private subscriptions: Subscription[] = [];
 
   // TODO: Attempt to clean up after Dragula (bug with list change)
   @ViewChild('quad1') quad1: ElementRef;
@@ -31,12 +35,14 @@ export class QuadrantComponent implements OnInit {
   @ViewChild('quad4') quad4: ElementRef;
   @ViewChild('quad0') quad0: ElementRef;
 
+
+  // data
   tasks: Observable<ITask[]>;
   taskLists: Observable<ITaskList[]>;
 
+  // form-related objects
   selectedTaskList: string;
   openingStatement: string;
-
   quadrantForm: FormGroup;
 
   constructor(private taskService: TaskServiceBase, 
@@ -48,12 +54,6 @@ export class QuadrantComponent implements OnInit {
     // initialize form
     this.createForm();
     this.openingStatement = "Sign in!  Then choose here!";
-  
-    // wire up event
-    appComponent.dataReadyToLoad.subscribe(item => this.onDataReadyToLoad());
-    
-    // Init Dragula drag-n-drop
-    dragulaService.drop.subscribe(args => this.onDrop(args));
   }
 
   createForm() {
@@ -63,6 +63,17 @@ export class QuadrantComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Init Dragula drag-n-drop
+    var sub = this.dragulaService.drop.subscribe(args => this.onDrop(args));
+    this.subscriptions.push(sub); // capture for destruction
+
+    // wire up data event
+    var sub = this.appComponent.dataReadyToLoad.subscribe(item => this.onDataReadyToLoad());
+    this.subscriptions.push(sub); // capture for destruction
+  }
+
+  // ngOnDestroy needs to be present for @AutoUnsubscribe to function
+  ngOnDestroy() {
   }
 
   ngDoCheck() {
@@ -81,7 +92,7 @@ export class QuadrantComponent implements OnInit {
     var taskListId: string = this.quadrantForm.get('taskList').value;
     console.log("Changing to a different list: " + taskListId);
     this.selectedTaskList = taskListId;
-    this.getTasks(taskListId);
+    this.loadTasks(taskListId);
   }
 
   // Fired from app component after user is authorized
@@ -108,9 +119,9 @@ export class QuadrantComponent implements OnInit {
       this.quadrantForm.get('taskList').patchValue(taskLists[0].id);
     }
 
-    // Trigger UI update to notify Angular of GAPI model change
+    // Trigger UI update to notify Angular of GAPI model
+    // This is preferable to polling (polling from ngOnInit does work)
     // Method markForCheck() is not effective at this stage
-    // this is preferable to polling
     this.triggerRefresh.nativeElement.click();
   }
 
@@ -120,7 +131,7 @@ export class QuadrantComponent implements OnInit {
   }
 
   // let's get the tasks
-  getTasks(taskListId: string) {
+  loadTasks(taskListId: string) {
     // TODO: error handling
     this.tasks = this.taskService.getTasks(taskListId)
       .pipe(finalize((() => { this.onTasksLoaded(); })));
@@ -134,15 +145,14 @@ export class QuadrantComponent implements OnInit {
   onDrop(args) {
     // Update data model
     let [bagName, element, target, source] = args;
-
     var quadrantOld = source.id.substring(target.id.length - 1)
     var quadrantNew = target.id.substring(target.id.length - 1)
 
     console.log("Element " + element.id + " moved (" + quadrantOld + "->" + quadrantNew + ")");
-    this.UpdateTask(element.id, quadrantNew);
+    this.updateTask(element.id, quadrantNew);
   }
 
-  private UpdateTask(taskId: string, targetQuadrant: string){
+  private updateTask(taskId: string, targetQuadrant: string){
     this.taskService.getTask(taskId, this.selectedTaskList)
     .pipe(take(1))
     .subscribe((task: ITask) => 
