@@ -11,10 +11,11 @@
 
   // Google OAuth2 button creation
   <script>
-      function onSuccess(googleUser) {
+      function onAuthSuccess(googleUser) {
         console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+        onSignIn();
       }
-      function onFailure(error) {
+      function onAuthFailure(error) {
         console.log(error);
       }
       function renderButton() {
@@ -24,8 +25,8 @@
           'height': 36,
           'longtitle': false,
           'theme': 'dark',
-          'onsuccess': onSuccess,
-          'onfailure': onFailure
+          'onsuccess': onAuthSuccess,
+          'onfailure': onAuthFailure
         });
       }
     </script>
