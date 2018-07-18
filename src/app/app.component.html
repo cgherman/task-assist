@@ -8,7 +8,8 @@
         <button id="signout-button" onClick="onSignOut()">Sign Out</button>&nbsp;&nbsp;
       </div>
       <div class="w3-right">
-        <div id="glogin" class="g-signin2" data-onsuccess="onSignIn" data-theme="dark">[Sign In]</div>
+        <div id="googleLogin" #googleLogin>[Sign In]</div>
+        <div id="triggerRenderButton" #triggerRenderButton style="display: none; visibility: hidden;" hidden onClick="renderButton()"></div>
       </div>
     </div>
   </div>

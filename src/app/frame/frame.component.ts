@@ -1,4 +1,4 @@
-import { Component, Output, ViewChild, ElementRef, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -8,6 +8,7 @@ import { TaskServiceBase } from '../task-service-base';
 import { TaskService } from '../task.service';
 import { AuthServiceBase } from '../auth-service-base';
 import { AuthService } from '../auth.service';
+import { ConfigService } from '../config.service';
 
 declare var gapi: any;
 
@@ -26,6 +27,7 @@ export class FrameComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthServiceBase,
               private taskService: TaskServiceBase,
               private route: ActivatedRoute,
+              private configService: ConfigService,
               private meta: Meta
             ) {
 
@@ -49,28 +51,32 @@ export class FrameComponent implements OnInit, OnDestroy {
 
   private configureServices() {
     // fetch scope and discovery context from Google Task Service
-    let scope = (this.taskService as TaskService).scope;
-    let discoveryDocs = (this.taskService as TaskService).discoveryDocs;
+    let scope = this.configService.scope;
+    let discoveryDocs = this.configService.discoveryDocs;
 
     // set Google scope and discoveryDocs to enable auth
-    this.meta.addTag({ name: 'google-signin-scope', content: scope });
     (this.authService as AuthService).scope = scope;
     (this.authService as AuthService).discoveryDocs = discoveryDocs;
 
     // fetch API settings and hook them up
-    this.route.data.subscribe((data: { config: any }) => {
+    var sub = this.route.data.subscribe((data: { config: any }) => {
 
       // fetch config elements from config
       let api_key = data.config.api_key;
       let client_id = data.config.client_id;
 
       // set Google scope and discoveryDocs to enable auth
-      this.meta.addTag({ name: 'google-signin-client_id', content: client_id });
       (this.authService as AuthService).api_key = api_key;
       (this.authService as AuthService).client_id = client_id;
-    });
 
-  }
+      this.meta.updateTag({ name: 'google-signin-scope', content: scope });
+      this.meta.updateTag({ name: 'google-signin-client_id', content: client_id });
+
+      // Config values are loaded; we can tell Google OAuth to go forth
+      this.configService.configIsResolved();
+    });
+    this.subscriptions.push(sub); // capture for destruction
+  }  
 
   // ngOnDestroy needs to be present for @AutoUnsubscribe to function
   ngOnDestroy() {

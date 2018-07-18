@@ -4,13 +4,36 @@
   <title>TaskAssist</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <base href="/">
+  <meta name="google-signin-scope" content="">
+  <meta name="google-signin-client_id" content="">
+    <base href="/">
   <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon">
+
+  // Google OAuth2 button creation
+  <script>
+      function onSuccess(googleUser) {
+        console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+      }
+      function onFailure(error) {
+        console.log(error);
+      }
+      function renderButton() {
+        gapi.signin2.render('googleLogin', {
+          'scope': 'profile email',
+          'width': 120,
+          'height': 36,
+          'longtitle': false,
+          'theme': 'dark',
+          'onsuccess': onSuccess,
+          'onfailure': onFailure
+        });
+      }
+    </script>
 
   <!-- JQuery -->
   <script type="text/javascript" src="https://ajax.microsoft.com/ajax/jQuery/jquery-1.4.2.min.js"></script>
 
-  <!-- Google API -->
+  <!-- Google OAuth2 API button rendering -->
   <script src="https://apis.google.com/js/platform.js"></script>
 </head>
 <body class="w3-light-grey">
