@@ -112,6 +112,7 @@ export class FrameComponent implements OnInit, OnDestroy {
 
   // Triggered by form button
   onSignOut() {
+    (this.authService as AuthService).setGapiReference(gapi);
     this.authService.signOut();
   }
   
