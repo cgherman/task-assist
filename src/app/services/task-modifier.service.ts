@@ -9,7 +9,7 @@ export class TaskModifierService implements TaskModifierServiceBase {
 
   constructor() { }
 
-  setQuadrant(task: ITask, targetQuadrant: string) {
+  setQuadrant(task: ITask, quadrantChar: string) {
     var tagPositionStart = -1;
     var tagPositionEnd = -1;
     var newTaskNotes = "";
@@ -35,7 +35,7 @@ export class TaskModifierService implements TaskModifierServiceBase {
     }
     
     // add on new Quadrant identifier
-    newTaskNotes += "[Quad:" + targetQuadrant + "]"
+    newTaskNotes += "[Quad:" + quadrantChar + "]"
     
     // add on suffix characters
     if (tagPositionEnd > 0 && tagPositionEnd < task.notes.length - 1) {
