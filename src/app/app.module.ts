@@ -16,14 +16,15 @@ import { TaskServiceBase } from './task-service-base';
 import { TaskModifierService } from './task-modifier.service';
 import { TaskModifierServiceBase } from './task-modifier-service-base';
 import { ConfigService } from './config.service';
-import { FrameComponent } from './frame/frame.component';
+import { UserFrameComponent } from './user-frame/user-frame.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    FrameComponent,
-    QuadrantComponent
+    UserFrameComponent,
+    QuadrantComponent,
+    UserFrameComponent
   ],
   imports: [
 

@@ -15,10 +15,10 @@ declare var gapi: any;
 @AutoUnsubscribe({includeArrays: true})
 @Component({
   selector: 'app-frame',
-  templateUrl: './frame.component.html',
-  styleUrls: ['./frame.component.css']
+  templateUrl: './user-frame.component.html',
+  styleUrls: ['./user-frame.component.css']
 })
-export class FrameComponent implements OnInit, OnDestroy {
+export class UserFrameComponent implements OnInit, OnDestroy {
   @Output() dataReadyToLoad: EventEmitter<any> = new EventEmitter();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
@@ -68,6 +68,9 @@ export class FrameComponent implements OnInit, OnDestroy {
       // set Google scope and discoveryDocs to enable auth
       (this.authService as AuthService).api_key = api_key;
       (this.authService as AuthService).client_id = client_id;
+
+      console.log(api_key);
+      console.log(client_id);
 
       this.meta.updateTag({ name: 'google-signin-scope', content: scope });
       this.meta.updateTag({ name: 'google-signin-client_id', content: client_id });
