@@ -1,6 +1,7 @@
 import { Output, EventEmitter } from '@angular/core';
 import { Injectable } from '@angular/core';
 import { AuthServiceBase } from './auth-service-base';
+import { GapiWrapperService } from './gapi-wrapper.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +17,7 @@ export class AuthService implements AuthServiceBase {
   private _scope: string = null;
   private _discoveryDocs: string[] = null;
 
-  private _gapiReference = null;
-
-  constructor() {
+  constructor(private gapiReference: GapiWrapperService) {
   }
 
   set api_key(newValue: string) {
@@ -37,18 +36,13 @@ export class AuthService implements AuthServiceBase {
     this._discoveryDocs = newValue;
   }
 
-  // Set reference to Google API
-  public setGapiReference(gapi: any) {
-    this._gapiReference = gapi;
-  }
-
   // return auth status
   public isAuthenticated(): boolean {
-    if (this._gapiReference == null) {
+    if (this.gapiReference.instance == null || this.gapiReference.instance.auth == null) {
       return false;
     }
 
-    var googleAuth = this._gapiReference.auth2.getAuthInstance();
+    var googleAuth = this.gapiReference.instance.auth2.getAuthInstance();
     return googleAuth.isSignedIn.get();
   }
 
@@ -58,14 +52,14 @@ export class AuthService implements AuthServiceBase {
   }
 
   private loadGoogleClients() {
-    this._gapiReference.load('client:auth2', () => {
+    this.gapiReference.instance.load('client:auth2', () => {
       this.onGoogleLoad();
     });
   }
 
   // Upon API initial load, initialize OAuth2
   private onGoogleLoad() {
-    var googleAuth = this._gapiReference.auth2.init({
+    var googleAuth = this.gapiReference.instance.auth2.init({
       client_id: this._client_id,
       scope: this._scope
     }).then(() => this.onGoogleAuthInitialized(), () => this.onGoogleAuthError);
@@ -77,7 +71,7 @@ export class AuthService implements AuthServiceBase {
 
     // Wire up listener to watch for sign-in state change
     var googleAuth: any; 
-    googleAuth = this._gapiReference.auth2.getAuthInstance();
+    googleAuth = this.gapiReference.instance.auth2.getAuthInstance();
 
     // Wire up listener to watch for sign-in state change
     googleAuth.isSignedIn.listen((() => { this.updateSigninStatus(); }));
@@ -110,7 +104,7 @@ export class AuthService implements AuthServiceBase {
     console.log("scope: " + this._scope);
 
     // initialize GAPI client
-    this._gapiReference.client.init({
+    this.gapiReference.instance.client.init({
       apiKey: this._api_key,
       discoveryDocs: this._discoveryDocs,
       clientId: this._client_id,
@@ -130,8 +124,8 @@ export class AuthService implements AuthServiceBase {
   // Method used to sign out of Google and revoke app access
   signOut() {
     // log out
-    this._gapiReference.auth2.getAuthInstance().disconnect();
-    this._gapiReference.auth2.getAuthInstance().signOut(
+    this.gapiReference.instance.auth2.getAuthInstance().disconnect();
+    this.gapiReference.instance.auth2.getAuthInstance().signOut(
     ).then((response) => {
       console.log('Successful sign-out.');
       setTimeout(() => location.reload(), 1000);

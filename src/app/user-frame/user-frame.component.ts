@@ -10,8 +10,6 @@ import { AuthServiceBase } from '../services/auth-service-base';
 import { AuthService } from '../services/auth.service';
 import { ConfigService } from '../services/config.service';
 
-declare var gapi: any;
-
 @AutoUnsubscribe({includeArrays: true})
 @Component({
   selector: 'app-frame',
@@ -69,9 +67,6 @@ export class UserFrameComponent implements OnInit, OnDestroy {
       (this.authService as AuthService).api_key = api_key;
       (this.authService as AuthService).client_id = client_id;
 
-      console.log(api_key);
-      console.log(client_id);
-
       this.meta.updateTag({ name: 'google-signin-scope', content: scope });
       this.meta.updateTag({ name: 'google-signin-client_id', content: client_id });
 
@@ -92,9 +87,6 @@ export class UserFrameComponent implements OnInit, OnDestroy {
 
   // begin the sign-in/authorization process
   signIn() {
-    // wire up auth service dependency
-    (this.authService as AuthService).setGapiReference(gapi);
-
     // sign in using authorization service
     this.authService.signIn();
   }
@@ -102,7 +94,6 @@ export class UserFrameComponent implements OnInit, OnDestroy {
   // Triggered by authorization service
   onAuthenticated() {
     // ready to load our data
-    (this.taskService as TaskService).setGapiReference(gapi);
     this.onDataReadyToLoad();
   }
 
@@ -115,7 +106,6 @@ export class UserFrameComponent implements OnInit, OnDestroy {
 
   // Triggered by form button
   onSignOut() {
-    (this.authService as AuthService).setGapiReference(gapi);
     this.authService.signOut();
   }
   

@@ -15,6 +15,7 @@ import { TaskService } from './services/task.service';
 import { TaskServiceBase } from './services/task-service-base';
 import { TaskModifierService } from './services/task-modifier.service';
 import { TaskModifierServiceBase } from './services/task-modifier-service-base';
+import { GapiWrapperService } from './services/gapi-wrapper.service';
 import { ConfigService } from './services/config.service';
 import { UserFrameComponent } from './user-frame/user-frame.component';
 
@@ -37,7 +38,8 @@ import { UserFrameComponent } from './user-frame/user-frame.component';
   providers: [{ provide: AuthServiceBase, useClass: AuthService },
               { provide: TaskModifierServiceBase, useClass: TaskModifierService },
               { provide: TaskServiceBase, useClass: TaskService },
-              { provide: ConfigService, useClass: ConfigService }],
+              { provide: ConfigService, useClass: ConfigService },
+              GapiWrapperService],
   bootstrap: [AppComponent]
 })
 
