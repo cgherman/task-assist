@@ -1,13 +1,13 @@
 import { Output, EventEmitter } from '@angular/core';
 import { Injectable } from '@angular/core';
-import { AuthServiceBase } from './auth-service-base';
 import { GapiWrapperService } from './gapi-wrapper.service';
+import { GoogleAuthServiceBase } from './google-auth-service-base';
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class AuthService implements AuthServiceBase {
+export class AuthService implements GoogleAuthServiceBase {
   @Output() Authenticated: EventEmitter<any> = new EventEmitter();
   @Output() googleAuthInit: EventEmitter<any> = new EventEmitter();
   @Output() googleAuthError: EventEmitter<any> = new EventEmitter();

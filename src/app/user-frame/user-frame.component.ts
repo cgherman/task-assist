@@ -4,11 +4,8 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
 
-import { TaskServiceBase } from '../services/task-service-base';
-import { TaskService } from '../services/task.service';
-import { AuthServiceBase } from '../services/auth-service-base';
-import { AuthService } from '../services/auth.service';
 import { ConfigService } from '../services/config.service';
+import { GoogleAuthServiceBase } from '../services/google-auth-service-base';
 
 @AutoUnsubscribe({includeArrays: true})
 @Component({
@@ -22,8 +19,7 @@ export class UserFrameComponent implements OnInit, OnDestroy {
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
-  constructor(private authService: AuthServiceBase,
-              private taskService: TaskServiceBase,
+  constructor(private authService: GoogleAuthServiceBase,
               private route: ActivatedRoute,
               private configService: ConfigService,
               private meta: Meta
@@ -48,24 +44,19 @@ export class UserFrameComponent implements OnInit, OnDestroy {
   }
 
   private configureServices() {
-    // fetch scope and discovery context from Google Task Service
-    let scope = this.configService.scope;
-    let discoveryDocs = this.configService.discoveryDocs;
-
-    // set Google scope and discoveryDocs to enable auth
-    (this.authService as AuthService).scope = scope;
-    (this.authService as AuthService).discoveryDocs = discoveryDocs;
-
-    // fetch API settings and hook them up
     var sub = this.route.data.subscribe((data: { config: any }) => {
 
       // fetch config elements from config
-      let api_key = data.config.api_key;
-      let client_id = data.config.client_id;
+      let scope = this.configService.scope;
+      let discoveryDocs = this.configService.discoveryDocs;
+      let api_key = this.configService.apiKeyFromConfig(data.config);
+      let client_id = this.configService.clientIdFromConfig(data.config);
 
-      // set Google scope and discoveryDocs to enable auth
-      (this.authService as AuthService).api_key = api_key;
-      (this.authService as AuthService).client_id = client_id;
+      // set Google config to enable auth
+      this.authService.scope = scope;
+      this.authService.discoveryDocs = discoveryDocs;
+      this.authService.api_key = api_key;
+      this.authService.client_id = client_id;
 
       this.meta.updateTag({ name: 'google-signin-scope', content: scope });
       this.meta.updateTag({ name: 'google-signin-client_id', content: client_id });

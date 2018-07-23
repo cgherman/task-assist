@@ -9,8 +9,9 @@ import { DragulaModule } from 'ng2-dragula';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './/app-routing.module';
 
-import { AuthService } from './services/auth.service';
 import { AuthServiceBase } from './services/auth-service-base';
+import { GoogleAuthServiceBase } from './services/google-auth-service-base';
+import { AuthService } from './services/auth.service';
 import { TaskService } from './services/task.service';
 import { TaskServiceBase } from './services/task-service-base';
 import { TaskModifierService } from './services/task-modifier.service';
@@ -36,6 +37,7 @@ import { UserFrameComponent } from './user-frame/user-frame.component';
     AppRoutingModule
   ],
   providers: [{ provide: AuthServiceBase, useClass: AuthService },
+              { provide: GoogleAuthServiceBase, useClass: AuthService },
               { provide: TaskModifierServiceBase, useClass: TaskModifierService },
               { provide: TaskServiceBase, useClass: TaskService },
               { provide: ConfigService, useClass: ConfigService },
