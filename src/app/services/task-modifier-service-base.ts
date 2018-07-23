@@ -1,4 +1,4 @@
-import { ITask } from './models/itask';
+import { ITask } from '../models/itask';
 
 export abstract class TaskModifierServiceBase {
     // modify the task notes to set the quadrant

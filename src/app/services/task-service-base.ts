@@ -1,5 +1,5 @@
-import { ITaskList } from './models/itask-list';
-import { ITask } from './models/itask';
+import { ITaskList } from '../models/itask-list';
+import { ITask } from '../models/itask';
 import { Observable } from 'rxjs';
 
 export abstract class TaskServiceBase {

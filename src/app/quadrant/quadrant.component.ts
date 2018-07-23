@@ -4,9 +4,9 @@ import { finalize, take } from 'rxjs/operators';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserFrameComponent } from '../user-frame/user-frame.component';
 
-import { TaskModifierServiceBase } from '../task-modifier-service-base';
-import { TaskServiceBase } from '../task-service-base';
-import { TaskService } from '../task.service';
+import { TaskModifierServiceBase } from '../services/task-modifier-service-base';
+import { TaskServiceBase } from '../services/task-service-base';
+import { TaskService } from '../services/task.service';
 import { ITaskList } from '../models/itask-list';
 import { ITask } from '../models/itask';
 

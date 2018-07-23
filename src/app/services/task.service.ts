@@ -3,10 +3,10 @@ import { Observable, Subscription, from } from 'rxjs';
 import { TaskServiceBase } from './task-service-base';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
-import { ITask } from './models/itask';
-import { Task } from './models/task';
-import { ITaskList } from './models/itask-list';
-import { TaskList } from './models/task-list';
+import { ITask } from '../models/itask';
+import { Task } from '../models/task';
+import { ITaskList } from '../models/itask-list';
+import { TaskList } from '../models/task-list';
 
 let _gapiReference = null;
 

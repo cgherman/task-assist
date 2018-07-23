@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router, Resolve, ActivatedRoute, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Subscription, Observable, from, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { ConfigService } from '../config.service';
+import { ConfigService } from '../services/config.service';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 @AutoUnsubscribe({includeArrays: true})

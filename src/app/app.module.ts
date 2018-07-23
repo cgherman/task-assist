@@ -9,13 +9,13 @@ import { DragulaModule } from 'ng2-dragula';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './/app-routing.module';
 
-import { AuthService } from './auth.service';
-import { AuthServiceBase } from './auth-service-base';
-import { TaskService } from './task.service';
-import { TaskServiceBase } from './task-service-base';
-import { TaskModifierService } from './task-modifier.service';
-import { TaskModifierServiceBase } from './task-modifier-service-base';
-import { ConfigService } from './config.service';
+import { AuthService } from './services/auth.service';
+import { AuthServiceBase } from './services/auth-service-base';
+import { TaskService } from './services/task.service';
+import { TaskServiceBase } from './services/task-service-base';
+import { TaskModifierService } from './services/task-modifier.service';
+import { TaskModifierServiceBase } from './services/task-modifier-service-base';
+import { ConfigService } from './services/config.service';
 import { UserFrameComponent } from './user-frame/user-frame.component';
 
 

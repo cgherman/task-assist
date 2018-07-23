@@ -4,11 +4,11 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
 
-import { TaskServiceBase } from '../task-service-base';
-import { TaskService } from '../task.service';
-import { AuthServiceBase } from '../auth-service-base';
-import { AuthService } from '../auth.service';
-import { ConfigService } from '../config.service';
+import { TaskServiceBase } from '../services/task-service-base';
+import { TaskService } from '../services/task.service';
+import { AuthServiceBase } from '../services/auth-service-base';
+import { AuthService } from '../services/auth.service';
+import { ConfigService } from '../services/config.service';
 
 declare var gapi: any;
 

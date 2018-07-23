@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/co
 import { Subscription, Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 
-import { AuthServiceBase } from './auth-service-base';
-import { ConfigService } from './config.service';
+import { AuthServiceBase } from './services/auth-service-base';
+import { ConfigService } from './services/config.service';
 import { ConfigResolver } from './resolvers/config-resolver.service';
 
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";

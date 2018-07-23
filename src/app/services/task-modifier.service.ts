@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TaskModifierServiceBase } from './task-modifier-service-base';
-import { ITask } from './models/itask';
+import { ITask } from '../models/itask';
 
 @Injectable({
   providedIn: 'root'
