@@ -7,3 +7,51 @@
 .menu-title-font {
     font-variant: small-caps;
 }
+
+.null-as-blank:after {
+    content: '\200b';
+}
+
+.quad-title-1 {
+    background-color: #e76;
+}
+
+.quad-1 {
+    background-color: #f98;
+}
+
+.quad-title-2 {
+    background-color: #ed5;
+}
+
+.quad-2 {
+    background-color: #ff7;
+}
+
+.quad-title-3 {
+    background-color: #7c6;
+}
+
+.quad-3 {
+    background-color: #8e8;
+}
+
+.quad-title-4 {
+    background-color: #bba;
+}
+
+.quad-4 {
+    background-color: #ccb;
+}
+
+.quad-title-0 {
+    background-color: #6af;
+}
+
+.quad-0 {
+    background-color: #9cf;
+}
+
+.quad-title {
+    font-variant: small-caps;
+}

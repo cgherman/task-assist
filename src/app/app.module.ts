@@ -19,6 +19,7 @@ import { TaskModifierServiceBase } from './services/task-modifier-service-base';
 import { GapiWrapperService } from './services/gapi-wrapper.service';
 import { ConfigService } from './services/config.service';
 import { UserFrameComponent } from './user-frame/user-frame.component';
+import { VerticalListComponent } from './vertical-list/vertical-list.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { UserFrameComponent } from './user-frame/user-frame.component';
     AppComponent,
     UserFrameComponent,
     QuadrantComponent,
-    UserFrameComponent
+    UserFrameComponent,
+    VerticalListComponent
   ],
   imports: [
 

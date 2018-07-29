@@ -113,7 +113,7 @@
         <div #quad0 id="QUAD0" class="quad-0 external-outline" style="min-height: 30px;" [dragula]='"taskBag"' [dragulaModel]='tasks' [dragulaOptions]='dragulaOptions'>
         <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
             <ng-container *ngIf="quadrantMatch(task, null)">
-                <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border null-as-blank w3-small">
+                <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border w3-small">
                     {{task.title}}
                 </div>
             </ng-container>

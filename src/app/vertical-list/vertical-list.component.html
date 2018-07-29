@@ -1,0 +1,99 @@
+<div id="triggerRefresh" #triggerRefresh style="display: none; visibility: hidden;" hidden (click)="onRefresh()"></div>
+
+<!-- Form Elements -->
+<div class="">
+  <form [formGroup]="quadrantForm">
+    <div class="form-group">
+      <div class="w3-row w3-section w3-row-padding">
+        <div class="w3-container">
+          <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-book"></i></div>
+          <div class="w3-rest" >
+            <select class="w3-select" (ngModelChange)="onChangeTaskList($event)" formControlName="taskList" id="taskListDropDown">
+              <option [selected]="true" disabled>{{openingStatement}}</option>
+              <option *ngFor="let i = index; let taskList of taskLists | async "
+                      [value]="taskList.id">
+                {{taskList.title}}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="">
+  <!-- Tier 1 -->
+  <div class="quad-title-1 external-outline w3-row-padding">
+    <div class="quad-title w3-large">Focus: Primary &amp; Hot</div>
+  </div>
+  <div #quad1 id="QUAD1" class="quad-1 external-outline" style="min-height: 30px;">
+    <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
+      <ng-container *ngIf="quadrantMatch(task, 1)">
+        <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border w3-small">
+          {{task.title}}
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+  <div class="">&nbsp;</div>
+
+  <!-- Tier 2 -->
+  <div class="quad-title-2 external-outline w3-row-padding">
+    <div class="quad-title w3-large">Plan: Primary &amp; Upcoming</div>
+  </div>
+  <div #quad2 id="QUAD2" class="quad-2 external-outline" style="min-height: 30px;">
+    <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
+      <ng-container *ngIf="quadrantMatch(task, 2)">
+        <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border w3-small">
+            {{task.title}}
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+  <div class="">&nbsp;</div>
+
+  <!-- Tier 3 -->
+  <div class="quad-title-3 external-outline w3-row-padding">
+    <div class="quad-title w3-large">Delegate: Hot but Unimportant</div>
+  </div>
+  <div #quad3 id="QUAD3" class="quad-3 external-outline" style="min-height: 30px;">
+    <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
+      <ng-container *ngIf="quadrantMatch(task, 3)">
+        <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border w3-small">
+            {{task.title}}
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+  <div class="">&nbsp;</div>
+
+  <!-- Tier 4 -->
+  <div class="quad-title-4 external-outline w3-row-padding">
+    <div class="quad-title w3-large">Eliminate: Cold &amp; Unimportant</div>
+  </div>
+  <div #quad4 id="QUAD4" class="quad-4 external-outline" style="min-height: 30px;">
+    <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
+      <ng-container *ngIf="quadrantMatch(task, 4)">
+        <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border w3-small">
+            {{task.title}}
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+  <div class="">&nbsp;</div>
+
+  <!-- Tier undefined -->
+  <div class="quad-title-0 external-outline w3-row-padding">
+    <div class="quad-title w3-large">Unspecified: Needs Assessment</div>
+  </div>
+  <div #quad0 id="QUAD0" class="quad-0 external-outline" style="min-height: 30px;">
+    <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
+      <ng-container *ngIf="quadrantMatch(task, null)">
+        <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border w3-small">
+            {{task.title}}
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

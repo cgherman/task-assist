@@ -4,6 +4,7 @@ import { UserFrameComponent } from './user-frame/user-frame.component';
 import { CanActivateViaAuthGuard } from './can-activate-via-auth.guard';
 import { ConfigResolver } from './resolvers/config-resolver.service';
 import { QuadrantComponent } from './quadrant/quadrant.component';
+import { VerticalListComponent } from './vertical-list/vertical-list.component';
 
 const appRoutes: Routes = [
   {
@@ -20,6 +21,9 @@ const appRoutes: Routes = [
     children: [ {
         path: 'quadrant',
         component: QuadrantComponent
+      },{
+        path: 'vertical-list',
+        component: VerticalListComponent
       }
     ]
   }
