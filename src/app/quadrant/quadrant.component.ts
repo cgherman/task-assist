@@ -47,7 +47,11 @@ export class QuadrantComponent implements OnInit, OnDestroy {
 
   // action menu
   menuActionTask = [
-    'Focus: Urgent & Important', 'Plan: Important but Not Urgent', 'Delegate: Urgent but Not Important', 'Eliminate: Not urgent & Not Important', 'Unspecified: Not Sure'
+    'Focus - Urgent & Important',
+    'Plan - Important but Non-urgent',
+    'Delegate - Urgent but Unimportant',
+    'Eliminate - None of the Above',
+    'Unspecified / Unsure'
   ];
   
   constructor(private taskService: TaskServiceBase, 
@@ -168,19 +172,19 @@ export class QuadrantComponent implements OnInit, OnDestroy {
   selectTaskAction(selection: any, taskId: any) {
     var targetQuadrant: string = null;
 
-    if (selection == 'Focus: Urgent & Important') {
+    if (selection == 'Focus - Urgent & Important') {
       targetQuadrant = "1";
     }
-    if (selection == 'Plan: Important but Not Urgent') {
+    if (selection == 'Plan - Important but Non-urgent') {
       targetQuadrant = "2";
     }
-    if (selection == 'Delegate: Urgent but Not Important') {
+    if (selection == 'Delegate - Urgent but Unimportant') {
       targetQuadrant = "3";
     }
-    if (selection == 'Eliminate: Not urgent & Not Important') {
+    if (selection == 'Eliminate - None of the Above') {
       targetQuadrant = "4";
     }
-    if (selection == 'Unspecified: Not Sure') {
+    if (selection == 'Unspecified / Unsure') {
       targetQuadrant = "0";
     }
 
