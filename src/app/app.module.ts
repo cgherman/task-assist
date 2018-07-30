@@ -22,6 +22,7 @@ import { GapiWrapperService } from './services/gapi-wrapper.service';
 import { ConfigService } from './services/config.service';
 import { UserFrameComponent } from './user-frame/user-frame.component';
 import { VerticalListComponent } from './vertical-list/vertical-list.component';
+import { AboutComponent } from './about/about.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { VerticalListComponent } from './vertical-list/vertical-list.component';
     UserFrameComponent,
     QuadrantComponent,
     UserFrameComponent,
-    VerticalListComponent
+    VerticalListComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,

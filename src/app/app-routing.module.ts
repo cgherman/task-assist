@@ -5,6 +5,7 @@ import { CanActivateViaAuthGuard } from './can-activate-via-auth.guard';
 import { ConfigResolver } from './resolvers/config-resolver.service';
 import { QuadrantComponent } from './quadrant/quadrant.component';
 import { VerticalListComponent } from './vertical-list/vertical-list.component';
+import { AboutComponent } from './about/about.component';
 
 const appRoutes: Routes = [
   {
@@ -24,6 +25,9 @@ const appRoutes: Routes = [
       },{
         path: 'vertical-list',
         component: VerticalListComponent
+      },{
+        path: 'about',
+        component: AboutComponent
       }
     ]
   }

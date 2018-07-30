@@ -4,6 +4,17 @@
 @import url('https://fonts.googleapis.com/css?family=Raleway');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
 
+.info-box {
+    border-radius: 10px;
+    background-color: #eef;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 15px;    
+}
+
+.inline-link {
+    color: #00c;
+}
+
 .menu-title-font {
     font-variant: small-caps;
 }

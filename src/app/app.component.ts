@@ -22,6 +22,8 @@ export class AppComponent implements OnInit, OnDestroy {
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
+  public title = "Drag or Tap Your Tasks";
+
   constructor(private authService: AuthServiceBase,
               private configService: ConfigService,
               private route: ActivatedRoute,
