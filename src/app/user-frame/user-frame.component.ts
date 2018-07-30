@@ -6,6 +6,7 @@ import { Meta } from '@angular/platform-browser';
 
 import { ConfigService } from '../services/config.service';
 import { GoogleAuthServiceBase } from '../services/google-auth-service-base';
+import { AppComponent } from '../app.component';
 
 @AutoUnsubscribe({includeArrays: true})
 @Component({
@@ -22,7 +23,8 @@ export class UserFrameComponent implements OnInit, OnDestroy {
   constructor(private authService: GoogleAuthServiceBase,
               private route: ActivatedRoute,
               private configService: ConfigService,
-              private meta: Meta
+              private meta: Meta,
+              private appComponent: AppComponent
             ) {
 
     // Wire up GAPI Auth actions
@@ -32,7 +34,7 @@ export class UserFrameComponent implements OnInit, OnDestroy {
     };
     window['onSignOut'] = function () {
       _self.onSignOut();
-    };    
+    };
   }
 
   ngOnInit() {
@@ -41,6 +43,10 @@ export class UserFrameComponent implements OnInit, OnDestroy {
     this.subscriptions.push(sub); // capture for destruction
     
     this.configureServices();
+  }
+
+  set title(newValue: string) {
+    this.appComponent.title = newValue;
   }
 
   private configureServices() {

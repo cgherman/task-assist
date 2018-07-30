@@ -21,18 +21,20 @@ export class AboutComponent implements OnInit {
   ngOnInit() {
     // wire up data event
     var sub = this.frameComponent.dataReadyToLoad.subscribe(item => this.onDataReadyToLoad());
-    this.subscriptions.push(sub); // capture for destruction    
+    this.subscriptions.push(sub); // capture for destruction
+
+    this.frameComponent.title = "About TaskAssist";
   }
 
-    // Fired from app component after user is authorized
-    private onDataReadyToLoad(): void {
-      this.onDataLoaded();
-    }
+  // Fired from app component after user is authorized
+  private onDataReadyToLoad(): void {
+    this.onDataLoaded();
+  }
 
-    private onDataLoaded() {
-      // Trigger UI update to notify Angular of GAPI model
-      // This is preferable to polling (polling from ngOnInit does work)
-      // Method markForCheck() is not effective at this stage
-      this.triggerRefresh.nativeElement.click();
-    }  
+  private onDataLoaded() {
+    // Trigger UI update to notify Angular of GAPI model
+    // This is preferable to polling (polling from ngOnInit does work)
+    // Method markForCheck() is not effective at this stage
+    this.triggerRefresh.nativeElement.click();
+  }  
 }
