@@ -169,7 +169,6 @@ export class VerticalListComponent implements OnInit {
   onTaskQuadrantUpdated() {
     // TODO: Optimize reload to remove flicker
     // Update model with committed data
-    console.log("SDFSDFSDFSDFFSDSFDSFDFDSxxxxxxxxxxxxxxxxx");
     this.loadTasks(this.selectedTaskList);
   }
 
