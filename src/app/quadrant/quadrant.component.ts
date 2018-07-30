@@ -45,6 +45,11 @@ export class QuadrantComponent implements OnInit, OnDestroy {
   openingStatement: string;
   quadrantForm: FormGroup;
 
+  // action menu
+  menuActionTask = [
+    'Focus: Urgent & Important', 'Plan: Important but Not Urgent', 'Delegate: Urgent but Not Important', 'Eliminate: Not urgent & Not Important', 'Unspecified: Not Sure'
+  ];
+  
   constructor(private taskService: TaskServiceBase, 
               private taskModifierService: TaskModifierServiceBase, 
               private formBuilder: FormBuilder, 
@@ -158,6 +163,31 @@ export class QuadrantComponent implements OnInit, OnDestroy {
 
   private updateTask(taskId: string, targetQuadrant: string, dragulaDrake: any){
     this.taskModifierService.updateTaskQuadrant(this.taskService, taskId, this.selectedTaskList, targetQuadrant);
+  }
+
+  selectTaskAction(selection: any, taskId: any) {
+    var targetQuadrant: string = null;
+
+    if (selection == 'Focus: Urgent & Important') {
+      targetQuadrant = "1";
+    }
+    if (selection == 'Plan: Important but Not Urgent') {
+      targetQuadrant = "2";
+    }
+    if (selection == 'Delegate: Urgent but Not Important') {
+      targetQuadrant = "3";
+    }
+    if (selection == 'Eliminate: Not urgent & Not Important') {
+      targetQuadrant = "4";
+    }
+    if (selection == 'Unspecified: Not Sure') {
+      targetQuadrant = "0";
+    }
+
+    console.log("Requested move of element " + taskId + " (to " + targetQuadrant + ")");
+    if (targetQuadrant != null) {
+      this.taskModifierService.updateTaskQuadrant(this.taskService, taskId, this.selectedTaskList, targetQuadrant);
+    }
   }
 
   onTaskQuadrantUpdated() {

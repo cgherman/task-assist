@@ -35,12 +35,12 @@ export class VerticalListComponent implements OnInit {
   openingStatement: string;
   quadrantForm: FormGroup;
 
-  // sub-menu objects
-  objectKeys = Object.keys;
+  // action menu
   menuActionTask = [
     'Focus: Urgent & Important', 'Plan: Important but Not Urgent', 'Delegate: Urgent but Not Important', 'Eliminate: Not urgent & Not Important', 'Unspecified: Not Sure'
   ];
   /* TODO: Nested menus for different action types
+  objectKeys = Object.keys;
   menuActionTask = {
     'Assign Quadrant': ['Focus: Urgent & Important', 'Plan: Important but Not Urgent', 'Delegate: Urgent but Not Important', 'Eliminate: Not urgent & Not Important'],
     'Create Reminder': ['Today AM', 'Today Afternoon', 'Today Evening'],
