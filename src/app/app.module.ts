@@ -1,6 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatButtonModule, MatMenuModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { QuadrantComponent } from './quadrant/quadrant.component';
@@ -21,7 +23,6 @@ import { ConfigService } from './services/config.service';
 import { UserFrameComponent } from './user-frame/user-frame.component';
 import { VerticalListComponent } from './vertical-list/vertical-list.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,12 +32,14 @@ import { VerticalListComponent } from './vertical-list/vertical-list.component';
     VerticalListComponent
   ],
   imports: [
-
     BrowserModule,
     ReactiveFormsModule,
     DragulaModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatButtonModule,
+    MatMenuModule
   ],
   providers: [{ provide: AuthServiceBase, useClass: AuthService },
               { provide: GoogleAuthServiceBase, useClass: AuthService },

@@ -1,5 +1,28 @@
 <div id="triggerRefresh" #triggerRefresh style="display: none; visibility: hidden;" hidden (click)="onRefresh()"></div>
 
+<!-- Action Menu for Tasks -->
+<mat-menu #taskActionMenu="matMenu">
+  <ng-template matMenuContent let-name="name">
+    <ng-container *ngFor="let mainItem of menuActionTask">
+      <button mat-menu-item (click)="selectTaskAction(mainItem, name.id)">{{ mainItem }}</button>
+    </ng-container>
+  </ng-template>
+</mat-menu>
+<!-- TODO: Nested menus for different action types
+<mat-menu #taskActionMenu="matMenu">
+  <ng-template matMenuContent let-name="name">
+    <ng-container *ngFor="let mainItem of objectKeys(menuActionTask)">
+
+      <button mat-menu-item [matMenuTriggerFor]="sub_menu">{{ mainItem }}</button>
+      <mat-menu #sub_menu="matMenu">
+      <button *ngFor="let subItem of menuActionTask[mainItem]" (click)="selectTaskAction(subItem, name.id)" mat-menu-item>{{ subItem }}</button>
+      </mat-menu>
+    
+    </ng-container>
+  </ng-template>
+</mat-menu>
+-->
+
 <!-- Form Elements -->
 <div class="">
   <form [formGroup]="quadrantForm">
@@ -25,12 +48,12 @@
 <div class="">
   <!-- Tier 1 -->
   <div class="quad-title-1 external-outline w3-row-padding">
-    <div class="quad-title w3-large">Focus: Primary &amp; Hot</div>
+    <div class="quad-title w3-large">Focus: Urgent &amp; Important</div>
   </div>
   <div #quad1 id="QUAD1" class="quad-1 external-outline" style="min-height: 30px;">
     <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
       <ng-container *ngIf="quadrantMatch(task, 1)">
-        <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border w3-small">
+        <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white w3-border w3-small">
           {{task.title}}
         </div>
       </ng-container>
@@ -40,13 +63,13 @@
 
   <!-- Tier 2 -->
   <div class="quad-title-2 external-outline w3-row-padding">
-    <div class="quad-title w3-large">Plan: Primary &amp; Upcoming</div>
+    <div class="quad-title w3-large">Plan: Important Soon</div>
   </div>
   <div #quad2 id="QUAD2" class="quad-2 external-outline" style="min-height: 30px;">
     <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
       <ng-container *ngIf="quadrantMatch(task, 2)">
-        <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border w3-small">
-            {{task.title}}
+        <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white w3-border w3-small">
+          {{task.title}}
         </div>
       </ng-container>
     </ng-container>
@@ -60,8 +83,8 @@
   <div #quad3 id="QUAD3" class="quad-3 external-outline" style="min-height: 30px;">
     <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
       <ng-container *ngIf="quadrantMatch(task, 3)">
-        <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border w3-small">
-            {{task.title}}
+        <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white w3-border w3-small">
+          {{task.title}}
         </div>
       </ng-container>
     </ng-container>
@@ -75,8 +98,8 @@
   <div #quad4 id="QUAD4" class="quad-4 external-outline" style="min-height: 30px;">
     <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
       <ng-container *ngIf="quadrantMatch(task, 4)">
-        <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border w3-small">
-            {{task.title}}
+        <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white w3-border w3-small">
+          {{task.title}}
         </div>
       </ng-container>
     </ng-container>
@@ -90,8 +113,8 @@
   <div #quad0 id="QUAD0" class="quad-0 external-outline" style="min-height: 30px;">
     <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
       <ng-container *ngIf="quadrantMatch(task, null)">
-        <div [attr.id]="task.id" class="w3-padding-small w3-hover-white w3-border w3-small">
-            {{task.title}}
+        <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white w3-border w3-small">
+          {{task.title}}
         </div>
       </ng-container>
     </ng-container>

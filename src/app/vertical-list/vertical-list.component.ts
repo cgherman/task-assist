@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { finalize, take } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserFrameComponent } from '../user-frame/user-frame.component';
 
@@ -26,7 +26,6 @@ export class VerticalListComponent implements OnInit {
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
-
   // data
   tasks: Observable<ITask[]>;
   taskLists: Observable<ITaskList[]>;
@@ -36,8 +35,19 @@ export class VerticalListComponent implements OnInit {
   openingStatement: string;
   quadrantForm: FormGroup;
 
+  // sub-menu objects
+  objectKeys = Object.keys;
+  menuActionTask = [
+    'Focus: Urgent & Important', 'Plan: Important but Not Urgent', 'Delegate: Urgent but Not Important', 'Eliminate: Not urgent & Not Important', 'Unspecified: Not Sure'
+  ];
+  /* TODO: Nested menus for different action types
+  menuActionTask = {
+    'Assign Quadrant': ['Focus: Urgent & Important', 'Plan: Important but Not Urgent', 'Delegate: Urgent but Not Important', 'Eliminate: Not urgent & Not Important'],
+    'Create Reminder': ['Today AM', 'Today Afternoon', 'Today Evening'],
+  };*/
+
   constructor(private taskService: TaskServiceBase, 
-              private taskModifierServiceBase: TaskModifierServiceBase, 
+              private taskModifierService: TaskModifierServiceBase, 
               private formBuilder: FormBuilder, 
               private dragulaService: DragulaService, 
               private frameComponent: UserFrameComponent) {
@@ -54,13 +64,13 @@ export class VerticalListComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Init Dragula drag-n-drop
-    var sub = this.dragulaService.drop.subscribe(args => this.onDrop(args));
-    this.subscriptions.push(sub); // capture for destruction
-
     // wire up data event
     var sub = this.frameComponent.dataReadyToLoad.subscribe(item => this.onDataReadyToLoad());
     this.subscriptions.push(sub); // capture for destruction
+
+    var sub = this.taskModifierService.taskQuadrantUpdated.subscribe(item => this.onTaskQuadrantUpdated());
+    this.subscriptions.push(sub); // capture for destruction
+
   }
 
   // ngOnDestroy needs to be present for @AutoUnsubscribe to function
@@ -126,51 +136,41 @@ export class VerticalListComponent implements OnInit {
     // TODO: Handle any necessary user dialog here
   }
 
-  onDrop(args) {
-    let [bagName, element, target, source] = args;
-    var quadrantOld = source.id.substring(target.id.length - 1)
-    var quadrantNew = target.id.substring(target.id.length - 1)
-
-    console.log("Element " + element.id + " moved (" + quadrantOld + "->" + quadrantNew + ")");
-
-    // Get Dragula "drake" API reference (ng2-dragula doc refers to dragula)
-    // https://github.com/bevacqua/dragula#readme
-    var drake = this.dragulaService.find('taskBag').drake;
-
-    // Undo the Dragula div update to prevent rendering errors
-    drake.cancel(true);
-
-    // Write update to API and refresh data model
-    this.updateTask(element.id, quadrantNew, drake);
-  }
-
-  private updateTask(taskId: string, targetQuadrant: string, dragulaDrake: any){
-    // get fresh task to work upon
-    this.taskService.getTask(taskId, this.selectedTaskList)
-    .pipe(take(1))
-    .subscribe((task: ITask) => 
-      {
-        // Update notes of fresh task
-        this.taskModifierServiceBase.setQuadrant(task, targetQuadrant);
-
-        // Commit updated task notes via Google API
-        this.taskService.updateTask( task, this.selectedTaskList
-        ).then((task) => {
-          console.log("Task " + task.id + " successfully updated via API.");
-
-          // TODO: Optimize reload to remove flicker
-          // Update model with committed data
-          this.loadTasks(this.selectedTaskList);
-
-        }).catch((errorHandler) => {
-          console.log('Error in QuadrantComponent.onDrop: UpdateTask: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
-        });
-      }
-    );
-  }
-
   // Called by repeater to determine appropriate quadrant for each task
   quadrantMatch(task: ITask, quadrant:string): boolean {
-    return this.taskModifierServiceBase.checkQuadrantMatch(task, quadrant);
+    return this.taskModifierService.checkQuadrantMatch(task, quadrant);
   }
+
+  selectTaskAction(selection: any, taskId: any) {
+    var targetQuadrant: string = null;
+
+    if (selection == 'Focus: Urgent & Important') {
+      targetQuadrant = "1";
+    }
+    if (selection == 'Plan: Important but Not Urgent') {
+      targetQuadrant = "2";
+    }
+    if (selection == 'Delegate: Urgent but Not Important') {
+      targetQuadrant = "3";
+    }
+    if (selection == 'Eliminate: Not urgent & Not Important') {
+      targetQuadrant = "4";
+    }
+    if (selection == 'Unspecified: Not Sure') {
+      targetQuadrant = "0";
+    }
+
+    console.log("Requested move of element " + taskId + " (to " + targetQuadrant + ")");
+    if (targetQuadrant != null) {
+      this.taskModifierService.updateTaskQuadrant(this.taskService, taskId, this.selectedTaskList, targetQuadrant);
+    }
+  }
+
+  onTaskQuadrantUpdated() {
+    // TODO: Optimize reload to remove flicker
+    // Update model with committed data
+    console.log("SDFSDFSDFSDFFSDSFDSFDFDSxxxxxxxxxxxxxxxxx");
+    this.loadTasks(this.selectedTaskList);
+  }
+
 }

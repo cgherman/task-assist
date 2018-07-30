@@ -1,6 +1,6 @@
 # TaskAssist
 
-This demo project leverages the Google OAuth2 API and the Google Tasks API.This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.8.
+This demo project leverages the Google OAuth2 API and the Google Tasks API.This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.1.1.
 
 ## Features/Usage
 
