@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 
 import { AuthServiceBase } from './services/auth-service-base';
@@ -49,4 +49,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.triggerRenderButton.nativeElement.click();    
   }
   
+  isSignedIn(): boolean {
+    return this.authService.isAuthenticated();
+  }
 }

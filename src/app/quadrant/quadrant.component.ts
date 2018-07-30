@@ -124,6 +124,10 @@ export class QuadrantComponent implements OnInit, OnDestroy {
       this.quadrantForm.get('taskList').patchValue(taskLists[0].id);
     }
 
+    this.onDataLoaded();
+  }
+
+  private onDataLoaded() {
     // Trigger UI update to notify Angular of GAPI model
     // This is preferable to polling (polling from ngOnInit does work)
     // Method markForCheck() is not effective at this stage
