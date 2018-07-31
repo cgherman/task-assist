@@ -28,12 +28,13 @@ export class AboutComponent implements OnInit {
 
   // Fired from app component after user is authorized
   private onDataReadyToLoad(): void {
+    // nothing to load, continue
     this.onDataLoaded();
   }
 
   private onDataLoaded() {
     // Trigger UI update to notify Angular of GAPI model
-    // This is preferable to polling (polling from ngOnInit does work)
+    // This is preferable to polling GAPI (polling from ngOnInit does work)
     // Method markForCheck() is not effective at this stage
     this.triggerRefresh.nativeElement.click();
   }
