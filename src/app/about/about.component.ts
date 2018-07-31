@@ -36,5 +36,11 @@ export class AboutComponent implements OnInit {
     // This is preferable to polling (polling from ngOnInit does work)
     // Method markForCheck() is not effective at this stage
     this.triggerRefresh.nativeElement.click();
-  }  
+  }
+
+  // Triggered by triggerRefresh event
+  onRefresh() {
+    // TODO: Handle any necessary user dialog here
+  }
+  
 }
