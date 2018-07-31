@@ -1,4 +1,4 @@
-import { Injectable,Output, EventEmitter } from '@angular/core';
+import { Injectable,Output, EventEmitter, OnDestroy } from '@angular/core';
 import { take } from 'rxjs/operators';
 import { Subscription } from '../../../node_modules/rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
@@ -11,7 +11,7 @@ import { TaskServiceBase } from './task-service-base';
 @Injectable({
   providedIn: 'root'
 })
-export class TaskModifierService implements TaskModifierServiceBase {
+export class TaskModifierService implements TaskModifierServiceBase, OnDestroy {
   @Output() taskQuadrantUpdated: EventEmitter<any> = new EventEmitter();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
@@ -19,6 +19,10 @@ export class TaskModifierService implements TaskModifierServiceBase {
 
   constructor() { }
 
+  // ngOnDestroy needs to be present for @AutoUnsubscribe to function
+  ngOnDestroy() {
+  }
+  
   updateTaskQuadrant(taskService: TaskServiceBase, taskId: string, taskListId: string, quadrantChar: string) {
     var sub: Subscription;
 

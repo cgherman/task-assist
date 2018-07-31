@@ -1,4 +1,4 @@
-import { Output, EventEmitter } from '@angular/core';
+import { Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Injectable } from '@angular/core';
 import { HttpClient  } from '@angular/common/http'; 
 import { Observable, Subscription } from 'rxjs';
@@ -8,7 +8,7 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 @Injectable({
   providedIn: 'root'
 })
-export class ConfigService {
+export class ConfigService implements OnDestroy {
   @Output() configResolved: EventEmitter<any> = new EventEmitter();
 
   private _discoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest"];
@@ -28,6 +28,10 @@ export class ConfigService {
   constructor(private http: HttpClient) {
   }
 
+  // ngOnDestroy needs to be present for @AutoUnsubscribe to function
+  ngOnDestroy() {
+  }
+  
   // Method to fetch app-specific JSON file for Google API config
   // Create a project & API credentials here: https://console.developers.google.com/apis/credentials
   // File api_key.json contains two elements: api_key & client_id

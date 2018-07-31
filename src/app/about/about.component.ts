@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { UserFrameComponent } from '../user-frame/user-frame.component';
 import { Subscription } from 'rxjs';
 
@@ -10,7 +10,7 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.css']
 })
-export class AboutComponent implements OnInit {
+export class AboutComponent implements OnInit, OnDestroy {
   @ViewChild('triggerRefresh') triggerRefresh: ElementRef;
 
   constructor(private frameComponent: UserFrameComponent) { }
@@ -26,6 +26,10 @@ export class AboutComponent implements OnInit {
     this.frameComponent.title = "About TaskAssist";
   }
 
+  // ngOnDestroy needs to be present for @AutoUnsubscribe to function
+  ngOnDestroy() {
+  }
+  
   // Fired from app component after user is authorized
   private onDataReadyToLoad(): void {
     // nothing to load, continue

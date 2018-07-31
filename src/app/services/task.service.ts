@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { Observable, Subscription, from } from 'rxjs';
 import { TaskServiceBase } from './task-service-base';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
@@ -15,6 +15,7 @@ import { GapiWrapperService } from './gapi-wrapper.service';
 })
 
 export class TaskService implements TaskServiceBase, OnDestroy {  
+  @Output() errorLoadingTasks: EventEmitter<any> = new EventEmitter();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
@@ -57,6 +58,7 @@ export class TaskService implements TaskServiceBase, OnDestroy {
           resolve(taskLists);
         }
       }).catch((errorHandler) => {
+        this.errorLoadingTasks.emit();
         reject(errorHandler);
       });
 
@@ -85,6 +87,7 @@ export class TaskService implements TaskServiceBase, OnDestroy {
           resolve(tasks);
         }
       }).catch((errorHandler) => {
+        this.errorLoadingTasks.emit();
         reject(errorHandler);
       });
     });
@@ -112,6 +115,7 @@ export class TaskService implements TaskServiceBase, OnDestroy {
           resolve(task);
         }
       }).catch((errorHandler) => {
+        this.errorLoadingTasks.emit();
         reject(errorHandler);
       });
     });
@@ -140,6 +144,7 @@ export class TaskService implements TaskServiceBase, OnDestroy {
           resolve(task);
         }
       }).catch((errorHandler) => {
+        this.errorLoadingTasks.emit();
         reject(errorHandler);
       });
     });

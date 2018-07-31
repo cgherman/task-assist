@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthServiceBase } from './services/auth-service-base';
 import { ConfigService } from './services/config.service';
-import { ConfigResolver } from './resolvers/config-resolver.service';
 
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
