@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthServiceBase } from './services/auth-service-base';
 import { ConfigService } from './services/config.service';
@@ -26,8 +26,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(private authService: AuthServiceBase,
               private configService: ConfigService,
-              private route: ActivatedRoute,
-              private configResolver: ConfigResolver) {
+              private activatedRoute: ActivatedRoute,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -51,5 +51,27 @@ export class AppComponent implements OnInit, OnDestroy {
   
   isSignedIn(): boolean {
     return this.authService.isAuthenticated();
+  }
+
+  currentView(): string {
+    if (this.router.url.indexOf('quadrant') > 0) {
+      return "Quad";
+    }
+    if (this.router.url.indexOf('vertical-list') > 0) {
+      return "Vert";
+    }
+    return "";
+  }
+
+  switchView() {
+    var currentView = this.currentView();
+    if (currentView == "Quad") {
+      // We're on quadrant, switch to vertical-list
+      window.location.assign("/vertical-list");
+    }
+    if (currentView == "Vert") {
+      // We're on quadrant, switch to vertical-list
+      window.location.assign("/quadrant");
+    }
   }
 }

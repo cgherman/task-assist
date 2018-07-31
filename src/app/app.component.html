@@ -1,15 +1,19 @@
+<div id="triggerRenderButton" #triggerRenderButton style="display: none; visibility: hidden;" hidden onClick="renderButton()"></div>
+
 <div class="w3-container">
   <div class="w3-left">
     <label class="w3-large">{{title}}</label>
   </div>
   <div class="w3-right">
-    <div class="w3-container">
-      <div class="w3-left" *ngIf="isSignedIn()">
+    <div>
+      <div *ngIf="currentView() != ''" class="w3-container inline" style="display: inline-block; vertical-align: middle">
+        <button mat-mini-fab primary (click)="switchView()">{{currentView()}}</button>
+      </div>
+      <div class="inline" style="display: inline-block; vertical-align: middle" *ngIf="isSignedIn()">
         <button id="signout-button" mat-raised-button onClick="onSignOut()">Sign Out</button>&nbsp;&nbsp;
       </div>
-      <div class="w3-right">
+      <div class="inline" style="display: inline-block; vertical-align: middle">
         <div id="googleLogin" #googleLogin>[Sign In]</div>
-        <div id="triggerRenderButton" #triggerRenderButton style="display: none; visibility: hidden;" hidden onClick="renderButton()"></div>
       </div>
     </div>
   </div>
