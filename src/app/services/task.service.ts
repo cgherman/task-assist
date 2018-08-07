@@ -20,7 +20,7 @@ export class TaskService implements TaskServiceBase, OnDestroy {
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
-  constructor(private gapiReference: GapiWrapperService) {  
+  constructor(private gapiWrapper: GapiWrapperService) {  
   }
 
   // ngOnDestroy needs to be present for @AutoUnsubscribe to function
@@ -43,12 +43,12 @@ export class TaskService implements TaskServiceBase, OnDestroy {
     var myPromise: Promise<TaskList[]>;
 
     myPromise = new Promise((resolve, reject) => {
-      if (this.gapiReference.instance == null || this.gapiReference.instance.client == null) {
+      if (this.gapiWrapper.instance == null || this.gapiWrapper.instance.client == null) {
         reject("GAPI client object is not fully initialized.");
       }
 
       // Use Google API to get task lists
-      this.gapiReference.instance.client.tasks.tasklists.list({
+      this.gapiWrapper.instance.client.tasks.tasklists.list({
       }).then((response) => {
         if (response == null || response.result == null || response.result.items == null || response.result.items.length == 0) {
           resolve(null);
@@ -71,12 +71,12 @@ export class TaskService implements TaskServiceBase, OnDestroy {
     var myPromise: Promise<Task[]>;
 
     myPromise = new Promise((resolve, reject) => {
-      if (this.gapiReference.instance == null || this.gapiReference.instance.client == null) {
+      if (this.gapiWrapper.instance == null || this.gapiWrapper.instance.client == null) {
         reject("GAPI client object is not fully initialized.");
       }
 
       // Use Google API to get tasks
-      this.gapiReference.instance.client.tasks.tasks.list( { tasklist: taskList,
+      this.gapiWrapper.instance.client.tasks.tasks.list( { tasklist: taskList,
                                                  showCompleted: "false" 
       }).then((response) => {
         if (response == null || response.result == null || response.result.items == null || response.result.items.length == 0) {
@@ -99,12 +99,12 @@ export class TaskService implements TaskServiceBase, OnDestroy {
     var myPromise: Promise<Task>;
 
     myPromise = new Promise((resolve, reject) => {
-      if (this.gapiReference.instance == null || this.gapiReference.instance.client == null) {
+      if (this.gapiWrapper.instance == null || this.gapiWrapper.instance.client == null) {
         reject("GAPI client object is not fully initialized.");
       }
 
       // Use Google API to get tasks
-      this.gapiReference.instance.client.tasks.tasks.get( { task: taskId,
+      this.gapiWrapper.instance.client.tasks.tasks.get( { task: taskId,
                                                 tasklist: taskListId
       }).then((response) => {
         if (response == null || response.result == null) {
@@ -127,12 +127,12 @@ export class TaskService implements TaskServiceBase, OnDestroy {
     var myPromise: Promise<Task>;
 
     myPromise = new Promise((resolve, reject) => {
-      if (this.gapiReference.instance == null || this.gapiReference.instance.client == null) {
+      if (this.gapiWrapper.instance == null || this.gapiWrapper.instance.client == null) {
         reject("GAPI client object is not fully initialized.");
       }
 
       // Use Google API to get tasks
-      this.gapiReference.instance.client.tasks.tasks.patch( { task: task.id,
+      this.gapiWrapper.instance.client.tasks.tasks.patch( { task: task.id,
                                                   tasklist: taskListId,
                                                   notes: task.notes
       }).then((response) => {

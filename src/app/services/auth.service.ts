@@ -17,7 +17,7 @@ export class AuthService implements GoogleAuthServiceBase {
   private _scope: string = null;
   private _discoveryDocs: string[] = null;
 
-  constructor(private gapiReference: GapiWrapperService) {
+  constructor(private gapiWrapper: GapiWrapperService) {
   }
 
   set api_key(newValue: string) {
@@ -38,11 +38,11 @@ export class AuthService implements GoogleAuthServiceBase {
 
   // return auth status
   public isAuthenticated(): boolean {
-    if (this.gapiReference.instance == null || this.gapiReference.instance.auth == null) {
+    if (this.gapiWrapper.instance == null || this.gapiWrapper.instance.auth == null) {
       return false;
     }
 
-    var googleAuth = this.gapiReference.instance.auth2.getAuthInstance();
+    var googleAuth = this.gapiWrapper.instance.auth2.getAuthInstance();
     return googleAuth.isSignedIn.get();
   }
 
@@ -52,14 +52,14 @@ export class AuthService implements GoogleAuthServiceBase {
   }
 
   private loadGoogleClients() {
-    this.gapiReference.instance.load('client:auth2', () => {
+    this.gapiWrapper.instance.load('client:auth2', () => {
       this.onGoogleLoad();
     });
   }
 
   // Upon API initial load, initialize OAuth2
   private onGoogleLoad() {
-    var googleAuth = this.gapiReference.instance.auth2.init({
+    var googleAuth = this.gapiWrapper.instance.auth2.init({
       client_id: this._client_id,
       scope: this._scope
     }).then(() => this.onGoogleAuthInitialized(), () => this.onGoogleAuthError);
@@ -71,7 +71,7 @@ export class AuthService implements GoogleAuthServiceBase {
 
     // Wire up listener to watch for sign-in state change
     var googleAuth: any; 
-    googleAuth = this.gapiReference.instance.auth2.getAuthInstance();
+    googleAuth = this.gapiWrapper.instance.auth2.getAuthInstance();
 
     // Wire up listener to watch for sign-in state change
     googleAuth.isSignedIn.listen((() => { this.updateSigninStatus(); }));
@@ -104,7 +104,7 @@ export class AuthService implements GoogleAuthServiceBase {
     console.log("scope: " + this._scope);
 
     // initialize GAPI client
-    this.gapiReference.instance.client.init({
+    this.gapiWrapper.instance.client.init({
       apiKey: this._api_key,
       discoveryDocs: this._discoveryDocs,
       clientId: this._client_id,
@@ -124,8 +124,8 @@ export class AuthService implements GoogleAuthServiceBase {
   // Method used to sign out of Google and revoke app access
   signOut() {
     // log out
-    this.gapiReference.instance.auth2.getAuthInstance().disconnect();
-    this.gapiReference.instance.auth2.getAuthInstance().signOut(
+    this.gapiWrapper.instance.auth2.getAuthInstance().disconnect();
+    this.gapiWrapper.instance.auth2.getAuthInstance().signOut(
     ).then((response) => {
       console.log('Successful sign-out.');
       setTimeout(() => location.reload(), 1000);
