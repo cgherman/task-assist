@@ -149,7 +149,6 @@ export abstract class TaskComponentBase {
     }
     
     private onTaskQuadrantUpdated() {
-        // TODO: Optimize reload to remove flicker
         // Update model with committed data
         this.loadTasks(this.selectedTaskList, true);
     }
