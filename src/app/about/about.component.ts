@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserFrameComponent } from '../user-frame/user-frame.component';
 import { Subscription } from 'rxjs';
 
@@ -11,8 +11,6 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
   styleUrls: ['./about.component.css']
 })
 export class AboutComponent implements OnInit, OnDestroy {
-  @ViewChild('triggerRefresh') triggerRefresh: ElementRef;
-
   constructor(private frameComponent: UserFrameComponent) { }
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
@@ -36,16 +34,8 @@ export class AboutComponent implements OnInit, OnDestroy {
     this.onDataLoaded();
   }
 
-  private onDataLoaded() {
-    // Trigger UI update to notify Angular of GAPI model
-    // This is preferable to polling GAPI (polling from ngOnInit does work)
-    // Method markForCheck() is not effective at this stage
-    this.triggerRefresh.nativeElement.click();
-  }
-
-  // Triggered by triggerRefresh event
-  onRefresh() {
-    // TODO: Handle any necessary user dialog here
+  protected onDataLoaded() {
+    this.frameComponent.backgroundGoogleTasksDone();
   }
   
 }

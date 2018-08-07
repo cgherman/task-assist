@@ -20,6 +20,11 @@ export class UserFrameComponent implements OnInit, OnDestroy {
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
+  // Messages to help you set up your instance
+  private _missing_config = "You need to deploy api_key.json to your assets folder.";  
+  private _missing_api_key = "API key was not found!";
+  private _missing_client_key = "Client ID was not found!";
+  
   constructor(private authService: GoogleAuthServiceBase,
               private route: ActivatedRoute,
               private configService: ConfigService,
@@ -99,6 +104,10 @@ export class UserFrameComponent implements OnInit, OnDestroy {
     // fire event indicating data service is ready
     console.log("GAPI client initialized.  Ready for data load.");
     this.dataReadyToLoad.emit(null);
+  }
+
+  public backgroundGoogleTasksDone() {
+    this.appComponent.backgroundGoogleTasksDone();
   }
 
   // Triggered by form button

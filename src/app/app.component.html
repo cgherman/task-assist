@@ -1,22 +1,27 @@
-<div id="triggerRenderButton" #triggerRenderButton style="display: none; visibility: hidden;" hidden onClick="renderButton()"></div>
-
 <!-- Header -->
-<header class="w3-row" style="padding-top:10px">
-  <div class="w3-left">
-    <label class="w3-large">{{title}}</label>
-  </div>
-  <div class="w3-right">
-    <div>
-      <div *ngIf="currentView() != ''" class="inline" style="margin-right: 10px; margin-left: 8px; ">
-        <button mat-mini-fab primary (click)="switchView()">{{currentView()}}</button>
-      </div>
-      <div class="inline">
-        <button id="signout-button" mat-raised-button [disabled]="!isSignedIn()"  onClick="onSignOut()">Sign Out</button>&nbsp;&nbsp;
-      </div>
-      <div class="inline">
-        <div id="googleLogin" #googleLogin>[Sign In]</div>
+<header style="padding-top:10px">
+  <div class="w3-row">
+    <div class="w3-left">
+      <label class="w3-large">{{title}}</label>
+    </div>
+    <div class="w3-right">
+      <div>
+        <div *ngIf="currentView() != ''" class="inline" style="margin-right: 10px; margin-left: 8px; ">
+          <button mat-mini-fab primary (click)="switchView()">{{currentView()}}</button>
+        </div>
+        <div class="inline">
+          <button id="signout-button" mat-raised-button [disabled]="!isSignedIn()"  onClick="onSignOut()">Sign Out</button>&nbsp;&nbsp;
+        </div>
+        <div class="inline">
+          <div id="googleLogin" #googleLogin>[Sign In]</div>
+          <div id="triggerRenderButton" #triggerRenderButton style="display: none; visibility: hidden;" hidden onClick="renderButton()"></div>
+          <div id="googleExternalEventsCompleted" #googleExternalEventsCompleted style="display: none; visibility: hidden;" hidden (click)="onGoogleExternalEventsCompleted()"></div>
+        </div>
       </div>
     </div>
+  </div>
+  <div class="w3-row w3-orange w3-large w3-animate-zoom" style="padding-left: 15px; padding-right: 15px">
+    {{headerMessage}}
   </div>
 </header>
 

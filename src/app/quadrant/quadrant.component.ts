@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { UserFrameComponent } from '../user-frame/user-frame.component';
@@ -21,8 +21,6 @@ import { AuthServiceBase } from '../services/auth-service-base';
 })
   
 export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDestroy {
-  @ViewChild('triggerRefresh') triggerRefresh: ElementRef;
-
   // Dragula options
   dragulaOptions: any = {
     revertOnSpill: true,
@@ -61,15 +59,7 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
   }
 
   onDataLoaded() {
-    // Trigger UI update to notify Angular of GAPI model
-    // This is preferable to polling GAPI (polling from ngOnInit does work)
-    // Method markForCheck() is not effective at this stage
-    this.triggerRefresh.nativeElement.click();
-  }
-
-  // Triggered by triggerRefresh event
-  onRefresh() {
-    // TODO: Handle any necessary user dialog here
+    this.frameComponent.backgroundGoogleTasksDone();
   }
 
   onDrop(args) {

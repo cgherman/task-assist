@@ -17,16 +17,32 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('googleLogin') googleLogin: ElementRef;
   @ViewChild('triggerRenderButton') triggerRenderButton: ElementRef;
+  @ViewChild('googleExternalEventsCompleted') googleExternalEventsCompleted: ElementRef;
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
+  // Message to ensure that Google API platform.js is allowed to load
+  public _googleLoadFailure = "Google API was not loaded! Please check your connection and disable your ad blocker to allow platform.js to load.";
+
   public title = "Drag or Tap Your Tasks";
+  public headerMessage = null;
 
   constructor(private authService: AuthServiceBase,
               private configService: ConfigService,
               private activatedRoute: ActivatedRoute,
               private router: Router) {
+  }
+
+  onGapiLoadError() {
+    console.log("Google Auth Failed to Load!");
+    this.headerMessageAppend(this._googleLoadFailure);
+    this.backgroundGoogleTasksDone();
+  }
+
+  headerMessageAppend(text: string) {
+    console.log("Message: " + text);
+    this.headerMessage = this.headerMessage == null ? text : this.headerMessage + " " + text;
   }
 
   ngOnInit() {
@@ -48,6 +64,18 @@ export class AppComponent implements OnInit, OnDestroy {
     this.triggerRenderButton.nativeElement.click();    
   }
   
+  public backgroundGoogleTasksDone() {
+    // Trigger UI update, notifying Angular of GAPI-induced model changes.
+    // Pollin GAPI for completion does work, but this is preferable.
+    // Note: Built-in method markForCheck() has not been effective at this stage
+    this.googleExternalEventsCompleted.nativeElement.click();
+  }
+
+  // Triggered by googleExternalEventsCompleted event
+  onGoogleExternalEventsCompleted() {
+    // TODO: Handle any necessary user dialog here
+  }
+
   isSignedIn(): boolean {
     return this.authService.isAuthenticated();
   }

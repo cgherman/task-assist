@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserFrameComponent } from '../user-frame/user-frame.component';
 
@@ -18,8 +18,6 @@ import { AuthServiceBase } from '../services/auth-service-base';
   providers:  [{ provide: TaskServiceBase, useClass: TaskService }]
 })
 export class VerticalListComponent extends TaskComponentBase implements OnInit, OnDestroy {
-  @ViewChild('triggerRefresh') triggerRefresh: ElementRef;
-
   constructor(formBuilder: FormBuilder,
               taskService: TaskServiceBase, 
               taskModifierService: TaskModifierServiceBase, 
@@ -45,14 +43,7 @@ export class VerticalListComponent extends TaskComponentBase implements OnInit, 
   }
 
   onDataLoaded() {
-    // Trigger UI update to notify Angular of GAPI model
-    // This is preferable to polling GAPI (polling from ngOnInit does work)
-    // Method markForCheck() is not effective at this stage
-    this.triggerRefresh.nativeElement.click();
+    this.frameComponent.backgroundGoogleTasksDone();
   }
 
-  // Triggered by triggerRefresh event
-  onRefresh() {
-    // TODO: Handle any necessary user dialog here
-  }
 }
