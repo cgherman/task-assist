@@ -66,7 +66,7 @@ export abstract class TaskComponentBase {
     }
 
     // Triggered by app component after user is authorized
-    private onDataReadyToLoad(): void {
+    private onDataReadyToLoad(): void {        
         this.getTaskLists();
     }
 
@@ -99,7 +99,7 @@ export abstract class TaskComponentBase {
         this.onDataLoaded();
     }
     
-    abstract onDataLoaded();
+    protected abstract onDataLoaded();
 
     // let's get the tasks
     protected loadTasks(taskListId: string) {

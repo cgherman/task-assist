@@ -42,7 +42,7 @@ export class VerticalListComponent extends TaskComponentBase implements OnInit, 
     this.loadTaskList();
   }
 
-  onDataLoaded() {
+  protected onDataLoaded() {
     this.frameComponent.backgroundGoogleTasksDone();
   }
 

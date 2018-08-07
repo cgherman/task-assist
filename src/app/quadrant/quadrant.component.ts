@@ -21,6 +21,7 @@ import { AuthServiceBase } from '../services/auth-service-base';
 })
   
 export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDestroy {
+
   // Dragula options
   dragulaOptions: any = {
     revertOnSpill: true,
@@ -58,7 +59,7 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
     this.loadTaskList();
   }
 
-  onDataLoaded() {
+  protected onDataLoaded() {
     this.frameComponent.backgroundGoogleTasksDone();
   }
 
