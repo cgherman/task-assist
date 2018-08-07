@@ -63,6 +63,9 @@ export abstract class TaskComponentBase {
 
         var sub = this.taskService.errorLoadingTasks.subscribe(item => this.onErrorLoadingTasks());
         this.subscriptions.push(sub); // capture for destruction
+
+        var sub = this.taskService.taskListLoaded.subscribe(taskLists => this.onTaskListLoaded(taskLists));
+        this.subscriptions.push(sub); // capture for destruction
     }
 
     // Triggered by app component after user is authorized
@@ -72,11 +75,8 @@ export abstract class TaskComponentBase {
 
     // let's fetch the task lists
     getTaskLists() {
-        var subscriber: Function;
-        subscriber = (taskLists => this.onTaskListInitialSelection(taskLists));
-
         // TODO: error handling
-        this.taskLists = this.taskService.getTaskLists(subscriber);
+        this.taskLists = this.taskService.getTaskLists();
     }
 
     protected loadTaskList() {
@@ -87,8 +87,10 @@ export abstract class TaskComponentBase {
     }
 
     // Fired after initial task list is loaded
-    onTaskListInitialSelection(taskLists: ITaskList[]){
-        // select first list
+    private onTaskListLoaded($event){
+        var taskLists = $event;
+
+        // activate first list
         if (taskLists.length == 0) {
             this.openingStatement = "No task lists found!";
         } else {

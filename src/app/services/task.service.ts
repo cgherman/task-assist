@@ -16,9 +16,16 @@ import { GapiWrapperService } from './gapi-wrapper.service';
 
 export class TaskService implements TaskServiceBase, OnDestroy {  
   @Output() errorLoadingTasks: EventEmitter<any> = new EventEmitter();
+  @Output() taskListLoaded: EventEmitter<any> = new EventEmitter();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
+
+  private tasks: Observable<ITask[]>;
+  private taskLists: Observable<ITaskList[]>;
+
+  private tasksCache: ITask[];
+  private taskListsCache: ITaskList[];
 
   constructor(private gapiWrapper: GapiWrapperService) {  
   }
@@ -39,7 +46,7 @@ export class TaskService implements TaskServiceBase, OnDestroy {
     return myObservable;
   }
 
-  getTaskLists(subscriber?: any): Observable<ITaskList[]> {
+  getTaskLists(): Observable<ITaskList[]> {
     var myPromise: Promise<TaskList[]>;
 
     myPromise = new Promise((resolve, reject) => {
@@ -64,7 +71,14 @@ export class TaskService implements TaskServiceBase, OnDestroy {
 
     });
 
-    return this.makeObservable(myPromise, subscriber);
+    var callback: Function;
+    callback = (taskLists => this.onTaskListLoaded(taskLists));
+
+    return this.makeObservable(myPromise, callback);
+  }
+
+  private onTaskListLoaded($event) {
+    this.taskListLoaded.emit($event);
   }
 
   getTasks(taskList: any): Observable<ITask[]> {
