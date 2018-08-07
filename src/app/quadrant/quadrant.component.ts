@@ -74,9 +74,6 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
     // https://github.com/bevacqua/dragula#readme
     var drake = this.dragulaService.find('taskBag').drake;
 
-    // Undo the Dragula div update to prevent rendering errors
-    drake.cancel(true);
-
     // Write update to API and refresh data model
     this.taskModifierService.updateTaskQuadrant(this.taskService, element.id, this.selectedTaskList, targetQuadrant);
   }
