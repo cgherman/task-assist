@@ -7,10 +7,9 @@ import { GoogleAuthServiceBase } from './google-auth-service-base';
   providedIn: 'root'
 })
 
-export class AuthService implements GoogleAuthServiceBase {
-  @Output() Authenticated: EventEmitter<any> = new EventEmitter();
-  @Output() googleAuthInit: EventEmitter<any> = new EventEmitter();
-  @Output() googleAuthError: EventEmitter<any> = new EventEmitter();
+export class AuthService extends GoogleAuthServiceBase {
+  @Output() authenticated: EventEmitter<any> = new EventEmitter();
+  @Output() failedToLoadAuth: EventEmitter<any> = new EventEmitter();
 
   private _api_key: string = null;
   private _client_id: string = null;
@@ -18,6 +17,7 @@ export class AuthService implements GoogleAuthServiceBase {
   private _discoveryDocs: string[] = null;
 
   constructor(private gapiWrapper: GapiWrapperService) {
+    super();
   }
 
   set api_key(newValue: string) {
@@ -38,12 +38,33 @@ export class AuthService implements GoogleAuthServiceBase {
 
   // return auth status
   public isAuthenticated(): boolean {
-    if (this.gapiWrapper.instance == null || this.gapiWrapper.instance.auth == null) {
+    var googleAuthInstance = this.googleAuthInstance();
+
+    if (googleAuthInstance == null) {
       return false;
+    }
+    
+    try {
+      return googleAuthInstance.isSignedIn.get();
+    }
+    catch(err) {
+      // suppress errors due to API load issues
+      return false;
+    }
+  }
+
+  private googleAuthInstance(): any {
+    // Check to make sure that API script wasn't blocked
+    if (this.gapiWrapper.instance == null || this.gapiWrapper.instance.auth2 == null) {
+      return null;
     }
 
     var googleAuth = this.gapiWrapper.instance.auth2.getAuthInstance();
-    return googleAuth.isSignedIn.get();
+    if (googleAuth == null) {
+      return null;
+    }
+    
+    return googleAuth;
   }
 
   // trigger sign-in
@@ -52,13 +73,36 @@ export class AuthService implements GoogleAuthServiceBase {
   }
 
   private loadGoogleClients() {
+    if (this.shouldHaltDueToLoadIssue()) {
+      return;
+    }
+
     this.gapiWrapper.instance.load('client:auth2', () => {
       this.onGoogleLoad();
     });
   }
 
+  private shouldHaltDueToLoadIssue(): boolean {
+    if (this.googleAuthInstance() == null) {
+      // Fatal issue: Google Javascript likely hasn't loaded due to ad blocker
+      this.halt();
+      return true;
+    }
+
+    return false;
+  }
+
+  private halt() {
+    console.log("Google core content was not loaded!  Halting!");
+    this.failedToLoadAuth.emit();
+  }
+
   // Upon API initial load, initialize OAuth2
   private onGoogleLoad() {
+    if (this.shouldHaltDueToLoadIssue()) {
+      return;
+    }
+
     var googleAuth = this.gapiWrapper.instance.auth2.init({
       client_id: this._client_id,
       scope: this._scope
@@ -84,7 +128,8 @@ export class AuthService implements GoogleAuthServiceBase {
   onGoogleAuthError(error:any){
     console.log("Error from GoogleAuth!");
     // TODO: Handle this case
-    // https://developers.google.com/identity/sign-in/web/reference#gapiauth2clientconfig
+    // this.halt(); <-- test this code for this scenario
+    // more info: https://developers.google.com/identity/sign-in/web/reference#gapiauth2clientconfig
   }
 
   // Triggered when sign-in status changes
@@ -118,7 +163,7 @@ export class AuthService implements GoogleAuthServiceBase {
 
   // Triggered when API client is fully authorized and loaded
   onAuthenticated() {
-    this.Authenticated.emit();
+    this.authenticated.emit();
   }
 
   // Method used to sign out of Google and revoke app access

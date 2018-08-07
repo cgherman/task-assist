@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Output, ViewChild, ElementRef, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -7,6 +7,7 @@ import { Meta } from '@angular/platform-browser';
 import { ConfigService } from '../services/config.service';
 import { GoogleAuthServiceBase } from '../services/google-auth-service-base';
 import { AppComponent } from '../app.component';
+import { log } from 'util';
 
 @AutoUnsubscribe({includeArrays: true})
 @Component({
@@ -17,14 +18,14 @@ import { AppComponent } from '../app.component';
 export class UserFrameComponent implements OnInit, OnDestroy {
   @Output() dataReadyToLoad: EventEmitter<any> = new EventEmitter();
 
-  // these subscriptions will be cleaned up by @AutoUnsubscribe
-  private subscriptions: Subscription[] = [];
-
   // Messages to help you set up your instance
   private _missing_config = "You need to deploy api_key.json to your assets folder.";  
   private _missing_api_key = "API key was not found!";
   private _missing_client_key = "Client ID was not found!";
-  
+
+  // these subscriptions will be cleaned up by @AutoUnsubscribe
+  private subscriptions: Subscription[] = [];
+
   constructor(private authService: GoogleAuthServiceBase,
               private route: ActivatedRoute,
               private configService: ConfigService,
@@ -43,10 +44,13 @@ export class UserFrameComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // track key auth event
-    var sub = this.authService.Authenticated.subscribe(item => this.onAuthenticated());
+    // track auth events
+    var sub = this.authService.authenticated.subscribe(item => this.onAuthenticated());
     this.subscriptions.push(sub); // capture for destruction
-    
+
+    sub = this.authService.failedToLoadAuth.subscribe(item => this.onFailedToLoadAuth());
+    this.subscriptions.push(sub); // capture for destruction
+
     this.configureServices();
   }
 
@@ -110,6 +114,12 @@ export class UserFrameComponent implements OnInit, OnDestroy {
   onAuthenticated() {
     // ready to load our data
     this.onDataReadyToLoad();
+  }
+
+  onFailedToLoadAuth() {
+    console.log("Google Auth Failed to Load!");
+    this.appComponent.headerMessageAppend(this.appComponent._googleLoadFailure);
+    this.backgroundGoogleTasksDone();
   }
 
   // Handed control from above

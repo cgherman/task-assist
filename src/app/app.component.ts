@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { AuthServiceBase } from './services/auth-service-base';
 import { ConfigService } from './services/config.service';
@@ -30,8 +30,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(private authService: AuthServiceBase,
               private configService: ConfigService,
-              private activatedRoute: ActivatedRoute,
               private router: Router) {
+
+    // Wire up GAPI Auth actions
+    const _self = this;
+    window['onGapiLoadError'] = function () {
+      _self.onGapiLoadError();
+    };
   }
 
   onGapiLoadError() {
@@ -44,7 +49,7 @@ export class AppComponent implements OnInit, OnDestroy {
     console.log("Message: " + text);
     this.headerMessage = this.headerMessage == null ? text : this.headerMessage + " " + text;
   }
-
+  
   ngOnInit() {
     // track key auth event
     var sub = this.configService.configResolved.subscribe(item => this.onConfigResolved());
@@ -61,7 +66,7 @@ export class AppComponent implements OnInit, OnDestroy {
   // Fired when config is loaded, including required meta keys
   onConfigResolved() {
     // Activate Google OAuth2 login control
-    this.triggerRenderButton.nativeElement.click();    
+    this.triggerRenderButton.nativeElement.click();
   }
   
   public backgroundGoogleTasksDone() {
@@ -75,8 +80,8 @@ export class AppComponent implements OnInit, OnDestroy {
   onGoogleExternalEventsCompleted() {
     // TODO: Handle any necessary user dialog here
   }
-
-  isSignedIn(): boolean {
+  
+  isSignedIn(): boolean {    
     return this.authService.isAuthenticated();
   }
 

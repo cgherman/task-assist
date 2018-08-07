@@ -1,15 +1,18 @@
 import { EventEmitter } from "@angular/core";
 
 export abstract class AuthServiceBase {
-    // trigger sign-in
-    abstract signIn();
-    
-    // check to see if user is currently authenticated
-    abstract isAuthenticated(): boolean;
+    // event fired when authentication fails to load
+    public abstract failedToLoadAuth : EventEmitter<any>;
 
     // event fired when authentication is complete
-    abstract Authenticated : EventEmitter<any>;
+    public abstract authenticated : EventEmitter<any>;
+
+    // check to see if user is currently authenticated
+    public abstract isAuthenticated(): boolean;
+
+    // trigger sign-in
+    public abstract signIn();
 
     // trigger sign-out
-    abstract signOut();
+    public abstract signOut();
 }

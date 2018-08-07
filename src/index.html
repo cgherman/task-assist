@@ -10,15 +10,28 @@
   <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon">
 
   <script>
+      // declare this early in case Google's JS is blocked by an ad blocker
+      var gapi=window.gapi=window.gapi||{};
+
       // Google OAuth2 button creation
       function onAuthSuccess(googleUser) {
         console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
         onSignIn();
       }
+
+      // Error handler
       function onAuthFailure(error) {
         console.log(error);
+        // TODO: Handle this scenario
       }
+
       function renderButton() {
+        if (gapi == null || gapi.signin2 == null) {
+          // Google client API is missing API key(s) or script was blocked
+          onGapiLoadError();
+          return;
+        }
+
         gapi.signin2.render('googleLogin', {
           'scope': 'profile email',
           'width': 120,
@@ -34,7 +47,7 @@
   <!-- JQuery -->
   <script type="text/javascript" src="https://ajax.microsoft.com/ajax/jQuery/jquery-1.4.2.min.js"></script>
 
-  <!-- Google OAuth2 API button rendering -->
+  <!-- Google client library for OAuth2 client, OAuth2 button rendering, etc -->
   <script src="https://apis.google.com/js/platform.js"></script>
 
 </head>
