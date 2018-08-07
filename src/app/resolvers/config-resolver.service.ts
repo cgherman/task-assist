@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Router, Resolve, ActivatedRoute, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Subscription, Observable, from, of } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { Router, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Subscription, Observable, throwError, EMPTY } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { ConfigService } from '../services/config.service';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
@@ -20,6 +20,19 @@ export class ConfigResolver implements Resolve<Object>, OnDestroy {
   }
   
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Object> {
-    return this.configService.getApiKeys();
+    var result: Observable<Object>;
+
+    result = this.configService.getApiKeys();
+
+    return result.pipe(
+      catchError( err => {
+          if (err.status == 404) {
+            // Config file was not found
+            return EMPTY;
+          } else {
+            return throwError(err);
+          }
+      })
+    );
   }
 }

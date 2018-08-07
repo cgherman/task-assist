@@ -50,11 +50,19 @@ export class ConfigService implements OnDestroy {
   }
 
   apiKeyFromConfig(config: any) {
-    return config.api_key;
+    if (config == null) {
+      return null;
+    } else {
+      return config.api_key;
+    }
   }
 
   clientIdFromConfig(config: any) {
-    return config.client_id;
+    if (config == null) {
+      return null;
+    } else {
+      return config.client_id;
+    }
   }
 
 }

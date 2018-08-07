@@ -63,6 +63,19 @@ export class UserFrameComponent implements OnInit, OnDestroy {
       let api_key = this.configService.apiKeyFromConfig(data.config);
       let client_id = this.configService.clientIdFromConfig(data.config);
 
+      // If API keys have not been configured, then show a message
+      if (api_key == null || client_id == null) {
+        if (api_key == null) {
+          this.appComponent.headerMessageAppend(this._missing_api_key);
+        }
+
+        if (client_id == null) {
+          this.appComponent.headerMessageAppend(this._missing_client_key);
+        }
+
+        this.appComponent.headerMessageAppend(this._missing_config);
+      }
+
       // set Google config to enable auth
       this.authService.scope = scope;
       this.authService.discoveryDocs = discoveryDocs;

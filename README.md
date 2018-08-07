@@ -1,12 +1,18 @@
 # TaskAssist
 
-This demo project leverages the Google OAuth2 API and the Google Tasks API.This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.1.1.
+This demo project leverages the Google OAuth2 API and the Google Tasks API.  This project was created with [Angular CLI](https://github.com/angular/angular-cli) version 6.
+
+To run this code locally, you must first install a few packages.  After you download the source code, navigate to the code directory run these installation commands:
+* npm install -g @angular/cli
+* npm install
+
+After running the above installation commands, run "ng serve" to host the app locally.
 
 ## Features/Usage
 
 ### The Eisenhower Matrix
 
-The intent of this project is to create a simple drag-and-drop app that allows people rearrange their priorities using an "Eisenhower Matrix".
+This project functions as a tech demo as well as a functional app that can used to help organize your personal tasks.  This app provides a simple drag-and-drop interface that allows you to prioritize your tasks using the "Eisenhower Matrix" method.
 
 ### Logging in
 
