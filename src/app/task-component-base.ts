@@ -14,13 +14,13 @@ export abstract class TaskComponentBase {
     protected subscriptions: Subscription[] = [];
 
     // data
-    protected tasks: Observable<ITask[]>;
-    protected taskLists: Observable<ITaskList[]>;
+    public tasks: Observable<ITask[]>;
+    public taskLists: Observable<ITaskList[]>;
 
     // form-related objects
-    protected selectedTaskList: string;
-    protected openingStatement: string;
-    protected quadrantForm: FormGroup;
+    public selectedTaskList: string;
+    public openingStatement: string;
+    public quadrantForm: FormGroup;
 
     // action menu
     protected menuActionTask = [
