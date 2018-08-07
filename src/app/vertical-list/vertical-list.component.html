@@ -48,7 +48,7 @@
   <div class="quad-title-1 quad-border-1 w3-row-padding">
     <div class="quad-title w3-large">Focus: Urgent &amp; Important</div>
   </div>
-  <div #quad1 id="QUAD1" class="quad-1 quad-border-1" style="min-height: 30px;">
+  <div #quad1 id="QUAD1" class="quad-1 quad-border-1" style="min-height: 25px;">
     <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
       <ng-container *ngIf="quadrantMatch(task, 1)">
         <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-1 w3-small">
@@ -63,7 +63,7 @@
   <div class="quad-title-2 quad-border-2 w3-row-padding">
     <div class="quad-title w3-large">Plan: Important Soon</div>
   </div>
-  <div #quad2 id="QUAD2" class="quad-2 quad-border-2" style="min-height: 30px;">
+  <div #quad2 id="QUAD2" class="quad-2 quad-border-2" style="min-height: 25px;">
     <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
       <ng-container *ngIf="quadrantMatch(task, 2)">
         <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-2 w3-small">
@@ -78,7 +78,7 @@
   <div class="quad-title-3 quad-border-3 w3-row-padding">
     <div class="quad-title w3-large">Delegate: Hot but Unimportant</div>
   </div>
-  <div #quad3 id="QUAD3" class="quad-3 quad-border-3" style="min-height: 30px;">
+  <div #quad3 id="QUAD3" class="quad-3 quad-border-3" style="min-height: 25px;">
     <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
       <ng-container *ngIf="quadrantMatch(task, 3)">
         <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-3 w3-small">
@@ -93,7 +93,7 @@
   <div class="quad-title-4 quad-border-4 w3-row-padding">
     <div class="quad-title w3-large">Eliminate: Cold &amp; Unimportant</div>
   </div>
-  <div #quad4 id="QUAD4" class="quad-4 quad-border-4" style="min-height: 30px;">
+  <div #quad4 id="QUAD4" class="quad-4 quad-border-4" style="min-height: 25px;">
     <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
       <ng-container *ngIf="quadrantMatch(task, 4)">
         <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-4 w3-small">
@@ -108,7 +108,7 @@
   <div class="quad-title-0 quad-border-0 w3-row-padding">
     <div class="quad-title w3-large">Unspecified: Needs Assessment</div>
   </div>
-  <div #quad0 id="QUAD0" class="quad-0 quad-border-0" style="min-height: 30px;">
+  <div #quad0 id="QUAD0" class="quad-0 quad-border-0" style="min-height: 25px;">
     <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
       <ng-container *ngIf="quadrantMatch(task, null)">
         <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-0 w3-small">

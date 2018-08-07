@@ -47,7 +47,7 @@
       </div>
     </div>
     <!-- Content: Quad 1 & 2 -->
-    <div class="split-container w3-margin-bottom" style="min-height: 30px;">
+    <div class="split-container w3-margin-bottom" style="min-height: 50px;">
       <div #quad1 id="QUAD1" class="split-half quad-1 quad-border-1" [dragula]='"taskBag"' [dragulaModel]='tasks' [dragulaOptions]='dragulaOptions'>
         <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
           <ng-container *ngIf="quadrantMatch(task, 1)">
@@ -87,7 +87,7 @@
       </div>
     </div>
     <!-- Content: Quad 3 & 4 -->
-    <div class="split-container w3-margin-bottom" style="min-height: 30px;">
+    <div class="split-container w3-margin-bottom" style="min-height: 50px;">
       <div #quad3 id="QUAD3" class="split-half quad-3 quad-border-3" [dragula]='"taskBag"' [dragulaModel]='tasks' [dragulaOptions]='dragulaOptions'>
         <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
           <ng-container *ngIf="quadrantMatch(task, 3)">
@@ -122,7 +122,7 @@
         </div>
       </div>
       <div class="w3-small">
-        <div #quad0 id="QUAD0" class="quad-0 quad-border-0" style="min-height: 30px;" [dragula]='"taskBag"' [dragulaModel]='tasks' [dragulaOptions]='dragulaOptions'>
+        <div #quad0 id="QUAD0" class="quad-0 quad-border-0" style="min-height: 50px;" [dragula]='"taskBag"' [dragulaModel]='tasks' [dragulaOptions]='dragulaOptions'>
           <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
             <ng-container *ngIf="quadrantMatch(task, null)">
               <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-0 w3-small">
