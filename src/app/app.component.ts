@@ -25,7 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
   // Message to ensure that Google API platform.js is allowed to load
   public _googleLoadFailure = "Google API was not loaded! Please check your connection and disable your ad blocker to allow platform.js to load.";
 
-  public title = "Drag or Tap Your Tasks";
+  public title = "Prioritize Your Tasks";
   public headerMessage = null;
 
   constructor(private authService: AuthServiceBase,

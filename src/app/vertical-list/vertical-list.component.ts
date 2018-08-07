@@ -28,6 +28,9 @@ export class VerticalListComponent extends TaskComponentBase implements OnInit, 
 
   ngOnInit() {
     this.wireUpEvents();
+
+    // tweak title based on component usage
+    this.frameComponent.title = "Prioritize Your Tasks: Tap to Move";
   }
 
   // ngOnDestroy needs to be present for @AutoUnsubscribe to function

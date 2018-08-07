@@ -42,6 +42,9 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
   ngOnInit() {
     this.wireUpEvents();
 
+    // tweak title based on component usage
+    this.frameComponent.title = "Prioritize Your Tasks: Drag or Tap";
+
     // Init Dragula drag-n-drop
     var sub = this.dragulaService.drop.subscribe(args => this.onDrop(args));
     this.subscriptions.push(sub); // capture for destruction
