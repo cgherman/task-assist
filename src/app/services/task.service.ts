@@ -1,13 +1,18 @@
 import { Injectable, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { Observable, Subscription, from } from 'rxjs';
-import { TaskServiceBase } from './task-service-base';
+import { Observable, Subscription, from, of } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
+import { TaskServiceBase } from './task-service-base';
+import { GapiWrapperService } from './gapi-wrapper.service';
+
+import { IHashTable } from '../ihash-table';
 import { ITask } from '../models/itask';
 import { Task } from '../models/task';
 import { ITaskList } from '../models/itask-list';
 import { TaskList } from '../models/task-list';
-import { GapiWrapperService } from './gapi-wrapper.service';
+import { TaskEventContainer } from '../models/task-event-container';
+import { TaskArrayEventContainer } from '../models/task-array-event-container';
+
 
 @AutoUnsubscribe({includeArrays: true})
 @Injectable({
@@ -16,16 +21,13 @@ import { GapiWrapperService } from './gapi-wrapper.service';
 
 export class TaskService implements TaskServiceBase, OnDestroy {  
   @Output() errorLoadingTasks: EventEmitter<any> = new EventEmitter();
-  @Output() taskListLoaded: EventEmitter<any> = new EventEmitter();
+  @Output() taskListsLoaded: EventEmitter<any> = new EventEmitter();
+  @Output() tasksLoaded: EventEmitter<any> = new EventEmitter();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
-  private tasks: Observable<ITask[]>;
-  private taskLists: Observable<ITaskList[]>;
-
-  private tasksCache: ITask[];
-  private taskListsCache: ITaskList[];
+  private tasksCacheTable: IHashTable<ITask[]> = {}; 
 
   constructor(private gapiWrapper: GapiWrapperService) {  
   }
@@ -46,7 +48,7 @@ export class TaskService implements TaskServiceBase, OnDestroy {
     return myObservable;
   }
 
-  getTaskLists(): Observable<ITaskList[]> {
+  public getTaskLists(): Observable<ITaskList[]> {
     var myPromise: Promise<TaskList[]>;
 
     myPromise = new Promise((resolve, reject) => {
@@ -72,16 +74,37 @@ export class TaskService implements TaskServiceBase, OnDestroy {
     });
 
     var callback: Function;
-    callback = (taskLists => this.onTaskListLoaded(taskLists));
+    callback = (taskLists => this.onTaskListsLoaded(taskLists));
 
     return this.makeObservable(myPromise, callback);
   }
 
-  private onTaskListLoaded($event) {
-    this.taskListLoaded.emit($event);
+  // $event: ITaskList[]
+  private onTaskListsLoaded($event) {
+    this.taskListsLoaded.emit($event);
   }
 
-  getTasks(taskList: any): Observable<ITask[]> {
+  public getTasks(taskList: any, cachedIsOkay?:boolean): Observable<ITask[]> {
+    if (cachedIsOkay && this.tasksCacheTable[taskList] != null) {
+      return this.getTasks_Cached(taskList);
+    } else {
+      return this.getTasks_Fresh(taskList);
+    }
+  }
+
+  private getTasks_Cached(taskList: any): Observable<ITask[]> {
+    var cachcedTasks = this.tasksCacheTable[taskList];
+    if (cachcedTasks != null) {
+      return Observable.create(observer => {
+          observer.next(cachcedTasks);
+          observer.complete();
+      });
+    } else {
+      return null;
+    }
+  }
+
+  private getTasks_Fresh(taskList: any): Observable<ITask[]> {
     var myPromise: Promise<Task[]>;
 
     myPromise = new Promise((resolve, reject) => {
@@ -105,11 +128,21 @@ export class TaskService implements TaskServiceBase, OnDestroy {
         reject(errorHandler);
       });
     });
+    
+    var callback: Function;
+    callback = (tasks => this.onTasksLoaded(new TaskArrayEventContainer(tasks, taskList)));
 
-    return this.makeObservable(myPromise);
+    return this.makeObservable(myPromise, callback);
   }
 
-  getTask(taskId: string, taskListId: string): Observable<ITask> {
+  // invoked with a taskEventContainer object
+  // $event: TaskArrayEventContainer
+  private onTasksLoaded($event) {
+    this.tasksLoaded.emit($event);
+    this.tasksCacheTable[$event.taskListId] = $event.tasks;
+  }
+
+  public getTask(taskId: string, taskListId: string): Observable<ITask> {
     var myPromise: Promise<Task>;
 
     myPromise = new Promise((resolve, reject) => {
@@ -137,8 +170,10 @@ export class TaskService implements TaskServiceBase, OnDestroy {
     return this.makeObservable(myPromise);
   }
 
-  updateTask(task: ITask, taskListId: string): Promise<ITask> {
+  public updateTask(task: ITask, taskListId: string, cachedIsOkay?:boolean): Promise<ITask> {
     var myPromise: Promise<Task>;
+
+    var useCache = cachedIsOkay && this.tasksCacheTable[taskListId] != null;
 
     myPromise = new Promise((resolve, reject) => {
       if (this.gapiWrapper.instance == null || this.gapiWrapper.instance.client == null) {
@@ -163,7 +198,41 @@ export class TaskService implements TaskServiceBase, OnDestroy {
       });
     });
 
-    return myPromise;
+    // set up callback based on caching choice
+    if (useCache) {
+      // update cache right now
+      var taskEventContainer: TaskEventContainer = new TaskEventContainer(task, taskListId);
+      this.updateCache(taskEventContainer);
+    } else {
+      // internal callback so we can update the cache
+      var callback: Function;
+      callback = (task => this.onTaskUpdated(new TaskEventContainer(task, taskListId)));
+      this.makeObservable(myPromise, callback);
+    }
+
+    // set up return content based on caching choice
+    if (useCache) {
+      return new Promise<ITask>((resolve, reject) => {
+        resolve(task);
+      });
+    } else {
+      return myPromise;
+    }
+  }
+
+  // $event: TaskEventContainer
+  private onTaskUpdated($event) {
+    this.updateCache($event);
+  }
+
+  private updateCache(taskEventContainer: TaskEventContainer) {
+    var cachcedTasks = this.tasksCacheTable[taskEventContainer.taskListId];
+    if (cachcedTasks != null) {
+      var index = cachcedTasks.findIndex(cachedTask => cachedTask.id == taskEventContainer.task.id);
+      if (index >= 0) {
+        cachcedTasks[index] = taskEventContainer.task;
+      }
+    }
   }
 
   private parseTaskLists(response: any): TaskList[] {

@@ -9,7 +9,7 @@ import { QuadrantComponent } from './quadrant/quadrant.component';
 
 import { DragulaModule } from 'ng2-dragula';
 import { HttpClientModule } from '@angular/common/http';
-import { AppRoutingModule } from './/app-routing.module';
+import { AppRoutingModule } from './app-routing.module';
 
 import { AuthServiceBase } from './services/auth-service-base';
 import { GoogleAuthServiceBase } from './services/google-auth-service-base';

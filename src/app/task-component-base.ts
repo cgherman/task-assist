@@ -1,11 +1,11 @@
-import { Observable, Subscription } from "../../node_modules/rxjs";
+import { Observable, Subscription } from "rxjs";
 import { ITask } from "./models/itask";
 import { ITaskList } from "./models/itask-list";
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserFrameComponent } from "./user-frame/user-frame.component";
 import { TaskServiceBase } from "./services/task-service-base";
 import { TaskModifierServiceBase } from "./services/task-modifier-service-base";
-import { finalize } from "../../node_modules/rxjs/operators";
+import { finalize } from "rxjs/operators";
 import { AuthServiceBase } from "./services/auth-service-base";
 
 export abstract class TaskComponentBase {
@@ -64,7 +64,7 @@ export abstract class TaskComponentBase {
         var sub = this.taskService.errorLoadingTasks.subscribe(item => this.onErrorLoadingTasks());
         this.subscriptions.push(sub); // capture for destruction
 
-        var sub = this.taskService.taskListLoaded.subscribe(taskLists => this.onTaskListLoaded(taskLists));
+        var sub = this.taskService.taskListsLoaded.subscribe(taskLists => this.onTaskListsLoaded(taskLists));
         this.subscriptions.push(sub); // capture for destruction
     }
 
@@ -83,11 +83,12 @@ export abstract class TaskComponentBase {
         var taskListId: string = this.quadrantForm.get('taskList').value;
         console.log("Changing to a different list: " + taskListId);
         this.selectedTaskList = taskListId;
-        this.loadTasks(taskListId);
+        this.loadTasks(taskListId, false);
     }
 
     // Fired after initial task list is loaded
-    private onTaskListLoaded($event){
+    // $event: ITaskList[]
+    private onTaskListsLoaded($event){
         var taskLists = $event;
 
         // activate first list
@@ -104,9 +105,9 @@ export abstract class TaskComponentBase {
     protected abstract onDataLoaded();
 
     // let's get the tasks
-    protected loadTasks(taskListId: string) {
+    protected loadTasks(taskListId: string, cachedIsOkay: boolean) {
         // TODO: error handling
-        this.tasks = this.taskService.getTasks(taskListId)
+        this.tasks = this.taskService.getTasks(taskListId, cachedIsOkay)
         .pipe(finalize((() => { this.onTasksLoaded(); })));
     }
 
@@ -150,7 +151,7 @@ export abstract class TaskComponentBase {
     private onTaskQuadrantUpdated() {
         // TODO: Optimize reload to remove flicker
         // Update model with committed data
-        this.loadTasks(this.selectedTaskList);
+        this.loadTasks(this.selectedTaskList, true);
     }
 
     // Called by repeater to determine appropriate quadrant for each task

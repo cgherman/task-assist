@@ -1,6 +1,6 @@
 import { Injectable,Output, EventEmitter, OnDestroy } from '@angular/core';
 import { take } from 'rxjs/operators';
-import { Subscription } from '../../../node_modules/rxjs';
+import { Subscription } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 import { TaskModifierServiceBase } from './task-modifier-service-base';
@@ -35,7 +35,7 @@ export class TaskModifierService implements TaskModifierServiceBase, OnDestroy {
         this.setQuadrant(task, quadrantChar);
 
         // Commit updated task notes via Google API
-        taskService.updateTask( task, taskListId
+        taskService.updateTask( task, taskListId, true
         ).then((task) => {
           console.log("Task " + task.id + " successfully updated via API.");
           this.onTaskQuadrantUpdated();
