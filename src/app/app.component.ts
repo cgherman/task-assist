@@ -51,9 +51,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
   
   ngOnInit() {
-    // track key auth event
-    var sub = this.configService.configResolved.subscribe(item => this.onConfigResolved());
-    this.subscriptions.push(sub); // capture for destruction
   }
 
   // ngOnDestroy needs to be present for @AutoUnsubscribe to function
@@ -64,7 +61,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   // Fired when config is loaded, including required meta keys
-  onConfigResolved() {
+  public configIsResolved() {
     // Activate Google OAuth2 login control
     this.triggerRenderButton.nativeElement.click();
   }

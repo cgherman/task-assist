@@ -1,5 +1,4 @@
-import { Output, EventEmitter, OnDestroy } from '@angular/core';
-import { Injectable } from '@angular/core';
+import { Injectable, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { HttpClient  } from '@angular/common/http'; 
 import { Observable, Subscription } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
@@ -9,8 +8,6 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
   providedIn: 'root'
 })
 export class ConfigService implements OnDestroy {
-  @Output() configResolved: EventEmitter<any> = new EventEmitter();
-
   private _discoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest"];
   private _scope = "https://www.googleapis.com/auth/tasks";
 
@@ -42,27 +39,4 @@ export class ConfigService implements OnDestroy {
   private getJson(filename: string): Observable<Object> {
     return this.http.get(filename);
   }
-
-  // Used to communicate between controls (namely Google OAuth2 button)
-  // Invoked when config values are loaded as necessary into DOM
-  configIsResolved() {
-    this.configResolved.emit();
-  }
-
-  apiKeyFromConfig(config: any) {
-    if (config == null) {
-      return null;
-    } else {
-      return config.api_key;
-    }
-  }
-
-  clientIdFromConfig(config: any) {
-    if (config == null) {
-      return null;
-    } else {
-      return config.client_id;
-    }
-  }
-
 }
