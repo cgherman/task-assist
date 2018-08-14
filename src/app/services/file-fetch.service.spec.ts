@@ -1,15 +1,15 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { ConfigService } from './config.service';
+import { FileFetchService } from './file-fetch.service';
 
 describe('ConfigService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ConfigService]
+      providers: [FileFetchService]
     });
   });
 
-  it('should be created', inject([ConfigService], (service: ConfigService) => {
+  it('should be created', inject([FileFetchService], (service: FileFetchService) => {
     expect(service).toBeTruthy();
   }));
 });

@@ -4,10 +4,9 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
 
-import { ConfigService } from '../services/config.service';
 import { GoogleAuthServiceBase } from '../services/google-auth-service-base';
 import { AppComponent } from '../app.component';
-import { ConfigResolverHandler } from '../resolvers/config-resolver-handler';
+import { ConfigHandlerService } from '../services/config-handler.service';
 
 @AutoUnsubscribe({includeArrays: true})
 @Component({
@@ -26,12 +25,10 @@ export class UserFrameComponent implements OnInit, OnDestroy {
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
-  private configResolverHandler: ConfigResolverHandler;
-
   constructor(private authService: GoogleAuthServiceBase,
               private route: ActivatedRoute,
-              private configService: ConfigService,
-              private meta: Meta,
+              private meta: Meta,              
+              private configHandlerService: ConfigHandlerService,
               private appComponent: AppComponent
             ) {
 
@@ -57,25 +54,24 @@ export class UserFrameComponent implements OnInit, OnDestroy {
     sub = this.authService.failedToLoadAuth.subscribe(item => this.onFailedToLoadAuth());
     this.subscriptions.push(sub); // capture for destruction
 
-    this.configureServices();
+    this.initConfiguration();
+  }
+  
+  private initConfiguration() {
+    var sub = this.configHandlerService.configResolved.subscribe(item => this.onConfigResolved(item));
+    this.configHandlerService.init(this.route);
+    this.subscriptions.push(sub); // capture for destruction
   }
 
   // ngOnDestroy needs to be present for @AutoUnsubscribe to function
   ngOnDestroy() {
   }
-  
-  private configureServices() {
-    this.configResolverHandler = new ConfigResolverHandler();
-    var sub = this.configResolverHandler.configResolved.subscribe(item => this.onConfigResolved(item));
-    this.configResolverHandler.configure(this.route);
-    this.subscriptions.push(sub); // capture for destruction
-  }
 
   // Fired when config-resolver is handled
   onConfigResolved($event) {
     // fetch config elements from config
-    let scope = this.configService.scope;
-    let discoveryDocs = this.configService.discoveryDocs;
+    let scope = $event.scope;
+    let discoveryDocs = $event.discoveryDocs;
     let api_key = $event.api_key;
     let client_id = $event.client_id;
 

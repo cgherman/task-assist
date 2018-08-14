@@ -7,20 +7,10 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 @Injectable({
   providedIn: 'root'
 })
-export class ConfigService implements OnDestroy {
-  private _discoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest"];
-  private _scope = "https://www.googleapis.com/auth/tasks";
+export class FileFetchService implements OnDestroy {
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
-
-  public get discoveryDocs(): string[] {
-    return this._discoveryDocs;
-  }
-
-  get scope(): string{
-    return this._scope;
-  }
 
   constructor(private http: HttpClient) {
   }

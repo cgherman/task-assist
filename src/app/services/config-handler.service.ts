@@ -4,13 +4,17 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 import { ActivatedRoute } from '@angular/router';
 
 @AutoUnsubscribe({includeArrays: true})
-@Injectable()
-export class ConfigResolverHandler implements OnDestroy {
+@Injectable({
+  providedIn: 'root'
+})
+export class ConfigHandlerService implements OnDestroy {
   @Output() configResolved: EventEmitter<any> = new EventEmitter();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
-  private data;
+
+  private _discoveryDocs = ["https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest"];
+  private _scope = "https://www.googleapis.com/auth/tasks";
 
   constructor() {
   }
@@ -22,20 +26,20 @@ export class ConfigResolverHandler implements OnDestroy {
   public handleResult() {
   }
 
-  public configure(route: ActivatedRoute): Subscription {
+  public init(route: ActivatedRoute): Subscription {
     var sub = route.data.subscribe((data: { config: any }) => {
       // extract config elements
       let api_key = this.apiKeyFromConfig(data.config);
       let client_id = this.clientIdFromConfig(data.config);
-      this.onConfigResolved(api_key, client_id);
+      this.onConfigResolved(api_key, client_id, this._discoveryDocs, this._scope);
     });
     this.subscriptions.push(sub); // capture for destruction
 
     return sub;
   }
 
-  private onConfigResolved(api_key: string, client_id: string) {
-    this.configResolved.emit( {api_key, client_id} );
+  private onConfigResolved(api_key: string, client_id: string, discoveryDocs: string[], scope:string) {
+    this.configResolved.emit( {api_key, client_id, discoveryDocs, scope} );
   }
 
   private apiKeyFromConfig(config: any) {

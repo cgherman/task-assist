@@ -3,7 +3,6 @@ import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { AuthServiceBase } from './services/auth-service-base';
-import { ConfigService } from './services/config.service';
 
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
@@ -29,7 +28,6 @@ export class AppComponent implements OnInit, OnDestroy {
   public headerMessage = null;
 
   constructor(private authService: AuthServiceBase,
-              private configService: ConfigService,
               private router: Router) {
 
     // Wire up GAPI Auth actions

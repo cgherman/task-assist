@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Router, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Subscription, Observable, throwError, EMPTY } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { ConfigService } from '../services/config.service';
+import { FileFetchService } from '../services/file-fetch.service';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 @AutoUnsubscribe({includeArrays: true})
@@ -12,7 +12,7 @@ export class ConfigResolver implements Resolve<Object>, OnDestroy {
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
-  constructor(private configService: ConfigService, private router: Router) {
+  constructor(private configService: FileFetchService, private router: Router) {
   }
 
   // ngOnDestroy needs to be present for @AutoUnsubscribe to function
