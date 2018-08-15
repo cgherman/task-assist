@@ -29,90 +29,88 @@
   </form>
 </div>
 
-<!-- Quadrants -->
+<!-- Quadrant Matrix -->
 <div class="w3-animate-opacity">
   <div class="w3-twothird">
-    <!-- Titles: Quad 1 & 2 -->
-    <div class="split-container">
-      <div class="split-half quad-title-1 quad-border-1 w3-row-padding">
-        <div class="quad-title w3-large">Focus</div>
-      </div>
-      <div class="split-divider">
-      </div>
-      <div class="split-half quad-title-2 quad-border-2 w3-row-padding">
-        <div class="quad-title w3-large">Plan</div>
-      </div>
-      <div class="right-separator">
-        <!-- vertical static margin (allows responsive) -->
-      </div>
-    </div>
     <!-- Content: Quad 1 & 2 -->
-    <div class="split-container w3-margin-bottom" style="min-height: 50px;">
-      <div #quad1 id="QUAD1" class="split-half quad-1 quad-border-1" [dragula]='"taskBag"' [dragulaModel]='tasks' [dragulaOptions]='dragulaOptions'>
-        <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
-          <ng-container *ngIf="quadrantMatch(task, 1)">
-            <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-1 w3-small">
-              {{task.title}}
-            </div>
+    <div class="split-container w3-margin-bottom">
+      <div class="split-half">
+        <div class="quad-title-1 quad-border-1 w3-row-padding">
+          <div class="quad-title w3-large">Focus</div>
+        </div>
+        <div #quad1 id="QUAD1" class="quad-1 quad-border-1" style="min-height: 50px;" [dragula]='"taskBag"' [dragulaModel]='tasks' [dragulaOptions]='dragulaOptions'>
+          <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
+            <ng-container *ngIf="quadrantMatch(task, 1)">
+              <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-1 w3-small">
+                {{task.title}}
+              </div>
+            </ng-container>
           </ng-container>
-        </ng-container>
+        </div>
       </div>
       <div class="split-divider">
       </div>
-      <div #quad2 id="QUAD2" class="split-half quad-2 quad-border-2" [dragula]='"taskBag"' [dragulaModel]='tasks' [dragulaOptions]='dragulaOptions'>
-        <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
-          <ng-container *ngIf="quadrantMatch(task, 2)">
-            <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-2 w3-small">
-              {{task.title}}
-            </div>
+      <div class="split-half">
+        <div class="quad-title-2 quad-border-2 w3-row-padding">
+          <div class="quad-title w3-large">Plan</div>
+        </div>
+        <div #quad2 id="QUAD2" class="quad-2 quad-border-2" style="min-height: 50px;" [dragula]='"taskBag"' [dragulaModel]='tasks' [dragulaOptions]='dragulaOptions'>
+          <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
+            <ng-container *ngIf="quadrantMatch(task, 2)">
+              <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-2 w3-small">
+                {{task.title}}
+              </div>
+            </ng-container>
           </ng-container>
-        </ng-container>
+        </div>
       </div>
       <div class="right-separator">
         <!-- vertical static margin (allows responsive) -->
       </div>
     </div>
-    <!-- Titles: Quad 3 & 4 -->  
-    <div class="split-container">
-      <div class="split-half quad-title-3 quad-border-3 w3-row-padding">
-        <div class="quad-title w3-large">Delegate</div>
-      </div>
-      <div class="split-divider">
-      </div>
-      <div class="split-half quad-title-4 quad-border-4 w3-row-padding">
-        <div class="quad-title w3-large">Eliminate</div>
-      </div>
-      <div class="right-separator">
+
+    <div class="right-separator">
       <!-- vertical static margin (allows responsive) -->
-      </div>
     </div>
+    
     <!-- Content: Quad 3 & 4 -->
-    <div class="split-container w3-margin-bottom" style="min-height: 50px;">
-      <div #quad3 id="QUAD3" class="split-half quad-3 quad-border-3" [dragula]='"taskBag"' [dragulaModel]='tasks' [dragulaOptions]='dragulaOptions'>
-        <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
-          <ng-container *ngIf="quadrantMatch(task, 3)">
-            <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-3 w3-small">
-              {{task.title}}
-            </div>
+    <div class="split-container w3-margin-bottom" >
+      <div class="split-half">
+        <div class="quad-title-3 quad-border-3 w3-row-padding">
+          <div class="quad-title w3-large">Delegate</div>
+        </div>
+        <div #quad3 id="QUAD3" class="quad-3 quad-border-3" style="min-height: 50px;" [dragula]='"taskBag"' [dragulaModel]='tasks' [dragulaOptions]='dragulaOptions'>
+          <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
+            <ng-container *ngIf="quadrantMatch(task, 3)">
+              <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-3 w3-small">
+                {{task.title}}
+              </div>
+            </ng-container>
           </ng-container>
-        </ng-container>
+        </div>
       </div>
       <div class="split-divider">
       </div>
-      <div #quad4 id="QUAD4" class="split-half quad-4 quad-border-4" [dragula]='"taskBag"' [dragulaModel]='tasks' [dragulaOptions]='dragulaOptions'>
-        <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
-          <ng-container *ngIf="quadrantMatch(task, 4)">
-            <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-4 w3-small">
-              {{task.title}}
-            </div>
+      <div class="split-half">
+        <div class="quad-title-4 quad-border-4 w3-row-padding">
+          <div class="quad-title w3-large">Eliminate</div>
+        </div>
+        <div #quad4 id="QUAD4" class="quad-4 quad-border-4" style="min-height: 50px;" [dragula]='"taskBag"' [dragulaModel]='tasks' [dragulaOptions]='dragulaOptions'>
+          <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
+            <ng-container *ngIf="quadrantMatch(task, 4)">
+              <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-4 w3-small">
+                {{task.title}}
+              </div>
+            </ng-container>
           </ng-container>
-        </ng-container>
+        </div>
       </div>
       <div class="right-separator">
         <!-- vertical static margin (allows responsive) -->
       </div>
     </div>
   </div>
+
   <!-- Content: Quad Undefined -->
   <div class="w3-third">
     <div style="margin-right: 8px;">
