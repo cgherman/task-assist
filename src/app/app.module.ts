@@ -4,25 +4,25 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule, MatMenuModule } from '@angular/material';
 
-import { AppComponent } from './app.component';
-import { QuadrantComponent } from './quadrant/quadrant.component';
+import { AppComponent } from './components/app.component';
+import { QuadrantComponent } from './components/quadrant/quadrant.component';
 
 import { DragulaModule } from 'ng2-dragula';
 import { HttpClientModule } from '@angular/common/http';
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule } from './routing/app-routing.module';
 
-import { AuthServiceBase } from './services/auth-service-base';
-import { GoogleAuthServiceBase } from './services/google-auth-service-base';
-import { AuthService } from './services/auth.service';
-import { TaskService } from './services/task.service';
-import { TaskServiceBase } from './services/task-service-base';
-import { TaskModifierService } from './services/task-modifier.service';
-import { TaskModifierServiceBase } from './services/task-modifier-service-base';
-import { GapiWrapperService } from './services/gapi-wrapper.service';
-import { FileFetchService } from './services/file-fetch.service';
-import { UserFrameComponent } from './user-frame/user-frame.component';
-import { VerticalListComponent } from './vertical-list/vertical-list.component';
-import { AboutComponent } from './about/about.component';
+import { AuthServiceBase } from './services/auth/auth-service-base';
+import { GoogleAuthServiceBase } from './services/auth/google-auth-service-base';
+import { AuthService } from './services/auth/auth.service';
+import { TaskService } from './services/task/task.service';
+import { TaskServiceBase } from './services/task/task-service-base';
+import { TaskModifierService } from './services/task/task-modifier.service';
+import { TaskModifierServiceBase } from './services/task/task-modifier-service-base';
+import { GapiWrapperService } from './services/shared/gapi-wrapper.service';
+import { FileFetchService } from './services/shared/file-fetch.service';
+import { UserFrameComponent } from './components/user-frame/user-frame.component';
+import { VerticalListComponent } from './components/vertical-list/vertical-list.component';
+import { AboutComponent } from './components/about/about.component';
 
 @NgModule({
   declarations: [

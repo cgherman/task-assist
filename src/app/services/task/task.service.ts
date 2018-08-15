@@ -3,15 +3,15 @@ import { Observable, Subscription, from, of } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 import { TaskServiceBase } from './task-service-base';
-import { GapiWrapperService } from './gapi-wrapper.service';
+import { GapiWrapperService } from '../shared/gapi-wrapper.service';
 
-import { IHashTable } from '../ihash-table';
-import { ITask } from '../models/itask';
-import { Task } from '../models/task';
-import { ITaskList } from '../models/itask-list';
-import { TaskList } from '../models/task-list';
-import { TaskEventContainer } from '../models/task-event-container';
-import { TaskArrayEventContainer } from '../models/task-array-event-container';
+import { IHashTable } from '../../models/shared/ihash-table';
+import { ITask } from '../../models/task/itask';
+import { Task } from '../../models/task/task';
+import { ITaskList } from '../../models/task/itask-list';
+import { TaskList } from '../../models/task/task-list';
+import { TaskEventContainer } from '../../models/task/task-event-container';
+import { TaskArrayEventContainer } from '../../models/task/task-array-event-container';
 
 
 @AutoUnsubscribe({includeArrays: true})

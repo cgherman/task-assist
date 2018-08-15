@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Router, Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Subscription, Observable, throwError, EMPTY } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { FileFetchService } from '../services/file-fetch.service';
+import { FileFetchService } from '../services/shared/file-fetch.service';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 @AutoUnsubscribe({includeArrays: true})

@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 import { TaskModifierServiceBase } from './task-modifier-service-base';
-import { ITask } from '../models/itask';
+import { ITask } from '../../models/task/itask';
 import { TaskServiceBase } from './task-service-base';
 
 @AutoUnsubscribe({includeArrays: true})

@@ -1,12 +1,12 @@
 import { Observable, Subscription } from "rxjs";
-import { ITask } from "./models/itask";
-import { ITaskList } from "./models/itask-list";
+import { ITask } from "../models/task/itask";
+import { ITaskList } from "../models/task/itask-list";
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserFrameComponent } from "./user-frame/user-frame.component";
-import { TaskServiceBase } from "./services/task-service-base";
-import { TaskModifierServiceBase } from "./services/task-modifier-service-base";
+import { TaskServiceBase } from "../services/task/task-service-base";
+import { TaskModifierServiceBase } from "../services/task/task-modifier-service-base";
 import { finalize } from "rxjs/operators";
-import { AuthServiceBase } from "./services/auth-service-base";
+import { AuthServiceBase } from "../services/auth/auth-service-base";
 
 export abstract class TaskComponentBase {
 

@@ -4,9 +4,9 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
 
-import { GoogleAuthServiceBase } from '../services/google-auth-service-base';
+import { GoogleAuthServiceBase } from '../../services/auth/google-auth-service-base';
 import { AppComponent } from '../app.component';
-import { ConfigHandlerService } from '../services/config-handler.service';
+import { ConfigHandlerService } from '../../services/config/config-handler.service';
 
 @AutoUnsubscribe({includeArrays: true})
 @Component({
@@ -32,7 +32,7 @@ export class UserFrameComponent implements OnInit, OnDestroy {
               private appComponent: AppComponent
             ) {
 
-    // Wire up GAPI Auth actions
+    // Wire up Google Auth actions
     const _self = this;
     window['onSignIn'] = function (googleUser) {
       _self.onSignIn(googleUser);
@@ -42,6 +42,7 @@ export class UserFrameComponent implements OnInit, OnDestroy {
     };
   }
 
+  // exposure of Title text to child controls
   set title(newValue: string) {
     this.appComponent.title = newValue;
   }

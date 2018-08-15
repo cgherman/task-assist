@@ -1,5 +1,5 @@
 import { EventEmitter } from '@angular/core';
-import { ITask } from '../models/itask';
+import { ITask } from '../../models/task/itask';
 import { IQuadrantModifierService } from './iquadrant-modifier-service';
 import { TaskServiceBase } from './task-service-base';
 

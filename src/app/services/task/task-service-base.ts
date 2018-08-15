@@ -1,5 +1,5 @@
-import { ITaskList } from '../models/itask-list';
-import { ITask } from '../models/itask';
+import { ITaskList } from '../../models/task/itask-list';
+import { ITask } from '../../models/task/itask';
 import { Observable } from 'rxjs';
 import { EventEmitter } from '@angular/core';
 

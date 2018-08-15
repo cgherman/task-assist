@@ -3,13 +3,13 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { UserFrameComponent } from '../user-frame/user-frame.component';
 import { TaskComponentBase } from '../task-component-base';
-import { TaskModifierServiceBase } from '../services/task-modifier-service-base';
-import { TaskServiceBase } from '../services/task-service-base';
-import { TaskService } from '../services/task.service';
+import { TaskModifierServiceBase } from '../../services/task/task-modifier-service-base';
+import { TaskServiceBase } from '../../services/task/task-service-base';
+import { TaskService } from '../../services/task/task.service';
 
 import { DragulaService } from 'ng2-dragula';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
-import { AuthServiceBase } from '../services/auth-service-base';
+import { AuthServiceBase } from '../../services/auth/auth-service-base';
 
 @AutoUnsubscribe({includeArrays: true})
 @Component({

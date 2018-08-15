@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { UserFrameComponent } from './user-frame/user-frame.component';
+import { UserFrameComponent } from '../components/user-frame/user-frame.component';
 import { CanActivateViaAuthGuard } from './can-activate-via-auth.guard';
-import { ConfigResolver } from './resolvers/config-resolver.service';
-import { QuadrantComponent } from './quadrant/quadrant.component';
-import { VerticalListComponent } from './vertical-list/vertical-list.component';
-import { AboutComponent } from './about/about.component';
+import { ConfigResolver } from './config-resolver.service';
+import { QuadrantComponent } from '../components/quadrant/quadrant.component';
+import { VerticalListComponent } from '../components/vertical-list/vertical-list.component';
+import { AboutComponent } from '../components/about/about.component';
 
 const appRoutes: Routes = [
   {

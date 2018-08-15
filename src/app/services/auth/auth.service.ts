@@ -1,6 +1,6 @@
 import { Output, EventEmitter } from '@angular/core';
 import { Injectable } from '@angular/core';
-import { GapiWrapperService } from './gapi-wrapper.service';
+import { GapiWrapperService } from '../shared/gapi-wrapper.service';
 import { GoogleAuthServiceBase } from './google-auth-service-base';
 
 @Injectable({

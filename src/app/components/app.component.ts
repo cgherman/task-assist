@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/co
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { AuthServiceBase } from './services/auth-service-base';
+import { AuthServiceBase } from '../services/auth/auth-service-base';
 
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
