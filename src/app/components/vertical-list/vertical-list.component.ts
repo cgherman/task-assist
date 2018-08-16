@@ -14,7 +14,7 @@ import { AuthServiceBase } from '../../services/auth/auth-service-base';
 @Component({
   selector: 'app-vertical-list',
   templateUrl: './vertical-list.component.html',
-  styleUrls: ['./vertical-list.component.css'],
+  styleUrls: ['./vertical-list.component.css', '../task-component-base.css'],
   providers:  [{ provide: TaskServiceBase, useClass: TaskService }]
 })
 export class VerticalListComponent extends TaskComponentBase implements OnInit, OnDestroy {

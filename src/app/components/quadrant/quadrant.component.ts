@@ -15,7 +15,7 @@ import { AuthServiceBase } from '../../services/auth/auth-service-base';
 @Component({
   selector: 'app-quadrant',
   templateUrl: './quadrant.component.html',
-  styleUrls: ['./quadrant.component.css'],
+  styleUrls: ['./quadrant.component.css', '../task-component-base.css'],
   providers:  [[DragulaService],
                { provide: TaskServiceBase, useClass: TaskService }]
 })
