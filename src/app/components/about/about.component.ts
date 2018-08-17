@@ -36,7 +36,7 @@ export class AboutComponent implements OnInit, OnDestroy {
   }
 
   protected onDataLoaded() {
-    this.frameComponent.backgroundGoogleTasksDone();
+    this.frameComponent.bubbledBackgroundGoogleTasksDone();
   }
   
 }

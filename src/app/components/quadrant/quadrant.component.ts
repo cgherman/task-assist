@@ -64,7 +64,7 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
   }
 
   protected onDataLoaded() {
-    this.frameComponent.backgroundGoogleTasksDone();
+    this.frameComponent.bubbledBackgroundGoogleTasksDone();
   }
 
   onDrop(args) {

@@ -95,7 +95,7 @@ export class UserFrameComponent implements OnInit, OnDestroy {
     this.meta.updateTag({ name: 'google-signin-client_id', content: client_id });
 
     // Config values are loaded; we can tell Google OAuth to go forth
-    this.appComponent.configIsResolved();    
+    this.appComponent.bubbledConfigResolved();    
   }
 
   // Triggered by Google login button
@@ -118,7 +118,7 @@ export class UserFrameComponent implements OnInit, OnDestroy {
   onFailedToLoadAuth() {
     console.log("Google Auth Failed to Load!");
     this.appComponent.headerMessageAppend(MSG_GOOGLE_LOAD_FAILURE);
-    this.backgroundGoogleTasksDone();
+    this.bubbledBackgroundGoogleTasksDone();
   }
 
   // Handed control from above
@@ -128,8 +128,8 @@ export class UserFrameComponent implements OnInit, OnDestroy {
     this.dataReadyToLoad.emit(null);
   }
 
-  public backgroundGoogleTasksDone() {
-    this.appComponent.backgroundGoogleTasksDone();
+  public bubbledBackgroundGoogleTasksDone() {
+    this.appComponent.bubbledBackgroundGoogleTasksDone();
   }
 
   // Triggered by form button

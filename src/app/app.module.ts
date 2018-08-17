@@ -23,6 +23,7 @@ import { QuadrantComponent } from './components/quadrant/quadrant.component';
 import { UserFrameComponent } from './components/user-frame/user-frame.component';
 import { VerticalListComponent } from './components/vertical-list/vertical-list.component';
 import { AboutComponent } from './components/about/about.component';
+import { HeaderComponent } from './components/header/header.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { AboutComponent } from './components/about/about.component';
     QuadrantComponent,
     UserFrameComponent,
     VerticalListComponent,
-    AboutComponent
+    AboutComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
