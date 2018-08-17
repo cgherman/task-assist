@@ -4,22 +4,22 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule, MatMenuModule } from '@angular/material';
 
-import { AppComponent } from './components/app.component';
-import { QuadrantComponent } from './components/quadrant/quadrant.component';
-
 import { DragulaModule } from 'ng2-dragula';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './routing/app-routing.module';
 
 import { AuthServiceBase } from './services/auth/auth-service-base';
 import { GoogleAuthServiceBase } from './services/auth/google-auth-service-base';
+import { TaskServiceBase } from './services/task/task-service-base';
+import { TaskModifierServiceBase } from './services/task/task-modifier-service-base';
+import { TaskModifierService } from './services/task/task-modifier.service';
 import { AuthService } from './services/auth/auth.service';
 import { TaskService } from './services/task/task.service';
-import { TaskServiceBase } from './services/task/task-service-base';
-import { TaskModifierService } from './services/task/task-modifier.service';
-import { TaskModifierServiceBase } from './services/task/task-modifier-service-base';
 import { GapiWrapperService } from './services/shared/gapi-wrapper.service';
 import { FileFetchService } from './services/shared/file-fetch.service';
+
+import { AppComponent } from './components/app.component';
+import { QuadrantComponent } from './components/quadrant/quadrant.component';
 import { UserFrameComponent } from './components/user-frame/user-frame.component';
 import { VerticalListComponent } from './components/vertical-list/vertical-list.component';
 import { AboutComponent } from './components/about/about.component';

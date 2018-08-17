@@ -1,14 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { UserFrameComponent } from '../user-frame/user-frame.component';
-
-import { TaskModifierServiceBase } from '../../services/task/task-modifier-service-base';
-import { TaskServiceBase } from '../../services/task/task-service-base';
-import { TaskService } from '../../services/task/task.service';
+import { Component, OnInit, OnDestroy, NgModule } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
+
 import { TaskComponentBase } from '../task-component-base';
+import { TaskModifierServiceBase } from '../../services/task/task-modifier-service-base';
+import { TaskServiceBase } from '../../services/task/task-service-base';
 import { AuthServiceBase } from '../../services/auth/auth-service-base';
+import { TaskService } from '../../services/task/task.service';
+
+import { UserFrameComponent } from '../user-frame/user-frame.component';
 
 @AutoUnsubscribe({includeArrays: true})
 @Component({

@@ -1,15 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-
-import { UserFrameComponent } from '../user-frame/user-frame.component';
-import { TaskComponentBase } from '../task-component-base';
-import { TaskModifierServiceBase } from '../../services/task/task-modifier-service-base';
-import { TaskServiceBase } from '../../services/task/task-service-base';
-import { TaskService } from '../../services/task/task.service';
+import { Component, OnInit, OnDestroy, NgModule } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 
 import { DragulaService } from 'ng2-dragula';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
+
+import { TaskComponentBase } from '../task-component-base';
+import { TaskModifierServiceBase } from '../../services/task/task-modifier-service-base';
+import { TaskServiceBase } from '../../services/task/task-service-base';
 import { AuthServiceBase } from '../../services/auth/auth-service-base';
+import { TaskService } from '../../services/task/task.service';
+
+import { UserFrameComponent } from '../user-frame/user-frame.component';
 
 @AutoUnsubscribe({includeArrays: true})
 @Component({
@@ -19,7 +20,6 @@ import { AuthServiceBase } from '../../services/auth/auth-service-base';
   providers:  [[DragulaService],
                { provide: TaskServiceBase, useClass: TaskService }]
 })
-  
 export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDestroy {
 
   // Dragula options
