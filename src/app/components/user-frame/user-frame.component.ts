@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
 
+import { MSG_GOOGLE_LOAD_FAILURE, MSG_MISSING_CONFIG,MSG_MISSING_API_KEY, MSG_MISSING_CLIENT_KEY } from '../user-messages';
 import { GoogleAuthServiceBase } from '../../services/auth/google-auth-service-base';
 import { AppComponent } from '../app.component';
 import { ConfigHandlerService } from '../../services/config/config-handler.service';
@@ -16,11 +17,6 @@ import { ConfigHandlerService } from '../../services/config/config-handler.servi
 })
 export class UserFrameComponent implements OnInit, OnDestroy {
   @Output() dataReadyToLoad: EventEmitter<any> = new EventEmitter();
-
-  // Messages to help you set up your instance
-  private _missing_config = "You need to deploy api_key.json to your assets folder.";  
-  private _missing_api_key = "API key was not found!";
-  private _missing_client_key = "Client ID was not found!";
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
@@ -79,14 +75,14 @@ export class UserFrameComponent implements OnInit, OnDestroy {
     // If API keys have not been configured, then show a message
     if (api_key == null || client_id == null) {
       if (api_key == null) {
-        this.appComponent.headerMessageAppend(this._missing_api_key);
+        this.appComponent.headerMessageAppend(MSG_MISSING_API_KEY);
       }
 
       if (client_id == null) {
-        this.appComponent.headerMessageAppend(this._missing_client_key);
+        this.appComponent.headerMessageAppend(MSG_MISSING_CLIENT_KEY);
       }
 
-      this.appComponent.headerMessageAppend(this._missing_config);
+      this.appComponent.headerMessageAppend(MSG_MISSING_CONFIG);
     }
 
     // set Google config to enable auth
@@ -121,7 +117,7 @@ export class UserFrameComponent implements OnInit, OnDestroy {
 
   onFailedToLoadAuth() {
     console.log("Google Auth Failed to Load!");
-    this.appComponent.headerMessageAppend(this.appComponent._googleLoadFailure);
+    this.appComponent.headerMessageAppend(MSG_GOOGLE_LOAD_FAILURE);
     this.backgroundGoogleTasksDone();
   }
 

@@ -1,12 +1,14 @@
 import { Observable, Subscription } from "rxjs";
-import { ITask } from "../models/task/itask";
-import { ITaskList } from "../models/task/itask-list";
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { UserFrameComponent } from "./user-frame/user-frame.component";
+import { finalize } from "rxjs/operators";
+
+import { MSG_GUIDE_SIGNIN, MSG_GUIDE_CHOOSE_LIST, MSG_GUIDE_NO_LISTS, MSG_GUIDE_GAPI_ERROR } from './user-messages';
 import { TaskServiceBase } from "../services/task/task-service-base";
 import { TaskModifierServiceBase } from "../services/task/task-modifier-service-base";
-import { finalize } from "rxjs/operators";
 import { AuthServiceBase } from "../services/auth/auth-service-base";
+import { UserFrameComponent } from "./user-frame/user-frame.component";
+import { ITask } from "../models/task/itask";
+import { ITaskList } from "../models/task/itask-list";
 
 export abstract class TaskComponentBase {
 
@@ -44,7 +46,7 @@ export abstract class TaskComponentBase {
                 protected authService: AuthServiceBase) {
         // initialize form
         this.createForm();
-        this.openingStatement = "Sign in!  Then choose here!";
+        this.openingStatement = MSG_GUIDE_SIGNIN;
     }
 
     private createForm() {
@@ -93,9 +95,9 @@ export abstract class TaskComponentBase {
 
         // activate first list
         if (taskLists.length == 0) {
-            this.openingStatement = "No task lists found!";
+            this.openingStatement = MSG_GUIDE_NO_LISTS;
         } else {
-            this.openingStatement = "Choose a task list";
+            this.openingStatement = MSG_GUIDE_CHOOSE_LIST;
             this.quadrantForm.get('taskList').patchValue(taskLists[0].id);
         }
 
@@ -119,7 +121,7 @@ export abstract class TaskComponentBase {
     private onErrorLoadingTasks() {
         // TODO: error handling; can get a 401 when new code is pushed
         console.log("Error during Google API call!");
-        this.openingStatement = "Error during Google API call!";
+        this.openingStatement = MSG_GUIDE_GAPI_ERROR;
         this.authService.signOut();
     }
 

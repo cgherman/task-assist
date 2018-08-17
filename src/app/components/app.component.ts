@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
+import { MSG_GOOGLE_LOAD_FAILURE } from './user-messages';
 import { AuthServiceBase } from '../services/auth/auth-service-base';
 
-import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 @AutoUnsubscribe({includeArrays: true})
 @Component({
@@ -21,9 +22,6 @@ export class AppComponent implements OnInit, OnDestroy {
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
-  // Message to ensure that Google API platform.js is allowed to load
-  public _googleLoadFailure = "Google API was not loaded! Please check your connection and disable your ad blocker to allow platform.js to load.";
-
   public title = "Prioritize Your Tasks";
   public headerMessage = null;
 
@@ -39,7 +37,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onGapiLoadError() {
     console.log("Google Auth Failed to Load!");
-    this.headerMessageAppend(this._googleLoadFailure);
+    this.headerMessageAppend(MSG_GOOGLE_LOAD_FAILURE);
     this.backgroundGoogleTasksDone();
   }
 
