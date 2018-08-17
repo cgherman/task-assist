@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UserFrameComponent } from '../user-frame/user-frame.component';
 import { Subscription } from 'rxjs';
-
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
+
+import { MSG_TITLE_ABOUT } from '../user-messages';
 
 @AutoUnsubscribe({includeArrays: true})
 @Component({
@@ -21,7 +22,7 @@ export class AboutComponent implements OnInit, OnDestroy {
     var sub = this.frameComponent.dataReadyToLoad.subscribe(item => this.onDataReadyToLoad());
     this.subscriptions.push(sub); // capture for destruction
 
-    this.frameComponent.title = "About TaskAssist";
+    this.frameComponent.title = MSG_TITLE_ABOUT;
   }
 
   // ngOnDestroy needs to be present for @AutoUnsubscribe to function

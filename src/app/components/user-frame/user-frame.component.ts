@@ -5,8 +5,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
 
 import { MSG_GOOGLE_LOAD_FAILURE, MSG_MISSING_CONFIG,MSG_MISSING_API_KEY, MSG_MISSING_CLIENT_KEY } from '../user-messages';
-import { GoogleAuthServiceBase } from '../../services/auth/google-auth-service-base';
 import { AppComponent } from '../app.component';
+import { GoogleAuthServiceBase } from '../../services/auth/google-auth-service-base';
 import { ConfigHandlerService } from '../../services/config/config-handler.service';
 
 @AutoUnsubscribe({includeArrays: true})

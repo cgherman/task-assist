@@ -4,13 +4,14 @@ import { FormBuilder } from '@angular/forms';
 import { DragulaService } from 'ng2-dragula';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
+import { MSG_TITLE_QUAD } from '../user-messages';
+import { UserFrameComponent } from '../user-frame/user-frame.component';
 import { TaskComponentBase } from '../task-component-base';
 import { TaskModifierServiceBase } from '../../services/task/task-modifier-service-base';
 import { TaskServiceBase } from '../../services/task/task-service-base';
 import { AuthServiceBase } from '../../services/auth/auth-service-base';
 import { TaskService } from '../../services/task/task.service';
 
-import { UserFrameComponent } from '../user-frame/user-frame.component';
 
 @AutoUnsubscribe({includeArrays: true})
 @Component({
@@ -43,7 +44,7 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
     this.wireUpEvents();
 
     // tweak title based on component usage
-    this.frameComponent.title = "Prioritize Your Tasks: Drag or Tap";
+    this.frameComponent.title = MSG_TITLE_QUAD;
 
     // Init Dragula drag-n-drop
     var sub = this.dragulaService.drop.subscribe(args => this.onDrop(args));

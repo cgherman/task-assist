@@ -3,10 +3,10 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { finalize } from "rxjs/operators";
 
 import { MSG_GUIDE_SIGNIN, MSG_GUIDE_CHOOSE_LIST, MSG_GUIDE_NO_LISTS, MSG_GUIDE_GAPI_ERROR } from './user-messages';
+import { UserFrameComponent } from "./user-frame/user-frame.component";
 import { TaskServiceBase } from "../services/task/task-service-base";
 import { TaskModifierServiceBase } from "../services/task/task-modifier-service-base";
 import { AuthServiceBase } from "../services/auth/auth-service-base";
-import { UserFrameComponent } from "./user-frame/user-frame.component";
 import { ITask } from "../models/task/itask";
 import { ITaskList } from "../models/task/itask-list";
 

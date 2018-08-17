@@ -11,3 +11,9 @@ export const MSG_GUIDE_SIGNIN = "Sign in!  Then choose here!";
 export const MSG_GUIDE_CHOOSE_LIST = "Choose a task list";
 export const MSG_GUIDE_NO_LISTS = "No task lists found!";
 export const MSG_GUIDE_GAPI_ERROR = "Error during Google API call!";
+
+// Heading title text
+export const MSG_TITLE_DEFAULT = "Prioritize Your Tasks";
+export const MSG_TITLE_ABOUT = "About TaskAssist"
+export const MSG_TITLE_QUAD = "Prioritize Your Tasks: Drag or Tap";
+export const MSG_TITLE_LIST = "Prioritize Your Tasks: Tap to Move";

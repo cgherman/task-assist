@@ -3,9 +3,8 @@ import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
-import { MSG_GOOGLE_LOAD_FAILURE } from './user-messages';
+import { MSG_GOOGLE_LOAD_FAILURE, MSG_TITLE_DEFAULT } from './user-messages';
 import { AuthServiceBase } from '../services/auth/auth-service-base';
-
 
 @AutoUnsubscribe({includeArrays: true})
 @Component({
@@ -13,16 +12,15 @@ import { AuthServiceBase } from '../services/auth/auth-service-base';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-
 export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('googleLogin') googleLogin: ElementRef;
-  @ViewChild('triggerRenderButton') triggerRenderButton: ElementRef;
+  @ViewChild('googleTriggerRender') googleTriggerRender: ElementRef;
   @ViewChild('googleExternalEventsCompleted') googleExternalEventsCompleted: ElementRef;
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
-  public title = "Prioritize Your Tasks";
+  public title = MSG_TITLE_DEFAULT;
   public headerMessage = null;
 
   constructor(private authService: AuthServiceBase,
@@ -59,7 +57,7 @@ export class AppComponent implements OnInit, OnDestroy {
   // Fired when config is loaded, including required meta keys
   public configIsResolved() {
     // Activate Google OAuth2 login control
-    this.triggerRenderButton.nativeElement.click();
+    this.googleTriggerRender.nativeElement.click();
   }
   
   public backgroundGoogleTasksDone() {
