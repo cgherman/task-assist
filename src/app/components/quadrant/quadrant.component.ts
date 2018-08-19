@@ -11,6 +11,7 @@ import { TaskModifierServiceBase } from '../../services/task/task-modifier-servi
 import { TaskServiceBase } from '../../services/task/task-service-base';
 import { AuthServiceBase } from '../../services/auth/auth-service-base';
 import { TaskService } from '../../services/task/task.service';
+import { AppEventsService } from '../../services/app-events.service';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -36,15 +37,16 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
               taskModifierService: TaskModifierServiceBase, 
               frameComponent: UserFrameComponent,
               authService: AuthServiceBase,
+              appEventsService: AppEventsService,
               private dragulaService: DragulaService) {
-    super(formBuilder, taskService, taskModifierService, frameComponent, authService);
+    super(formBuilder, taskService, taskModifierService, frameComponent, authService, appEventsService);
   }
 
   ngOnInit() {
     this.wireUpEvents();
 
     // tweak title based on component usage
-    this.frameComponent.title = MSG_TITLE_QUAD;
+    this.requestTitleChange(MSG_TITLE_QUAD);
 
     // Init Dragula drag-n-drop
     var sub = this.dragulaService.drop.subscribe(args => this.onDrop(args));
@@ -64,7 +66,7 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
   }
 
   protected onDataLoaded() {
-    this.frameComponent.bubbledBackgroundGoogleTasksDone();
+    this.appEventsService.fireBackgroundGoogleTasksDone();
   }
 
   onDrop(args) {

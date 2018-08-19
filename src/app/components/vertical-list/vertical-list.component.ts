@@ -9,6 +9,7 @@ import { TaskModifierServiceBase } from '../../services/task/task-modifier-servi
 import { TaskServiceBase } from '../../services/task/task-service-base';
 import { AuthServiceBase } from '../../services/auth/auth-service-base';
 import { TaskService } from '../../services/task/task.service';
+import { AppEventsService } from '../../services/app-events.service';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -23,15 +24,16 @@ export class VerticalListComponent extends TaskComponentBase implements OnInit, 
               taskService: TaskServiceBase, 
               taskModifierService: TaskModifierServiceBase, 
               frameComponent: UserFrameComponent,
-              authService: AuthServiceBase) {
-    super(formBuilder, taskService, taskModifierService, frameComponent, authService);
+              authService: AuthServiceBase,
+              appEventsService: AppEventsService) {
+    super(formBuilder, taskService, taskModifierService, frameComponent, authService, appEventsService);
   }
 
   ngOnInit() {
     this.wireUpEvents();
 
     // tweak title based on component usage
-    this.frameComponent.title = MSG_TITLE_LIST;
+    this.requestTitleChange(MSG_TITLE_LIST);
   }
 
   // ngOnDestroy needs to be present for @AutoUnsubscribe to function
@@ -47,7 +49,7 @@ export class VerticalListComponent extends TaskComponentBase implements OnInit, 
   }
 
   protected onDataLoaded() {
-    this.frameComponent.bubbledBackgroundGoogleTasksDone();
+    this.appEventsService.fireBackgroundGoogleTasksDone();
   }
 
 }

@@ -4,8 +4,9 @@ import { Router } from '@angular/router';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 import { MSG_GOOGLE_LOAD_FAILURE, MSG_TITLE_DEFAULT } from '../user-messages';
-import { AuthServiceBase } from '../../services/auth/auth-service-base';
 import { AppComponent } from '../app.component';
+import { AuthServiceBase } from '../../services/auth/auth-service-base';
+import { AppEventsService } from '../../services/app-events.service';
 
 @AutoUnsubscribe({includeArrays: true})
 @Component({
@@ -26,7 +27,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(private authService: AuthServiceBase,
               private appComponent: AppComponent,
-              private router: Router) {
+              private router: Router,
+              private appEventsService: AppEventsService) {
 
     // Wire up GAPI Auth actions
     const _self = this;
@@ -42,16 +44,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
   
   ngOnInit() {
-    var sub = this.appComponent.configResolved.subscribe(item => this.onConfigResolved());
+    var sub = this.appEventsService.configResolved.subscribe(item => this.onConfigResolved());
     this.subscriptions.push(sub); // capture for destruction
 
-    var sub = this.appComponent.backgroundGoogleTasksDone.subscribe(item => this.onBackgroundGoogleTasksDone());
+    var sub = this.appEventsService.backgroundGoogleTasksDone.subscribe(item => this.onBackgroundGoogleTasksDone());
     this.subscriptions.push(sub); // capture for destruction
 
-    var sub = this.appComponent.requestTitleChange.subscribe(item => this.onRequestTitleChange(item));
+    var sub = this.appEventsService.requestTitleChange.subscribe(item => this.onRequestTitleChange(item));
     this.subscriptions.push(sub); // capture for destruction
 
-    var sub = this.appComponent.requestHeaderMessageAppend.subscribe(item => this.onRequestHeaderMessageAppend(item));
+    var sub = this.appEventsService.requestHeaderMessageAppend.subscribe(item => this.onRequestHeaderMessageAppend(item));
     this.subscriptions.push(sub); // capture for destruction
   }
 

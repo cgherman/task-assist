@@ -3,12 +3,14 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { finalize } from "rxjs/operators";
 
 import { MSG_GUIDE_SIGNIN, MSG_GUIDE_CHOOSE_LIST, MSG_GUIDE_NO_LISTS, MSG_GUIDE_GAPI_ERROR } from './user-messages';
+import { MENU_QUAD_FOCUS, MENU_QUAD_PLAN, MENU_QUAD_DELEGATE, MENU_QUAD_ELIMINATE, MENU_QUAD_UNSPECIFIED } from './task-menu-values';
 import { UserFrameComponent } from "./user-frame/user-frame.component";
 import { TaskServiceBase } from "../services/task/task-service-base";
 import { TaskModifierServiceBase } from "../services/task/task-modifier-service-base";
 import { AuthServiceBase } from "../services/auth/auth-service-base";
 import { ITask } from "../models/task/itask";
 import { ITaskList } from "../models/task/itask-list";
+import { AppEventsService } from "../services/app-events.service";
 
 export abstract class TaskComponentBase {
 
@@ -26,11 +28,11 @@ export abstract class TaskComponentBase {
 
     // action menu
     protected menuActionTask = [
-        'Focus - Urgent & Important',
-        'Plan - Important but Non-urgent',
-        'Delegate - Urgent but Unimportant',
-        'Eliminate - None of the Above',
-        'Unspecified / Unsure'
+        MENU_QUAD_FOCUS,
+        MENU_QUAD_PLAN,
+        MENU_QUAD_DELEGATE,
+        MENU_QUAD_ELIMINATE,
+        MENU_QUAD_UNSPECIFIED
     ];
     /* TODO: Nested menus for different action types
     objectKeys = Object.keys;
@@ -43,7 +45,9 @@ export abstract class TaskComponentBase {
                 protected taskService: TaskServiceBase, 
                 protected taskModifierService: TaskModifierServiceBase, 
                 protected frameComponent: UserFrameComponent,
-                protected authService: AuthServiceBase) {
+                protected authService: AuthServiceBase,
+                protected appEventsService: AppEventsService
+            ) {
         // initialize form
         this.createForm();
         this.openingStatement = MSG_GUIDE_SIGNIN;
@@ -128,19 +132,19 @@ export abstract class TaskComponentBase {
     selectTaskAction(selection: any, taskId: any) {
         var targetQuadrant: string = null;
 
-        if (selection == 'Focus - Urgent & Important') {
+        if (selection == MENU_QUAD_FOCUS) {
             targetQuadrant = "1";
         }
-        if (selection == 'Plan - Important but Non-urgent') {
+        if (selection == MENU_QUAD_PLAN) {
             targetQuadrant = "2";
         }
-        if (selection == 'Delegate - Urgent but Unimportant') {
+        if (selection == MENU_QUAD_DELEGATE) {
             targetQuadrant = "3";
         }
-        if (selection == 'Eliminate - None of the Above') {
+        if (selection == MENU_QUAD_ELIMINATE) {
             targetQuadrant = "4";
         }
-        if (selection == 'Unspecified / Unsure') {
+        if (selection == MENU_QUAD_UNSPECIFIED) {
             targetQuadrant = "0";
         }
 
@@ -148,6 +152,10 @@ export abstract class TaskComponentBase {
         if (targetQuadrant != null) {
             this.taskModifierService.updateTaskQuadrant(this.taskService, taskId, this.selectedTaskList, targetQuadrant);
         }
+    }
+
+    protected requestTitleChange(value: string) {
+        this.appEventsService.requestTitleChange.emit(value);
     }
     
     private onTaskQuadrantUpdated() {

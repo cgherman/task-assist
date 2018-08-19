@@ -8,6 +8,7 @@ import { MSG_GOOGLE_LOAD_FAILURE, MSG_MISSING_CONFIG,MSG_MISSING_API_KEY, MSG_MI
 import { AppComponent } from '../app.component';
 import { GoogleAuthServiceBase } from '../../services/auth/google-auth-service-base';
 import { ConfigHandlerService } from '../../services/config/config-handler.service';
+import { AppEventsService } from '../../services/app-events.service';
 
 @AutoUnsubscribe({includeArrays: true})
 @Component({
@@ -25,7 +26,8 @@ export class UserFrameComponent implements OnInit, OnDestroy {
               private route: ActivatedRoute,
               private meta: Meta,              
               private configHandlerService: ConfigHandlerService,
-              private appComponent: AppComponent
+              private appComponent: AppComponent,
+              private appEventsService: AppEventsService
             ) {
 
     // Wire up Google Auth actions
@@ -36,11 +38,6 @@ export class UserFrameComponent implements OnInit, OnDestroy {
     window['onSignOut'] = function () {
       _self.onSignOut();
     };
-  }
-
-  // exposure of Title text to child controls
-  set title(newValue: string) {
-    this.appComponent.title = newValue;
   }
 
   ngOnInit() {
@@ -75,14 +72,14 @@ export class UserFrameComponent implements OnInit, OnDestroy {
     // If API keys have not been configured, then show a message
     if (api_key == null || client_id == null) {
       if (api_key == null) {
-        this.appComponent.headerMessageAppend(MSG_MISSING_API_KEY);
+        this.requestHeaderMessageAppend(MSG_MISSING_API_KEY);
       }
 
       if (client_id == null) {
-        this.appComponent.headerMessageAppend(MSG_MISSING_CLIENT_KEY);
+        this.requestHeaderMessageAppend(MSG_MISSING_CLIENT_KEY);
       }
 
-      this.appComponent.headerMessageAppend(MSG_MISSING_CONFIG);
+      this.requestHeaderMessageAppend(MSG_MISSING_CONFIG);
     }
 
     // set Google config to enable auth
@@ -95,9 +92,13 @@ export class UserFrameComponent implements OnInit, OnDestroy {
     this.meta.updateTag({ name: 'google-signin-client_id', content: client_id });
 
     // Config values are loaded; we can tell Google OAuth to go forth
-    this.appComponent.bubbledConfigResolved();    
+    this.appEventsService.fireConfigResolved();    
   }
 
+  private requestHeaderMessageAppend(value: string) {
+    this.appEventsService.requestHeaderMessageAppend.emit(value);
+  }  
+  
   // Triggered by Google login button
   onSignIn(googleUser) {
     this.signIn();
@@ -117,8 +118,8 @@ export class UserFrameComponent implements OnInit, OnDestroy {
 
   onFailedToLoadAuth() {
     console.log("Google Auth Failed to Load!");
-    this.appComponent.headerMessageAppend(MSG_GOOGLE_LOAD_FAILURE);
-    this.bubbledBackgroundGoogleTasksDone();
+    this.requestHeaderMessageAppend(MSG_GOOGLE_LOAD_FAILURE);
+    this.appEventsService.fireBackgroundGoogleTasksDone();
   }
 
   // Handed control from above
@@ -126,10 +127,6 @@ export class UserFrameComponent implements OnInit, OnDestroy {
     // fire event indicating data service is ready
     console.log("GAPI client initialized.  Ready for data load.");
     this.dataReadyToLoad.emit(null);
-  }
-
-  public bubbledBackgroundGoogleTasksDone() {
-    this.appComponent.bubbledBackgroundGoogleTasksDone();
   }
 
   // Triggered by form button

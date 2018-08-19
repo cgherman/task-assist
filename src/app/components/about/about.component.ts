@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 import { MSG_TITLE_ABOUT } from '../user-messages';
+import { AppEventsService } from '../../services/app-events.service';
 
 @AutoUnsubscribe({includeArrays: true})
 @Component({
@@ -12,7 +13,8 @@ import { MSG_TITLE_ABOUT } from '../user-messages';
   styleUrls: ['./about.component.css']
 })
 export class AboutComponent implements OnInit, OnDestroy {
-  constructor(private frameComponent: UserFrameComponent) { }
+  constructor(private frameComponent: UserFrameComponent,
+              private appEventsService: AppEventsService) { }
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
@@ -22,7 +24,7 @@ export class AboutComponent implements OnInit, OnDestroy {
     var sub = this.frameComponent.dataReadyToLoad.subscribe(item => this.onDataReadyToLoad());
     this.subscriptions.push(sub); // capture for destruction
 
-    this.frameComponent.title = MSG_TITLE_ABOUT;
+    this.appEventsService.requestTitleChange.emit(MSG_TITLE_ABOUT);
   }
 
   // ngOnDestroy needs to be present for @AutoUnsubscribe to function
@@ -36,7 +38,7 @@ export class AboutComponent implements OnInit, OnDestroy {
   }
 
   protected onDataLoaded() {
-    this.frameComponent.bubbledBackgroundGoogleTasksDone();
+    this.appEventsService.fireBackgroundGoogleTasksDone();
   }
   
 }
