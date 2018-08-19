@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { ConfigResolver } from './config-resolver.service';
 
-describe('ConfigResolverService', () => {
+describe('ConfigResolver', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [ConfigResolver]

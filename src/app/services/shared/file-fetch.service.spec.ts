@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { FileFetchService } from './file-fetch.service';
 
-describe('ConfigService', () => {
+describe('FileFetchService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [FileFetchService]
