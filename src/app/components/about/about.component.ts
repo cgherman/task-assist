@@ -3,7 +3,7 @@ import { UserFrameComponent } from '../user-frame/user-frame.component';
 import { Subscription } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
-import { MSG_TITLE_ABOUT } from '../user-messages';
+import { MSG_TITLE_ABOUT } from '../../user-messages';
 import { AppEventsService } from '../../services/app-events.service';
 
 @AutoUnsubscribe({includeArrays: true})

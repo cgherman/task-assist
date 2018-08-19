@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
-import { MSG_GOOGLE_LOAD_FAILURE, MSG_TITLE_DEFAULT } from '../user-messages';
+import { MSG_GOOGLE_LOAD_FAILURE, MSG_TITLE_DEFAULT } from '../../user-messages';
 import { AppComponent } from '../app.component';
 import { AuthServiceBase } from '../../services/auth/auth-service-base';
 import { AppEventsService } from '../../services/app-events.service';

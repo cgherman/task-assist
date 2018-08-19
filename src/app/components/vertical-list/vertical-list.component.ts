@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, NgModule } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
-import { MSG_TITLE_LIST } from '../user-messages';
+import { MSG_TITLE_LIST } from '../../user-messages';
 import { UserFrameComponent } from '../user-frame/user-frame.component';
 import { TaskComponentBase } from '../task-component-base';
 import { TaskModifierServiceBase } from '../../services/task/task-modifier-service-base';

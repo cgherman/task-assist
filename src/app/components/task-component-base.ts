@@ -2,7 +2,7 @@ import { Observable, Subscription } from "rxjs";
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { finalize } from "rxjs/operators";
 
-import { MSG_GUIDE_SIGNIN, MSG_GUIDE_CHOOSE_LIST, MSG_GUIDE_NO_LISTS, MSG_GUIDE_GAPI_ERROR } from './user-messages';
+import { MSG_GUIDE_SIGNIN, MSG_GUIDE_CHOOSE_LIST, MSG_GUIDE_NO_LISTS, MSG_GUIDE_GAPI_ERROR } from '../user-messages';
 import { MENU_QUAD_FOCUS, MENU_QUAD_PLAN, MENU_QUAD_DELEGATE, MENU_QUAD_ELIMINATE, MENU_QUAD_UNSPECIFIED } from './task-menu-values';
 import { UserFrameComponent } from "./user-frame/user-frame.component";
 import { TaskServiceBase } from "../services/task/task-service-base";

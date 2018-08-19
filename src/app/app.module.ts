@@ -18,6 +18,7 @@ import { TaskService } from './services/task/task.service';
 import { GapiWrapperService } from './services/shared/gapi-wrapper.service';
 import { FileFetchService } from './services/shared/file-fetch.service';
 import { AppEventsService } from './services/app-events.service';
+import { ConfigAppService } from './services/config/config-app.service';
 
 import { AppComponent } from './components/app.component';
 import { QuadrantComponent } from './components/quadrant/quadrant.component';
@@ -52,6 +53,7 @@ import { HeaderComponent } from './components/header/header.component';
               { provide: TaskServiceBase, useClass: TaskService },
               { provide: FileFetchService, useClass: FileFetchService },
               AppEventsService,
+              ConfigAppService,
               GapiWrapperService],
   bootstrap: [AppComponent]
 })

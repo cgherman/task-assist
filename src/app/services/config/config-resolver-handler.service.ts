@@ -7,7 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
-export class ConfigHandlerService implements OnDestroy {
+export class ConfigResolverHandlerService implements OnDestroy {
   @Output() configResolved: EventEmitter<any> = new EventEmitter();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
