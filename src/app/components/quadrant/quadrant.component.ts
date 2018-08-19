@@ -11,7 +11,7 @@ import { TaskModifierServiceBase } from '../../services/task/task-modifier-servi
 import { TaskServiceBase } from '../../services/task/task-service-base';
 import { AuthServiceBase } from '../../services/auth/auth-service-base';
 import { TaskService } from '../../services/task/task.service';
-import { AppEventsService } from '../../services/app-events.service';
+import { CrossComponentEventService } from '../../services/shared/cross-component-event.service';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -37,7 +37,7 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
               taskModifierService: TaskModifierServiceBase, 
               frameComponent: UserFrameComponent,
               authService: AuthServiceBase,
-              appEventsService: AppEventsService,
+              appEventsService: CrossComponentEventService,
               private dragulaService: DragulaService) {
     super(formBuilder, taskService, taskModifierService, frameComponent, authService, appEventsService);
   }

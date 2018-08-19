@@ -4,7 +4,7 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 import { ActivatedRoute } from '@angular/router';
 import { ConfigResolverHandlerService } from './config-resolver-handler.service';
 import { MSG_MISSING_CONFIG,MSG_MISSING_API_KEY, MSG_MISSING_CLIENT_KEY } from '../../user-messages';
-import { AppEventsService } from '../app-events.service';
+import { CrossComponentEventService } from '../shared/cross-component-event.service';
 import { GoogleAuthServiceBase } from '../auth/google-auth-service-base';
 import { Meta } from '@angular/platform-browser';
 
@@ -19,7 +19,7 @@ export class ConfigAppService implements OnDestroy {
 
   constructor(private configResolverHandlerService: ConfigResolverHandlerService,
               private meta: Meta, 
-              private appEventsService: AppEventsService,
+              private appEventsService: CrossComponentEventService,
               private authService: GoogleAuthServiceBase) {
   }
 

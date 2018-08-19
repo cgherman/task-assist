@@ -3,7 +3,7 @@ import { Injectable, Output, EventEmitter } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class AppEventsService {
+export class CrossComponentEventService {
   @Output() configResolved: EventEmitter<any> = new EventEmitter();
   @Output() backgroundGoogleTasksDone: EventEmitter<any> = new EventEmitter();
   @Output() requestTitleChange: EventEmitter<any> = new EventEmitter();

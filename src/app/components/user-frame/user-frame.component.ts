@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { MSG_GOOGLE_LOAD_FAILURE } from '../../user-messages';
 import { GoogleAuthServiceBase } from '../../services/auth/google-auth-service-base';
-import { AppEventsService } from '../../services/app-events.service';
+import { CrossComponentEventService } from '../../services/shared/cross-component-event.service';
 import { ConfigAppService } from '../../services/config/config-app.service';
 
 @AutoUnsubscribe({includeArrays: true})
@@ -24,7 +24,7 @@ export class UserFrameComponent implements OnInit, OnDestroy {
   constructor(private authService: GoogleAuthServiceBase,
               private route: ActivatedRoute,     
               private configAppService: ConfigAppService,
-              private appEventsService: AppEventsService
+              private appEventsService: CrossComponentEventService
             ) {
 
     // Wire up Google Auth actions

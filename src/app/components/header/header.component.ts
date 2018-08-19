@@ -6,7 +6,7 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 import { MSG_GOOGLE_LOAD_FAILURE, MSG_TITLE_DEFAULT } from '../../user-messages';
 import { AppComponent } from '../app.component';
 import { AuthServiceBase } from '../../services/auth/auth-service-base';
-import { AppEventsService } from '../../services/app-events.service';
+import { CrossComponentEventService } from '../../services/shared/cross-component-event.service';
 
 @AutoUnsubscribe({includeArrays: true})
 @Component({
@@ -28,7 +28,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthServiceBase,
               private appComponent: AppComponent,
               private router: Router,
-              private appEventsService: AppEventsService) {
+              private appEventsService: CrossComponentEventService) {
 
     // Wire up GAPI Auth actions
     const _self = this;

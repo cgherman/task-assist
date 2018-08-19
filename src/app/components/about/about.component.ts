@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 import { MSG_TITLE_ABOUT } from '../../user-messages';
-import { AppEventsService } from '../../services/app-events.service';
+import { CrossComponentEventService } from '../../services/shared/cross-component-event.service';
 
 @AutoUnsubscribe({includeArrays: true})
 @Component({
@@ -14,7 +14,7 @@ import { AppEventsService } from '../../services/app-events.service';
 })
 export class AboutComponent implements OnInit, OnDestroy {
   constructor(private frameComponent: UserFrameComponent,
-              private appEventsService: AppEventsService) { }
+              private appEventsService: CrossComponentEventService) { }
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];

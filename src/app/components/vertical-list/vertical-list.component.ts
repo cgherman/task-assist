@@ -9,7 +9,7 @@ import { TaskModifierServiceBase } from '../../services/task/task-modifier-servi
 import { TaskServiceBase } from '../../services/task/task-service-base';
 import { AuthServiceBase } from '../../services/auth/auth-service-base';
 import { TaskService } from '../../services/task/task.service';
-import { AppEventsService } from '../../services/app-events.service';
+import { CrossComponentEventService } from '../../services/shared/cross-component-event.service';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -25,7 +25,7 @@ export class VerticalListComponent extends TaskComponentBase implements OnInit, 
               taskModifierService: TaskModifierServiceBase, 
               frameComponent: UserFrameComponent,
               authService: AuthServiceBase,
-              appEventsService: AppEventsService) {
+              appEventsService: CrossComponentEventService) {
     super(formBuilder, taskService, taskModifierService, frameComponent, authService, appEventsService);
   }
 

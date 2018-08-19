@@ -10,7 +10,7 @@ import { TaskModifierServiceBase } from "../services/task/task-modifier-service-
 import { AuthServiceBase } from "../services/auth/auth-service-base";
 import { ITask } from "../models/task/itask";
 import { ITaskList } from "../models/task/itask-list";
-import { AppEventsService } from "../services/app-events.service";
+import { CrossComponentEventService } from "../services/shared/cross-component-event.service";
 
 export abstract class TaskComponentBase {
 
@@ -46,7 +46,7 @@ export abstract class TaskComponentBase {
                 protected taskModifierService: TaskModifierServiceBase, 
                 protected frameComponent: UserFrameComponent,
                 protected authService: AuthServiceBase,
-                protected appEventsService: AppEventsService
+                protected appEventsService: CrossComponentEventService
             ) {
         // initialize form
         this.createForm();
