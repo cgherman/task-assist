@@ -25,7 +25,9 @@ import { QuadrantComponent } from './components/task/quadrant/quadrant.component
 import { UserFrameComponent } from './components/common/user-frame/user-frame.component';
 import { VerticalListComponent } from './components/task/vertical-list/vertical-list.component';
 import { AboutComponent } from './components/common/about/about.component';
-import { HeaderComponent } from './components/header/header.component';
+import { HeaderComponent } from './components/common/header/header.component';
+import { AuthControlsComponent } from './components/auth/auth-controls/auth-controls.component';
+import { ViewControlsComponent } from './components/common/view-controls/view-controls.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,9 @@ import { HeaderComponent } from './components/header/header.component';
     UserFrameComponent,
     VerticalListComponent,
     AboutComponent,
-    HeaderComponent
+    HeaderComponent,
+    AuthControlsComponent,
+    ViewControlsComponent
   ],
   imports: [
     BrowserModule,
