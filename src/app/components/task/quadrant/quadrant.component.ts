@@ -4,14 +4,13 @@ import { FormBuilder } from '@angular/forms';
 import { DragulaService } from 'ng2-dragula';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
-import { MSG_TITLE_QUAD } from '../../user-messages';
-import { UserFrameComponent } from '../user-frame/user-frame.component';
+import { MSG_TITLE_QUAD } from '../../../user-messages';
 import { TaskComponentBase } from '../task-component-base';
-import { TaskModifierServiceBase } from '../../services/task/task-modifier-service-base';
-import { TaskServiceBase } from '../../services/task/task-service-base';
-import { AuthServiceBase } from '../../services/auth/auth-service-base';
-import { TaskService } from '../../services/task/task.service';
-import { CrossComponentEventService } from '../../services/shared/cross-component-event.service';
+import { TaskModifierServiceBase } from '../../../services/task/task-modifier-service-base';
+import { TaskServiceBase } from '../../../services/task/task-service-base';
+import { AuthServiceBase } from '../../../services/auth/auth-service-base';
+import { TaskService } from '../../../services/task/task.service';
+import { CrossComponentEventService } from '../../../services/shared/cross-component-event.service';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -34,12 +33,11 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
   
   constructor(formBuilder: FormBuilder,
               taskService: TaskServiceBase, 
-              taskModifierService: TaskModifierServiceBase, 
-              frameComponent: UserFrameComponent,
+              taskModifierService: TaskModifierServiceBase,
               authService: AuthServiceBase,
-              appEventsService: CrossComponentEventService,
+              crossComponentEventService: CrossComponentEventService,
               private dragulaService: DragulaService) {
-    super(formBuilder, taskService, taskModifierService, frameComponent, authService, appEventsService);
+    super(formBuilder, taskService, taskModifierService, authService, crossComponentEventService);
   }
 
   ngOnInit() {
@@ -66,7 +64,7 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
   }
 
   protected onDataLoaded() {
-    this.appEventsService.fireBackgroundGoogleTasksDone();
+    this.crossComponentEventService.signalBackgroundGoogleTasksDone();
   }
 
   onDrop(args) {

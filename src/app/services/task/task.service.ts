@@ -19,7 +19,7 @@ import { TaskArrayEventContainer } from '../../models/task/task-array-event-cont
   providedIn: 'root'
 })
 
-export class TaskService implements TaskServiceBase, OnDestroy {  
+export class TaskService extends TaskServiceBase implements OnDestroy {  
   @Output() errorLoadingTasks: EventEmitter<any> = new EventEmitter();
   @Output() taskListsLoaded: EventEmitter<any> = new EventEmitter();
   @Output() tasksLoaded: EventEmitter<any> = new EventEmitter();
@@ -30,6 +30,7 @@ export class TaskService implements TaskServiceBase, OnDestroy {
   private tasksCacheTable: IHashTable<ITask[]> = {}; 
 
   constructor(private gapiWrapper: GapiWrapperService) {  
+    super();
   }
 
   // ngOnDestroy needs to be present for @AutoUnsubscribe to function

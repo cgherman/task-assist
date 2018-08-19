@@ -19,7 +19,7 @@ export class ConfigAppService implements OnDestroy {
 
   constructor(private configResolverHandlerService: ConfigResolverHandlerService,
               private meta: Meta, 
-              private appEventsService: CrossComponentEventService,
+              private crossComponentEventService: CrossComponentEventService,
               private authService: GoogleAuthServiceBase) {
   }
 
@@ -65,10 +65,10 @@ export class ConfigAppService implements OnDestroy {
     this.meta.updateTag({ name: 'google-signin-client_id', content: client_id });
 
     // Config values are loaded; we can tell Google OAuth to go forth
-     this.appEventsService.fireConfigResolved();    
+     this.crossComponentEventService.signalConfigResolved();    
   }
 
   private requestHeaderMessageAppend(value: string) {
-    this.appEventsService.requestHeaderMessageAppend.emit(value);
+    this.crossComponentEventService.signalHeaderMessageAppend(value);
   }  
 }

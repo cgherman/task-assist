@@ -26,9 +26,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public headerMessage = null;
 
   constructor(private authService: AuthServiceBase,
-              private appComponent: AppComponent,
               private router: Router,
-              private appEventsService: CrossComponentEventService) {
+              private crossComponentEventService: CrossComponentEventService) {
 
     // Wire up GAPI Auth actions
     const _self = this;
@@ -44,16 +43,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
   
   ngOnInit() {
-    var sub = this.appEventsService.configResolved.subscribe(item => this.onConfigResolved());
+    var sub = this.crossComponentEventService.configResolved.subscribe(item => this.onConfigResolved());
     this.subscriptions.push(sub); // capture for destruction
 
-    var sub = this.appEventsService.backgroundGoogleTasksDone.subscribe(item => this.onBackgroundGoogleTasksDone());
+    var sub = this.crossComponentEventService.backgroundGoogleTasksDone.subscribe(item => this.onBackgroundGoogleTasksDone());
     this.subscriptions.push(sub); // capture for destruction
 
-    var sub = this.appEventsService.requestTitleChange.subscribe(item => this.onRequestTitleChange(item));
+    var sub = this.crossComponentEventService.requestTitleChange.subscribe(item => this.onRequestTitleChange(item));
     this.subscriptions.push(sub); // capture for destruction
 
-    var sub = this.appEventsService.requestHeaderMessageAppend.subscribe(item => this.onRequestHeaderMessageAppend(item));
+    var sub = this.crossComponentEventService.requestHeaderMessageAppend.subscribe(item => this.onRequestHeaderMessageAppend(item));
     this.subscriptions.push(sub); // capture for destruction
   }
 

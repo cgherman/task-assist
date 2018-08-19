@@ -2,14 +2,13 @@ import { Component, OnInit, OnDestroy, NgModule } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
-import { MSG_TITLE_LIST } from '../../user-messages';
-import { UserFrameComponent } from '../user-frame/user-frame.component';
-import { TaskComponentBase } from '../task-component-base';
-import { TaskModifierServiceBase } from '../../services/task/task-modifier-service-base';
-import { TaskServiceBase } from '../../services/task/task-service-base';
-import { AuthServiceBase } from '../../services/auth/auth-service-base';
-import { TaskService } from '../../services/task/task.service';
-import { CrossComponentEventService } from '../../services/shared/cross-component-event.service';
+import { MSG_TITLE_LIST } from '../../../user-messages';
+import { TaskComponentBase } from '../../task/task-component-base';
+import { TaskModifierServiceBase } from '../../../services/task/task-modifier-service-base';
+import { TaskServiceBase } from '../../../services/task/task-service-base';
+import { AuthServiceBase } from '../../../services/auth/auth-service-base';
+import { TaskService } from '../../../services/task/task.service';
+import { CrossComponentEventService } from '../../../services/shared/cross-component-event.service';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -22,11 +21,10 @@ import { CrossComponentEventService } from '../../services/shared/cross-componen
 export class VerticalListComponent extends TaskComponentBase implements OnInit, OnDestroy {
   constructor(formBuilder: FormBuilder,
               taskService: TaskServiceBase, 
-              taskModifierService: TaskModifierServiceBase, 
-              frameComponent: UserFrameComponent,
+              taskModifierService: TaskModifierServiceBase,
               authService: AuthServiceBase,
-              appEventsService: CrossComponentEventService) {
-    super(formBuilder, taskService, taskModifierService, frameComponent, authService, appEventsService);
+              crossComponentEventService: CrossComponentEventService) {
+    super(formBuilder, taskService, taskModifierService, authService, crossComponentEventService);
   }
 
   ngOnInit() {
@@ -49,7 +47,7 @@ export class VerticalListComponent extends TaskComponentBase implements OnInit, 
   }
 
   protected onDataLoaded() {
-    this.appEventsService.fireBackgroundGoogleTasksDone();
+    this.crossComponentEventService.signalBackgroundGoogleTasksDone();
   }
 
 }
