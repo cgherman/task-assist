@@ -4,36 +4,37 @@ import { Injectable, Output, EventEmitter } from '@angular/core';
   providedIn: 'root'
 })
 export class CrossComponentEventService {
-  @Output() configResolved: EventEmitter<any> = new EventEmitter();
-  @Output() backgroundGoogleTasksDone: EventEmitter<any> = new EventEmitter();
+  @Output() configLoaded: EventEmitter<any> = new EventEmitter();
+  @Output() dataReadyToLoad: EventEmitter<any> = new EventEmitter();
+  @Output() dataLoadComplete: EventEmitter<any> = new EventEmitter();
   @Output() requestTitleChange: EventEmitter<any> = new EventEmitter();
   @Output() requestHeaderMessageAppend: EventEmitter<any> = new EventEmitter();
-  @Output() dataReadyToLoad: EventEmitter<any> = new EventEmitter();
 
   constructor() { }
-
-    // Signal when config is fully loaded
-    public signalConfigResolved() {
-      this.configResolved.emit();
-    }
   
-    // Signal when xxxxxxxxxxxxxxxxx
-    public signalBackgroundGoogleTasksDone() {
-      this.backgroundGoogleTasksDone.emit();
-    }
+  // Signal when config info is fully loaded
+  public signalConfigLoaded() {
+    this.configLoaded.emit();
+  }
 
-    // Signal when title change is desired
-    public signalTitleChange(value: string) {
-      this.requestTitleChange.emit(value);
-    }
+  // Signal after authentication has occured
+  public signalDataReadyToLoad() {
+    this.dataReadyToLoad.emit();
+  }
 
-    // Signal when critical user information needs to be relayed
-    public signalHeaderMessageAppend(value: string) {
-      this.requestHeaderMessageAppend.emit(value);
-    }
+  // Signal when Google Google data has been initially loaded into components (or failed)
+  public signalDataLoadComplete() {
+    this.dataLoadComplete.emit();
+  }
 
-    // Signal when xxxxxxxxxxxxxxxxx
-    public signalDataReadyToLoad() {
-      this.dataReadyToLoad.emit();
-    }
+  // Signal when title change is desired
+  public signalTitleChange(value: string) {
+    this.requestTitleChange.emit(value);
+  }
+  
+  // Signal when critical user information needs to be relayed
+  public signalHeaderMessageAppend(value: string) {
+    this.requestHeaderMessageAppend.emit(value);
+  }
+
 }

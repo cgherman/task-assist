@@ -38,7 +38,7 @@ export class AboutComponent implements OnInit, OnDestroy {
   }
 
   protected onDataLoaded() {
-    this.crossComponentEventService.signalBackgroundGoogleTasksDone();
+    this.crossComponentEventService.signalDataLoadComplete();
   }
   
 }

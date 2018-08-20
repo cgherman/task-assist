@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { UserFrameComponent } from '../components/common/user-frame/user-frame.component';
-import { CanActivateViaAuthGuard } from './can-activate-via-auth.guard';
 import { ConfigResolver } from './config-resolver.service';
 import { QuadrantComponent } from '../components/task/quadrant/quadrant.component';
 import { VerticalListComponent } from '../components/task/vertical-list/vertical-list.component';
@@ -14,8 +13,7 @@ const appRoutes: Routes = [
     pathMatch: 'full',
   }, {
     path: '', 
-    component: UserFrameComponent, 
-    canActivate: [CanActivateViaAuthGuard], 
+    component: UserFrameComponent,
     resolve: {
       config: ConfigResolver
     },

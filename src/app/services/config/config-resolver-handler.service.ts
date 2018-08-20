@@ -2,6 +2,7 @@ import { Injectable, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 import { ActivatedRoute } from '@angular/router';
+import { ConfigEventContainer } from '../../models/config/config-event-container';
 
 @AutoUnsubscribe({includeArrays: true})
 @Injectable({
@@ -39,7 +40,12 @@ export class ConfigResolverHandlerService implements OnDestroy {
   }
 
   private onConfigResolved(api_key: string, client_id: string, discoveryDocs: string[], scope:string) {
-    this.configResolved.emit( {api_key, client_id, discoveryDocs, scope} );
+    var configEventContainer = new ConfigEventContainer();
+    configEventContainer.scope = scope;
+    configEventContainer.discoveryDocs = discoveryDocs;
+    configEventContainer.api_key = api_key;
+    configEventContainer.client_id = client_id;
+    this.configResolved.emit( configEventContainer );
   }
 
   private apiKeyFromConfig(config: any) {

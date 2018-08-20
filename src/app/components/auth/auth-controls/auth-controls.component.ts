@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { AuthServiceBase } from '../../../services/auth/auth-service-base';
 import { Subscription } from 'rxjs';
+import { Meta } from '@angular/platform-browser';
 
 import { MSG_GOOGLE_LOAD_FAILURE } from '../../../user-messages';
 import { CrossComponentEventService } from '../../../services/shared/cross-component-event.service';
+import { GoogleAuthServiceBase } from '../../../services/auth/google-auth-service-base';
 
 @Component({
   selector: 'app-auth-controls',
@@ -18,46 +19,97 @@ export class AuthControlsComponent implements OnInit {
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
-  constructor(private authService: AuthServiceBase,
-              private crossComponentEventService: CrossComponentEventService) {
+  constructor(private authService: GoogleAuthServiceBase,
+              private crossComponentEventService: CrossComponentEventService
+            ) {
                 
-    // Wire up GAPI Auth actions
+    // Wire up Google Auth actions
     const _self = this;
     window['onGapiLoadError'] = function () {
       _self.onGapiLoadError();
     };
-  }
-
-  onGapiLoadError() {
-    console.log("Google Auth Failed to Load!");
-    this.crossComponentEventService.signalHeaderMessageAppend(MSG_GOOGLE_LOAD_FAILURE);
-    this.onBackgroundGoogleTasksDone();
+    window['onSignIn'] = function (googleUser) {
+      _self.onSignIn(googleUser);
+    };
+    window['onSignOut'] = function () {
+      _self.onSignOut();
+    };
   }
 
   ngOnInit() {
-    var sub = this.crossComponentEventService.configResolved.subscribe(item => this.onConfigResolved());
+    // intercept config completion
+    var sub = this.crossComponentEventService.configLoaded.subscribe(item => this.onConfigLoaded());
+    this.subscriptions.push(sub); // capture for destruction
+    
+    // intercept auth success
+    var sub = this.authService.authenticated.subscribe(item => this.onAuthenticated());
     this.subscriptions.push(sub); // capture for destruction
 
-    var sub = this.crossComponentEventService.backgroundGoogleTasksDone.subscribe(item => this.onBackgroundGoogleTasksDone());
+    // intercept auth failure
+    sub = this.authService.failedToLoadAuth.subscribe(item => this.onFailedToLoadAuth());
+    this.subscriptions.push(sub); // capture for destruction
+    
+    // intercept google data load completion
+    var sub = this.crossComponentEventService.dataLoadComplete.subscribe(item => this.onDataLoadComplete());
     this.subscriptions.push(sub); // capture for destruction
   }
 
-  private onConfigResolved() {
+  isSignedIn(): boolean {
+    return this.authService.isAuthenticated();
+  }
+  
+  // Called when it's okay to render the Google Sign-in button
+  private onConfigLoaded() {
     // Activate Google OAuth2 login control
     this.googleTriggerRender.nativeElement.click();
   }
 
-  private onBackgroundGoogleTasksDone() {
+  // May occur if render fails
+  onGapiLoadError() {
+    console.log("Google Auth Failed to Load!");
+    this.crossComponentEventService.signalHeaderMessageAppend(MSG_GOOGLE_LOAD_FAILURE);
+    this.onDataLoadComplete();
+  }
+
+  // Triggered by Google login button
+  public onSignIn(googleUser) {
+    this.signIn();
+  }
+
+  // Triggered by user clicking the form button
+  public onSignOut() {
+    this.authService.signOut();
+  }
+
+  // begin the sign-in/authorization process
+  private signIn() {
+    // sign in using authorization service
+    this.authService.signIn();
+  }
+  
+  // Triggered by authorization service
+  public onAuthenticated() {
+    // fire event indicating GAPI services are initialized
+    console.log("GAPI client initialized.  Ready for data load.");
+    this.crossComponentEventService.signalDataReadyToLoad();
+  }
+
+  // Triggered by authorization service
+  public onFailedToLoadAuth() {
+    console.log("Google Auth Failed to Load!");
+    this.crossComponentEventService.signalHeaderMessageAppend(MSG_GOOGLE_LOAD_FAILURE);
+    this.crossComponentEventService.signalDataLoadComplete();
+  }
+
+  private onDataLoadComplete() {
     // Trigger UI update, notifying Angular of GAPI-induced model changes.
     // Polling GAPI for completion does work, but this is preferable currently.
     this.googleExternalEventsCompleted.nativeElement.click();
   }
+  
   // Triggered by googleExternalEventsCompleted event
   onGoogleExternalEventsCompleted() {
     // TODO: Handle any necessary user dialog here
   }
   
-  isSignedIn(): boolean {
-    return this.authService.isAuthenticated();
-  }
 }

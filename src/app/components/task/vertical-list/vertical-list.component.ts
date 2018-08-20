@@ -47,7 +47,7 @@ export class VerticalListComponent extends TaskComponentBase implements OnInit, 
   }
 
   protected onDataLoaded() {
-    this.crossComponentEventService.signalBackgroundGoogleTasksDone();
+    this.crossComponentEventService.signalDataLoadComplete();
   }
 
 }

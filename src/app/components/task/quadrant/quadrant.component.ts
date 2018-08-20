@@ -64,7 +64,7 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
   }
 
   protected onDataLoaded() {
-    this.crossComponentEventService.signalBackgroundGoogleTasksDone();
+    this.crossComponentEventService.signalDataLoadComplete();
   }
 
   onDrop(args) {
