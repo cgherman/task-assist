@@ -4,12 +4,13 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 import { TaskServiceBase } from './task-service-base';
 
+import { GoogleTaskService } from './google-task.service';
+import { TaskFactoryService } from '../../factories/task/task-factory-service';
+import { FlatTaskListFactory } from '../../factories/task/flat-task-list-factory';
+import { FlatTaskFactory } from '../../factories/task/flat-task-factory';
 import { IHashTable } from '../../models/shared/ihash-table';
 import { ITask } from '../../models/task/itask';
 import { ITaskList } from '../../models/task/itask-list';
-import { GoogleTaskService } from './google-task.service';
-import { TaskFactoryService } from '../../factories/task/task-factory-service';
-import { FlatTaskFactory } from '../../factories/task/flat-task-factory';
 import { ITasksInList } from '../../models/task/itasks-in-list';
 import { ITaskInList } from '../../models/task/itask-in-list';
 
@@ -34,7 +35,7 @@ export class TaskService extends TaskServiceBase implements OnDestroy {
     super();
 
     // TODO: parameterize factory/service
-    this.taskFactoryService = new TaskFactoryService(new FlatTaskFactory());
+    this.taskFactoryService = new TaskFactoryService(new FlatTaskFactory(), new FlatTaskListFactory());
     googleTaskServiceService.SetFactoryStrategy(this.taskFactoryService);
 
     var sub = this.googleTaskServiceService.errorLoadingTasks.subscribe(item => this.onErrorLoadingTasks());

@@ -5,10 +5,9 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 import { TaskServiceBase } from './task-service-base';
 import { GapiWrapperService } from '../shared/gapi-wrapper.service';
 
+import { TaskFactoryService } from '../../factories/task/task-factory-service';
 import { ITask } from '../../models/task/itask';
 import { ITaskList } from '../../models/task/itask-list';
-import { TaskList } from '../../models/task/task-list';
-import { TaskFactoryService } from '../../factories/task/task-factory-service';
 import { ITasksInList } from '../../models/task/itasks-in-list';
 
 
@@ -53,7 +52,7 @@ export class GoogleTaskService extends TaskServiceBase implements OnDestroy {
   }
 
   public getTaskLists(): Observable<ITaskList[]> {
-    var myPromise: Promise<TaskList[]>;
+    var myPromise: Promise<ITaskList[]>;
 
     myPromise = new Promise((resolve, reject) => {
       if (this.gapiWrapper.instance == null || this.gapiWrapper.instance.client == null) {
@@ -66,8 +65,7 @@ export class GoogleTaskService extends TaskServiceBase implements OnDestroy {
         if (response == null || response.result == null || response.result.items == null || response.result.items.length == 0) {
           resolve(null);
         } else {
-          var taskLists: TaskList[];
-          taskLists = this.parseTaskLists(response);
+          var taskLists: ITaskList[] = this.taskFactoryService.CreateTaskLists(response);
           resolve(taskLists);
         }
       }).catch((errorHandler) => {
@@ -102,8 +100,7 @@ export class GoogleTaskService extends TaskServiceBase implements OnDestroy {
         if (response == null || response.result == null || response.result.items == null || response.result.items.length == 0) {
           resolve(null);
         } else {
-          var tasks: ITask[];
-          tasks = this.taskFactoryService.CreateTaskArray(response);
+          var tasks: ITask[] = this.taskFactoryService.CreateTaskArray(response);
           resolve(tasks);
         }
       }).catch((errorHandler) => {
@@ -138,8 +135,7 @@ export class GoogleTaskService extends TaskServiceBase implements OnDestroy {
         if (response == null || response.result == null) {
           resolve(null);
         } else {
-          var task: ITask;
-          task = this.taskFactoryService.CreateTask(response);
+          var task: ITask = this.taskFactoryService.CreateTask(response);
           resolve(task);
         }
       }).catch((errorHandler) => {
@@ -167,8 +163,7 @@ export class GoogleTaskService extends TaskServiceBase implements OnDestroy {
         if (response == null || response.result == null) {
           resolve(null);
         } else {
-          var task: ITask;
-          task = this.taskFactoryService.CreateTask(response);
+          var task: ITask = this.taskFactoryService.CreateTask(response);
           resolve(task);
         }
       }).catch((errorHandler) => {
@@ -180,24 +175,4 @@ export class GoogleTaskService extends TaskServiceBase implements OnDestroy {
     return myPromise;
   }
 
-  private parseTaskLists(response: any): TaskList[] {
-    var index: number;
-    var taskLists = [] as TaskList[];
-    
-    if (response.result == null || response.result.items == null || response.result.items.length == 0) {
-      console.log('No Task Lists found.');
-      return null;
-    } else {
-      console.log('Found ' + response.result.items.length + ' Task LISTS.');
-
-      var task;
-      for (var index = 0; index < response.result.items.length; index++) {
-        task = new TaskList(response.result.items[index].id,
-                            response.result.items[index].title);
-        taskLists.push(task);
-      }
-
-      return taskLists;
-    }
-  }
 }
