@@ -17,11 +17,11 @@ export abstract class TaskServiceBase {
     public abstract getTaskLists(): Observable<ITaskList[]>;
 
     // method to fetch tasks for a given task list
-    public abstract getTasks(taskList: any, cachedIsOkay?:boolean): Observable<ITask[]>;
+    public abstract getTasks(taskList: any, preferFreshData?: boolean): Observable<ITask[]>;
 
     // method to get single task
     public abstract getTask(taskId: string, taskListId: string): Observable<ITask>;
 
     // method to patch/update single task
-    public abstract updateTask(task: ITask, taskListId: string, cachedIsOkay?:boolean): Promise<ITask>;
+    public abstract updateTask(task: ITask, taskListId: string): Promise<ITask>;
 }

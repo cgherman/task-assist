@@ -35,7 +35,7 @@ export class TaskModifierService implements TaskModifierServiceBase, OnDestroy {
         this.setQuadrant(task, quadrantChar);
 
         // Commit updated task notes via Google API
-        taskService.updateTask( task, taskListId, true
+        taskService.updateTask( task, taskListId
         ).then((task) => {
           console.log("Task " + task.id + " successfully updated via API.");
           this.onTaskQuadrantUpdated();

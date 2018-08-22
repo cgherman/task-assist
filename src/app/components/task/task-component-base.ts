@@ -88,7 +88,7 @@ export abstract class TaskComponentBase {
         var taskListId: string = this.quadrantForm.get('taskList').value;
         console.log("Changing to a different list: " + taskListId);
         this.selectedTaskList = taskListId;
-        this.loadTasks(taskListId, false);
+        this.loadTasks(taskListId, true);
     }
 
     // Fired after initial task list is loaded
@@ -106,9 +106,9 @@ export abstract class TaskComponentBase {
     }
 
     // let's get the tasks
-    protected loadTasks(taskListId: string, cachedIsOkay: boolean) {
+    protected loadTasks(taskListId: string, preferFreshData: boolean = false) {
         // TODO: error handling
-        this.tasks = this.taskService.getTasks(taskListId, cachedIsOkay)
+        this.tasks = this.taskService.getTasks(taskListId, preferFreshData)
         .pipe(finalize((() => { this.onTasksLoaded(); })));
     }
 
@@ -155,7 +155,7 @@ export abstract class TaskComponentBase {
     
     private onTaskQuadrantUpdated() {
         // Update model with committed data
-        this.loadTasks(this.selectedTaskList, true);
+        this.loadTasks(this.selectedTaskList);
     }
 
     // Called by repeater to determine appropriate quadrant for each task
