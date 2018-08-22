@@ -1,7 +1,7 @@
 import { ITask } from './itask';
 
 // basic task object; could be either a parent or child
-export class Task implements ITask {
+export class FlatTask implements ITask {
     public id: string = null;
     public title: string = null;
     public selfLink: string = null;

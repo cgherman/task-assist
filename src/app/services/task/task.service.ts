@@ -7,9 +7,11 @@ import { TaskServiceBase } from './task-service-base';
 import { IHashTable } from '../../models/shared/ihash-table';
 import { ITask } from '../../models/task/itask';
 import { ITaskList } from '../../models/task/itask-list';
-import { TaskEventContainer } from '../../models/task/task-event-container';
-import { GoogleTaskServiceService } from './google-task-service.service';
-import { TaskArrayEventContainer } from '../../models/task/task-array-event-container';
+import { GoogleTaskService } from './google-task.service';
+import { TaskFactoryService } from '../../factories/task/task-factory-service';
+import { FlatTaskFactory } from '../../factories/task/flat-task-factory';
+import { ITasksInList } from '../../models/task/itasks-in-list';
+import { ITaskInList } from '../../models/task/itask-in-list';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -20,15 +22,20 @@ import { TaskArrayEventContainer } from '../../models/task/task-array-event-cont
 export class TaskService extends TaskServiceBase implements OnDestroy {  
   public errorLoadingTasks: Subject<any> = new Subject();
   public taskListsLoaded: Subject<ITaskList[]> = new Subject();
-  public tasksLoaded: Subject<TaskArrayEventContainer> = new Subject();
+  public tasksLoaded: Subject<ITasksInList> = new Subject();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
   private tasksCacheTable: IHashTable<ITask[]> = {};
+  private taskFactoryService: TaskFactoryService;
 
-  constructor(private googleTaskServiceService: GoogleTaskServiceService) {  
+  constructor(private googleTaskServiceService: GoogleTaskService) {  
     super();
+
+    // TODO: parameterize factory/service
+    this.taskFactoryService = new TaskFactoryService(new FlatTaskFactory());
+    googleTaskServiceService.SetFactoryStrategy(this.taskFactoryService);
 
     var sub = this.googleTaskServiceService.errorLoadingTasks.subscribe(item => this.onErrorLoadingTasks());
     this.subscriptions.push(sub); // capture for destruction
@@ -36,7 +43,7 @@ export class TaskService extends TaskServiceBase implements OnDestroy {
     var sub = this.googleTaskServiceService.taskListsLoaded.subscribe(taskLists => this.onTaskListsLoaded(taskLists));
     this.subscriptions.push(sub); // capture for destruction
 
-    var sub = this.googleTaskServiceService.tasksLoaded.subscribe(taskArrayEventContainer => this.onTasksLoaded(taskArrayEventContainer));
+    var sub = this.googleTaskServiceService.tasksLoaded.subscribe(tasksInList => this.onTasksLoaded(tasksInList));
     this.subscriptions.push(sub); // capture for destruction
   }
 
@@ -64,7 +71,7 @@ export class TaskService extends TaskServiceBase implements OnDestroy {
     this.taskListsLoaded.next(taskLists);
   }
 
-  private onTasksLoaded(taskArrayEventContainer: TaskArrayEventContainer) {
+  private onTasksLoaded(taskArrayEventContainer: ITasksInList) {
     this.tasksLoaded.next(taskArrayEventContainer);
     this.tasksCacheTable[taskArrayEventContainer.taskListId] = taskArrayEventContainer.tasks;
   }
@@ -110,12 +117,11 @@ export class TaskService extends TaskServiceBase implements OnDestroy {
     // set up callback based on caching choice
     if (useCache) {
       // update cache right now
-      var taskEventContainer: TaskEventContainer = new TaskEventContainer(task, taskListId);
-      this.updateCache(taskEventContainer);
+      this.updateCache(this.taskFactoryService.CreateTaskInList(task, taskListId));
     } else {
       // internal callback so we can update the cache
       var callback: Function;
-      callback = (task => this.onTaskUpdated(new TaskEventContainer(task, taskListId)));
+      callback = (task => this.onTaskUpdated(this.taskFactoryService.CreateTaskInList(task, taskListId)));
       this.makeObservable(myPromise, callback);
     }
 
@@ -129,11 +135,11 @@ export class TaskService extends TaskServiceBase implements OnDestroy {
     }
   }
 
-  private onTaskUpdated(taskEventContainer: TaskEventContainer) {
+  private onTaskUpdated(taskEventContainer: ITaskInList) {
     this.updateCache(taskEventContainer);
   }
 
-  private updateCache(taskEventContainer: TaskEventContainer) {
+  private updateCache(taskEventContainer: ITaskInList) {
     var cachcedTasks = this.tasksCacheTable[taskEventContainer.taskListId];
     if (cachcedTasks != null) {
       var index = cachcedTasks.findIndex(cachedTask => cachedTask.id == taskEventContainer.task.id);

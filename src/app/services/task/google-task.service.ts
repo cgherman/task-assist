@@ -6,10 +6,10 @@ import { TaskServiceBase } from './task-service-base';
 import { GapiWrapperService } from '../shared/gapi-wrapper.service';
 
 import { ITask } from '../../models/task/itask';
-import { Task } from '../../models/task/task';
 import { ITaskList } from '../../models/task/itask-list';
 import { TaskList } from '../../models/task/task-list';
-import { TaskArrayEventContainer } from '../../models/task/task-array-event-container';
+import { TaskFactoryService } from '../../factories/task/task-factory-service';
+import { ITasksInList } from '../../models/task/itasks-in-list';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -17,13 +17,16 @@ import { TaskArrayEventContainer } from '../../models/task/task-array-event-cont
   providedIn: 'root'
 })
 
-export class GoogleTaskServiceService extends TaskServiceBase implements OnDestroy {  
+export class GoogleTaskService extends TaskServiceBase implements OnDestroy {  
   public errorLoadingTasks: Subject<any> = new Subject();
   public taskListsLoaded: Subject<ITaskList[]> = new Subject();
-  public tasksLoaded: Subject<TaskArrayEventContainer> = new Subject();
+  public tasksLoaded: Subject<ITasksInList> = new Subject();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
+
+  // Our task factory
+  private taskFactoryService: TaskFactoryService;
 
   constructor(private gapiWrapper: GapiWrapperService) {  
     super();
@@ -31,7 +34,11 @@ export class GoogleTaskServiceService extends TaskServiceBase implements OnDestr
 
   // ngOnDestroy needs to be present for @AutoUnsubscribe to function
   ngOnDestroy() {
-  }  
+  }
+
+  public SetFactoryStrategy(taskFactoryService: TaskFactoryService) {
+    this.taskFactoryService = taskFactoryService;
+  }
 
   private makeObservable<T>(promise: Promise<T>, observer?): Observable<T> {
     var myObservable: Observable<T>;
@@ -81,7 +88,7 @@ export class GoogleTaskServiceService extends TaskServiceBase implements OnDestr
   }
 
   public getTasks(taskList: any): Observable<ITask[]> {
-    var myPromise: Promise<Task[]>;
+    var myPromise: Promise<ITask[]>;
 
     myPromise = new Promise((resolve, reject) => {
       if (this.gapiWrapper.instance == null || this.gapiWrapper.instance.client == null) {
@@ -95,8 +102,8 @@ export class GoogleTaskServiceService extends TaskServiceBase implements OnDestr
         if (response == null || response.result == null || response.result.items == null || response.result.items.length == 0) {
           resolve(null);
         } else {
-          var tasks: Task[];
-          tasks = this.parseTasks(response);
+          var tasks: ITask[];
+          tasks = this.taskFactoryService.CreateTaskArray(response);
           resolve(tasks);
         }
       }).catch((errorHandler) => {
@@ -106,18 +113,18 @@ export class GoogleTaskServiceService extends TaskServiceBase implements OnDestr
     });
     
     var callback: Function;
-    callback = (tasks => this.onTasksLoaded(new TaskArrayEventContainer(tasks, taskList)));
+    callback = (tasks => this.onTasksLoaded(this.taskFactoryService.CreateTasksInList(tasks, taskList)));
 
     return this.makeObservable(myPromise, callback);
   }
 
   // invoked with a taskEventContainer object
-  private onTasksLoaded(taskArrayEventContainer: TaskArrayEventContainer) {
-    this.tasksLoaded.next(taskArrayEventContainer);
+  private onTasksLoaded(tasksInList: ITasksInList) {
+    this.tasksLoaded.next(tasksInList);
   }
 
   public getTask(taskId: string, taskListId: string): Observable<ITask> {
-    var myPromise: Promise<Task>;
+    var myPromise: Promise<ITask>;
 
     myPromise = new Promise((resolve, reject) => {
       if (this.gapiWrapper.instance == null || this.gapiWrapper.instance.client == null) {
@@ -131,8 +138,8 @@ export class GoogleTaskServiceService extends TaskServiceBase implements OnDestr
         if (response == null || response.result == null) {
           resolve(null);
         } else {
-          var task: Task;
-          task = this.parseTask(response);
+          var task: ITask;
+          task = this.taskFactoryService.CreateTask(response);
           resolve(task);
         }
       }).catch((errorHandler) => {
@@ -145,7 +152,7 @@ export class GoogleTaskServiceService extends TaskServiceBase implements OnDestr
   }
 
   public updateTask(task: ITask, taskListId: string): Promise<ITask> {
-    var myPromise: Promise<Task>;
+    var myPromise: Promise<ITask>;
 
     myPromise = new Promise((resolve, reject) => {
       if (this.gapiWrapper.instance == null || this.gapiWrapper.instance.client == null) {
@@ -160,8 +167,8 @@ export class GoogleTaskServiceService extends TaskServiceBase implements OnDestr
         if (response == null || response.result == null) {
           resolve(null);
         } else {
-          var task: Task;
-          task = this.parseTask(response);
+          var task: ITask;
+          task = this.taskFactoryService.CreateTask(response);
           resolve(task);
         }
       }).catch((errorHandler) => {
@@ -193,29 +200,4 @@ export class GoogleTaskServiceService extends TaskServiceBase implements OnDestr
       return taskLists;
     }
   }
-
-  private parseTasks(response: any): Task[] {
-    var tasks = [] as Task[];
-
-    for (var index = 0; index < response.result.items.length; index++) {
-      tasks.push(this.newTask(response.result.items[index]));
-    }
-
-    return tasks;
-  }
-
-  private parseTask(response: any): Task {
-    return this.newTask(response.result);
-  }
-
-  // create a Task from a Google task Resource
-  // https://developers.google.com/tasks/v1/reference/tasks#resource
-  private newTask(taskResource: any): Task {
-    return new Task(taskResource.id,
-                    taskResource.title,
-                    taskResource.selfLink,
-                    taskResource.status,
-                    taskResource.notes);
-  }
-
 }

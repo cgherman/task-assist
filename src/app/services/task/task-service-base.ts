@@ -1,7 +1,7 @@
 import { Observable, Subject } from 'rxjs';
 import { ITaskList } from '../../models/task/itask-list';
 import { ITask } from '../../models/task/itask';
-import { TaskArrayEventContainer } from '../../models/task/task-array-event-container';
+import { ITasksInList } from '../../models/task/itasks-in-list';
 
 export abstract class TaskServiceBase {
     // event fired upon error
@@ -11,7 +11,7 @@ export abstract class TaskServiceBase {
     public abstract taskListsLoaded: Subject<ITaskList[]>;
 
     // event fired upon task list load
-    public abstract tasksLoaded: Subject<TaskArrayEventContainer>;
+    public abstract tasksLoaded: Subject<ITasksInList>;
 
     // method to fetch task lists (without child task objects)
     public abstract getTaskLists(): Observable<ITaskList[]>;

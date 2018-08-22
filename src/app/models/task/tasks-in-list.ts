@@ -1,7 +1,8 @@
 import { ITask } from './itask';
+import { ITasksInList } from './itasks-in-list';
 
 // basic task object; could be either a parent or child
-export class TaskArrayEventContainer  {
+export class TasksInList implements ITasksInList {
     tasks: ITask[] = null;
     taskListId: string = null;
 
