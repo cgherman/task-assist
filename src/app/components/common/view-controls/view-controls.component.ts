@@ -20,7 +20,7 @@ export class ViewControlsComponent implements OnInit {
     if (this.router.url.indexOf('vertical-list') > 0) {
       return "Vert";
     }
-    return "?";
+    return "";
   }
 
   switchView() {
