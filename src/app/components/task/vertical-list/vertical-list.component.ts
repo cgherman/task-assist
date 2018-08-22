@@ -45,9 +45,4 @@ export class VerticalListComponent extends TaskComponentBase implements OnInit, 
   onChangeTaskList($event) {
     this.loadTaskList();
   }
-
-  protected onDataLoaded() {
-    this.crossComponentEventService.signalDataLoadComplete();
-  }
-
 }

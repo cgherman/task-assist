@@ -63,10 +63,6 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
     this.loadTaskList();
   }
 
-  protected onDataLoaded() {
-    this.crossComponentEventService.signalDataLoadComplete();
-  }
-
   onDrop(args) {
     let [bagName, element, target, source] = args;
     var quadrantOld = source.id.substring(target.id.length - 1)

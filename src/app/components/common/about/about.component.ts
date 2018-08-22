@@ -33,12 +33,7 @@ export class AboutComponent implements OnInit, OnDestroy {
   
   // Fired from app component after user is authorized
   private onDataReadyToLoad(): void {
-    // nothing to load, continue
-    this.onDataLoaded();
-  }
-
-  protected onDataLoaded() {
-    this.crossComponentEventService.signalDataLoadComplete();
+    // nothing to load at the moment
   }
   
 }

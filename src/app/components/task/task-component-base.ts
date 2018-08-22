@@ -1,6 +1,7 @@
 import { Observable, Subscription } from "rxjs";
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { finalize } from "rxjs/operators";
+import { EventEmitter } from '@angular/core';
 
 import { MSG_GUIDE_SIGNIN, MSG_GUIDE_CHOOSE_LIST, MSG_GUIDE_NO_LISTS, MSG_GUIDE_GAPI_ERROR } from '../../user-messages';
 import { MENU_QUAD_FOCUS, MENU_QUAD_PLAN, MENU_QUAD_DELEGATE, MENU_QUAD_ELIMINATE, MENU_QUAD_UNSPECIFIED } from './task-menu-values';
@@ -10,9 +11,9 @@ import { AuthServiceBase } from "../../services/auth/auth-service-base";
 import { ITask } from "../../models/task/itask";
 import { ITaskList } from "../../models/task/itask-list";
 import { CrossComponentEventService } from "../../services/shared/cross-component-event.service";
+import { Output } from "@angular/core";
 
 export abstract class TaskComponentBase {
-
     // these subscriptions will be cleaned up by @AutoUnsubscribe
     protected subscriptions: Subscription[] = [];
 
@@ -102,11 +103,7 @@ export abstract class TaskComponentBase {
             this.openingStatement = MSG_GUIDE_CHOOSE_LIST;
             this.quadrantForm.get('taskList').patchValue(taskLists[0].id);
         }
-
-        this.onDataLoaded();
     }
-    
-    protected abstract onDataLoaded();
 
     // let's get the tasks
     protected loadTasks(taskListId: string, cachedIsOkay: boolean) {

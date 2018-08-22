@@ -23,7 +23,7 @@ export class AuthControlsComponent implements OnInit {
               private crossComponentEventService: CrossComponentEventService
             ) {
                 
-    // Wire up Google Auth actions
+    // Wire up Google Auth JavaScript actions
     const _self = this;
     window['onGapiLoadError'] = function () {
       _self.onGapiLoadError();
@@ -48,10 +48,6 @@ export class AuthControlsComponent implements OnInit {
     // intercept auth failure
     sub = this.authService.failedToLoadAuth.subscribe(item => this.onFailedToLoadAuth());
     this.subscriptions.push(sub); // capture for destruction
-    
-    // intercept google data load completion
-    var sub = this.crossComponentEventService.dataLoadComplete.subscribe(item => this.onDataLoadComplete());
-    this.subscriptions.push(sub); // capture for destruction
   }
 
   isSignedIn(): boolean {
@@ -68,7 +64,6 @@ export class AuthControlsComponent implements OnInit {
   onGapiLoadError() {
     console.log("Google Auth Failed to Load!");
     this.crossComponentEventService.signalHeaderMessageAppend(MSG_GOOGLE_LOAD_FAILURE);
-    this.onDataLoadComplete();
   }
 
   // Triggered by Google login button
@@ -92,18 +87,17 @@ export class AuthControlsComponent implements OnInit {
     // fire event indicating GAPI services are initialized
     console.log("GAPI client initialized.  Ready for data load.");
     this.crossComponentEventService.signalDataReadyToLoad();
+    this.notifyAngularOfGoogleAsyncCompletion();
   }
 
   // Triggered by authorization service
   public onFailedToLoadAuth() {
     console.log("Google Auth Failed to Load!");
     this.crossComponentEventService.signalHeaderMessageAppend(MSG_GOOGLE_LOAD_FAILURE);
-    this.crossComponentEventService.signalDataLoadComplete();
+    this.notifyAngularOfGoogleAsyncCompletion();
   }
 
-  private onDataLoadComplete() {
-    // Trigger UI update, notifying Angular of GAPI-induced model changes.
-    // Polling GAPI for completion does work, but this is preferable currently.
+  private notifyAngularOfGoogleAsyncCompletion() {
     this.googleExternalEventsCompleted.nativeElement.click();
   }
   

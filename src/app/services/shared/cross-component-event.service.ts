@@ -6,7 +6,6 @@ import { Injectable, Output, EventEmitter } from '@angular/core';
 export class CrossComponentEventService {
   @Output() configLoaded: EventEmitter<any> = new EventEmitter();
   @Output() dataReadyToLoad: EventEmitter<any> = new EventEmitter();
-  @Output() dataLoadComplete: EventEmitter<any> = new EventEmitter();
   @Output() requestTitleChange: EventEmitter<any> = new EventEmitter();
   @Output() requestHeaderMessageAppend: EventEmitter<any> = new EventEmitter();
 
@@ -20,11 +19,6 @@ export class CrossComponentEventService {
   // Signal after authentication has occured
   public signalDataReadyToLoad() {
     this.dataReadyToLoad.emit();
-  }
-
-  // Signal when Google Google data has been initially loaded into components (or failed)
-  public signalDataLoadComplete() {
-    this.dataLoadComplete.emit();
   }
 
   // Signal when title change is desired
