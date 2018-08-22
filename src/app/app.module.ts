@@ -22,7 +22,7 @@ import { ConfigAppService } from './services/config/config-app.service';
 
 import { AppComponent } from './components/app.component';
 import { QuadrantComponent } from './components/task/quadrant/quadrant.component';
-import { UserFrameComponent } from './components/common/user-frame/user-frame.component';
+import { UserFrameComponent } from './components/common/content-frame/content-frame.component';
 import { VerticalListComponent } from './components/task/vertical-list/vertical-list.component';
 import { AboutComponent } from './components/common/about/about.component';
 import { HeaderComponent } from './components/common/header/header.component';

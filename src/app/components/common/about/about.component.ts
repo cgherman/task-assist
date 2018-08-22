@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UserFrameComponent } from '../user-frame/user-frame.component';
+import { UserFrameComponent } from '../content-frame/content-frame.component';
 import { Subscription } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 

@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserFrameComponent } from './user-frame.component';
+import { UserFrameComponent } from './content-frame.component';
 
 describe('UserFrameComponent', () => {
   let component: UserFrameComponent;

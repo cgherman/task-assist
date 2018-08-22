@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { UserFrameComponent } from '../components/common/user-frame/user-frame.component';
+import { UserFrameComponent } from '../components/common/content-frame/content-frame.component';
 import { ConfigResolver } from './config-resolver.service';
 import { QuadrantComponent } from '../components/task/quadrant/quadrant.component';
 import { VerticalListComponent } from '../components/task/vertical-list/vertical-list.component';
