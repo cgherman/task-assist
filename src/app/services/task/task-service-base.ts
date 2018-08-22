@@ -1,17 +1,17 @@
+import { Observable, Subject } from 'rxjs';
 import { ITaskList } from '../../models/task/itask-list';
 import { ITask } from '../../models/task/itask';
-import { Observable } from 'rxjs';
-import { EventEmitter } from '@angular/core';
+import { TaskArrayEventContainer } from '../../models/task/task-array-event-container';
 
 export abstract class TaskServiceBase {
     // event fired upon error
-    public abstract errorLoadingTasks: EventEmitter<any>;
+    public abstract errorLoadingTasks: Subject<any>;
 
     // event fired upon task list load
-    public abstract taskListsLoaded: EventEmitter<any>;
+    public abstract taskListsLoaded: Subject<ITaskList[]>;
 
     // event fired upon task list load
-    public abstract tasksLoaded: EventEmitter<any>;
+    public abstract tasksLoaded: Subject<TaskArrayEventContainer>;
 
     // method to fetch task lists (without child task objects)
     public abstract getTaskLists(): Observable<ITaskList[]>;

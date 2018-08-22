@@ -1,15 +1,15 @@
-import { Output, EventEmitter } from '@angular/core';
 import { Injectable } from '@angular/core';
 import { GapiWrapperService } from '../shared/gapi-wrapper.service';
 import { GoogleAuthServiceBase } from './google-auth-service-base';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class AuthService extends GoogleAuthServiceBase {
-  @Output() authenticated: EventEmitter<any> = new EventEmitter();
-  @Output() failedToLoadAuth: EventEmitter<any> = new EventEmitter();
+  public authenticated: Subject<any> = new Subject();
+  public failedToLoadAuth: Subject<any> = new Subject();
 
   private _api_key: string = null;
   private _client_id: string = null;
@@ -69,7 +69,7 @@ export class AuthService extends GoogleAuthServiceBase {
   private halt() {
     console.log("Google core content was not loaded!  Halting!");
     if (this.halted) {
-      this.failedToLoadAuth.emit();
+      this.failedToLoadAuth.next();
     }
     this.halted = true;
   }
@@ -171,7 +171,7 @@ export class AuthService extends GoogleAuthServiceBase {
 
   // Triggered when API client is fully authorized and loaded
   private onAuthenticated() {
-    this.authenticated.emit();
+    this.authenticated.next();
   }
 
   // Triggered by consumer to sign out of Google and revoke app access

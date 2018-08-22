@@ -59,7 +59,8 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
   }
 
   // fired upon task list selection
-  onChangeTaskList($event) {
+  onChangeTaskList() {
+    // call super.loadTaskList();
     this.loadTaskList();
   }
 

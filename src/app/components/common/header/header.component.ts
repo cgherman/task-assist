@@ -23,10 +23,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
   
   ngOnInit() {
-    var sub = this.crossComponentEventService.requestTitleChange.subscribe(item => this.onRequestTitleChange(item));
+    var sub = this.crossComponentEventService.requestTitleChange.subscribe(text => this.onRequestTitleChange(text));
     this.subscriptions.push(sub); // capture for destruction
 
-    var sub = this.crossComponentEventService.requestHeaderMessageAppend.subscribe(item => this.onRequestHeaderMessageAppend(item));
+    var sub = this.crossComponentEventService.requestHeaderMessageAppend.subscribe(text => this.onRequestHeaderMessageAppend(text));
     this.subscriptions.push(sub); // capture for destruction
   }
 
@@ -34,20 +34,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
   }
 
-  // $event: string
-  private onRequestTitleChange($event) {
-    this.titleChange($event);
-  }
-  
-  private titleChange(text: string) {
+  private onRequestTitleChange(text: string) {
     this.title = text;
   }
-  // $event: string
-  private onRequestHeaderMessageAppend($event) {
-    this.headerMessageAppend($event);
-  }
-  
-  private headerMessageAppend(text: string) {
+
+  private onRequestHeaderMessageAppend(text: string) {
     console.log("Message: " + text);
     this.headerMessage = this.headerMessage == null ? text : this.headerMessage + " " + text;
   }

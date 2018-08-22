@@ -1,5 +1,5 @@
-import { Injectable, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Subscription, Subject } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 import { ActivatedRoute } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
@@ -14,8 +14,8 @@ import { ConfigEventContainer } from '../../models/config/config-event-container
   providedIn: 'root'
 })
 export class ConfigAppService implements OnDestroy {
-  @Output() errorMessage: EventEmitter<any> = new EventEmitter();
-  @Output() configLoaded: EventEmitter<any> = new EventEmitter();
+  public errorMessage: Subject<string> = new Subject();
+  public configLoaded: Subject<any> = new Subject();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
@@ -43,27 +43,28 @@ export class ConfigAppService implements OnDestroy {
   }
   
   // Fired when config-resolver is handled
-  // $event: ConfigEventContainer
-  private onConfigResolved($event) {
-    // fetch config elements from config
-    var configEventContainer = $event;
-
-    // If API keys have not been configured, then show a message
-    if (configEventContainer.api_key == null || configEventContainer.client_id == null) {
-      if (configEventContainer.api_key == null) {
-        this.errorMessage.emit(MSG_MISSING_API_KEY);
-      }
-
-      if (configEventContainer.client_id == null) {
-        this.errorMessage.emit(MSG_MISSING_CLIENT_KEY);
-      }
-
-      this.errorMessage.emit(MSG_MISSING_CONFIG);
-    }
-
+  private onConfigResolved(configEventContainer: ConfigEventContainer) {
+    this.verifyConfig(configEventContainer);
     this.loadConfig(configEventContainer);
   }
 
+  // Check for issues
+  private verifyConfig(configEventContainer: ConfigEventContainer) {
+    // If API keys have not been configured, then show a message
+    if (configEventContainer.api_key == null || configEventContainer.client_id == null) {
+      if (configEventContainer.api_key == null) {
+        this.errorMessage.next(MSG_MISSING_API_KEY);
+      }
+
+      if (configEventContainer.client_id == null) {
+        this.errorMessage.next(MSG_MISSING_CLIENT_KEY);
+      }
+
+      this.errorMessage.next(MSG_MISSING_CONFIG);
+    }
+  }
+
+  // Apply configuration
   private loadConfig(configEventContainer: ConfigEventContainer) {
     // set Google config to enable auth
     this.authService.scope = configEventContainer.scope;
@@ -76,6 +77,6 @@ export class ConfigAppService implements OnDestroy {
     this.meta.updateTag({ name: 'google-signin-client_id', content: configEventContainer.client_id });
 
     // Config values are loaded; we can tell Google OAuth to go forth
-    this.configLoaded.emit(); 
+    this.configLoaded.next(); 
   }
 }

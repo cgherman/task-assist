@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -39,9 +39,8 @@ export class UserFrameComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
   }
 
-  // $event: string
-  private onConfigError($event) {
-    this.crossComponentEventService.signalHeaderMessageAppend($event);
+  private onConfigError(event: string) {
+    this.crossComponentEventService.signalHeaderMessageAppend(event);
   }
 
   private onConfigLoaded() {

@@ -1,34 +1,35 @@
-import { Injectable, Output, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CrossComponentEventService {
-  @Output() configLoaded: EventEmitter<any> = new EventEmitter();
-  @Output() dataReadyToLoad: EventEmitter<any> = new EventEmitter();
-  @Output() requestTitleChange: EventEmitter<any> = new EventEmitter();
-  @Output() requestHeaderMessageAppend: EventEmitter<any> = new EventEmitter();
+  public configLoaded: Subject<any> = new Subject();
+  public dataReadyToLoad: Subject<any> = new Subject();
+  public requestTitleChange: Subject<string> = new Subject();
+  public requestHeaderMessageAppend: Subject<string> = new Subject();
 
   constructor() { }
   
   // Signal when config info is fully loaded
   public signalConfigLoaded() {
-    this.configLoaded.emit();
+    this.configLoaded.next();
   }
 
   // Signal after authentication has occured
   public signalDataReadyToLoad() {
-    this.dataReadyToLoad.emit();
+    this.dataReadyToLoad.next();
   }
 
   // Signal when title change is desired
   public signalTitleChange(value: string) {
-    this.requestTitleChange.emit(value);
+    this.requestTitleChange.next(value);
   }
   
   // Signal when critical user information needs to be relayed
   public signalHeaderMessageAppend(value: string) {
-    this.requestHeaderMessageAppend.emit(value);
+    this.requestHeaderMessageAppend.next(value);
   }
 
 }

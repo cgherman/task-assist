@@ -1,7 +1,6 @@
 import { Observable, Subscription } from "rxjs";
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { finalize } from "rxjs/operators";
-import { EventEmitter } from '@angular/core';
 
 import { MSG_GUIDE_SIGNIN, MSG_GUIDE_CHOOSE_LIST, MSG_GUIDE_NO_LISTS, MSG_GUIDE_GAPI_ERROR } from '../../user-messages';
 import { MENU_QUAD_FOCUS, MENU_QUAD_PLAN, MENU_QUAD_DELEGATE, MENU_QUAD_ELIMINATE, MENU_QUAD_UNSPECIFIED } from './task-menu-values';
@@ -92,9 +91,7 @@ export abstract class TaskComponentBase {
     }
 
     // Fired after initial task list is loaded
-    // $event: ITaskList[]
-    private onTaskListsLoaded($event){
-        var taskLists = $event;
+    private onTaskListsLoaded(taskLists: ITaskList[]){
 
         // activate first list
         if (taskLists.length == 0) {

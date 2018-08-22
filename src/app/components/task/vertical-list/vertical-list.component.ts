@@ -42,7 +42,8 @@ export class VerticalListComponent extends TaskComponentBase implements OnInit, 
   }
 
   // fired upon task list selection
-  onChangeTaskList($event) {
+  onChangeTaskList() {
+    // call super.loadTaskList();
     this.loadTaskList();
   }
 }

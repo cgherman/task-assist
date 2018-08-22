@@ -1,5 +1,5 @@
-import { Injectable, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Subscription, Subject } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 import { ActivatedRoute } from '@angular/router';
 import { ConfigEventContainer } from '../../models/config/config-event-container';
@@ -9,7 +9,7 @@ import { ConfigEventContainer } from '../../models/config/config-event-container
   providedIn: 'root'
 })
 export class ConfigResolverHandlerService implements OnDestroy {
-  @Output() configResolved: EventEmitter<any> = new EventEmitter();
+  public configResolved: Subject<ConfigEventContainer> = new Subject();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
@@ -45,7 +45,7 @@ export class ConfigResolverHandlerService implements OnDestroy {
     configEventContainer.discoveryDocs = discoveryDocs;
     configEventContainer.api_key = api_key;
     configEventContainer.client_id = client_id;
-    this.configResolved.emit( configEventContainer );
+    this.configResolved.next(configEventContainer);
   }
 
   private apiKeyFromConfig(config: any) {

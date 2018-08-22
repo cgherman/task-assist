@@ -1,6 +1,6 @@
-import { Injectable,Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { take } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 import { TaskModifierServiceBase } from './task-modifier-service-base';
@@ -12,7 +12,7 @@ import { TaskServiceBase } from './task-service-base';
   providedIn: 'root'
 })
 export class TaskModifierService implements TaskModifierServiceBase, OnDestroy {
-  @Output() taskQuadrantUpdated: EventEmitter<any> = new EventEmitter();
+  public taskQuadrantUpdated: Subject<any> = new Subject();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
@@ -48,7 +48,7 @@ export class TaskModifierService implements TaskModifierServiceBase, OnDestroy {
   }
 
   private onTaskQuadrantUpdated() {
-    this.taskQuadrantUpdated.emit();
+    this.taskQuadrantUpdated.next();
   }
 
   setQuadrant(task: ITask, quadrantChar: string) {

@@ -1,5 +1,5 @@
-import { Injectable, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { Observable, Subscription, from, of } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Observable, Subscription, from, of, Subject } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 import { TaskServiceBase } from './task-service-base';
@@ -9,6 +9,7 @@ import { ITask } from '../../models/task/itask';
 import { ITaskList } from '../../models/task/itask-list';
 import { TaskEventContainer } from '../../models/task/task-event-container';
 import { GoogleTaskServiceService } from './google-task-service.service';
+import { TaskArrayEventContainer } from '../../models/task/task-array-event-container';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -17,9 +18,9 @@ import { GoogleTaskServiceService } from './google-task-service.service';
 })
 
 export class TaskService extends TaskServiceBase implements OnDestroy {  
-  @Output() errorLoadingTasks: EventEmitter<any> = new EventEmitter();
-  @Output() taskListsLoaded: EventEmitter<any> = new EventEmitter();
-  @Output() tasksLoaded: EventEmitter<any> = new EventEmitter();
+  public errorLoadingTasks: Subject<any> = new Subject();
+  public taskListsLoaded: Subject<ITaskList[]> = new Subject();
+  public tasksLoaded: Subject<TaskArrayEventContainer> = new Subject();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
@@ -56,18 +57,16 @@ export class TaskService extends TaskServiceBase implements OnDestroy {
   }
   
   private onErrorLoadingTasks() {
-    this.errorLoadingTasks.emit();
+    this.errorLoadingTasks.next();
   }
 
-  // $event: ITaskList[]
-  private onTaskListsLoaded($event) {
-    this.taskListsLoaded.emit($event);
+  private onTaskListsLoaded(taskLists: ITaskList[]) {
+    this.taskListsLoaded.next(taskLists);
   }
 
-  // $event: TaskArrayEventContainer
-  private onTasksLoaded($event) {
-    this.tasksLoaded.emit($event);
-    this.tasksCacheTable[$event.taskListId] = $event.tasks;
+  private onTasksLoaded(taskArrayEventContainer: TaskArrayEventContainer) {
+    this.tasksLoaded.next(taskArrayEventContainer);
+    this.tasksCacheTable[taskArrayEventContainer.taskListId] = taskArrayEventContainer.tasks;
   }
 
   public getTaskLists(): Observable<ITaskList[]> {
@@ -130,9 +129,8 @@ export class TaskService extends TaskServiceBase implements OnDestroy {
     }
   }
 
-  // $event: TaskEventContainer
-  private onTaskUpdated($event) {
-    this.updateCache($event);
+  private onTaskUpdated(taskEventContainer: TaskEventContainer) {
+    this.updateCache(taskEventContainer);
   }
 
   private updateCache(taskEventContainer: TaskEventContainer) {

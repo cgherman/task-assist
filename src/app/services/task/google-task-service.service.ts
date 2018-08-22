@@ -1,5 +1,5 @@
-import { Injectable, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { Observable, Subscription, from, of } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Observable, Subscription, from, of, Subject } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 import { TaskServiceBase } from './task-service-base';
@@ -18,9 +18,9 @@ import { TaskArrayEventContainer } from '../../models/task/task-array-event-cont
 })
 
 export class GoogleTaskServiceService extends TaskServiceBase implements OnDestroy {  
-  @Output() errorLoadingTasks: EventEmitter<any> = new EventEmitter();
-  @Output() taskListsLoaded: EventEmitter<any> = new EventEmitter();
-  @Output() tasksLoaded: EventEmitter<any> = new EventEmitter();
+  public errorLoadingTasks: Subject<any> = new Subject();
+  public taskListsLoaded: Subject<ITaskList[]> = new Subject();
+  public tasksLoaded: Subject<TaskArrayEventContainer> = new Subject();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
@@ -64,7 +64,7 @@ export class GoogleTaskServiceService extends TaskServiceBase implements OnDestr
           resolve(taskLists);
         }
       }).catch((errorHandler) => {
-        this.errorLoadingTasks.emit();
+        this.errorLoadingTasks.next();
         reject(errorHandler);
       });
 
@@ -76,9 +76,8 @@ export class GoogleTaskServiceService extends TaskServiceBase implements OnDestr
     return this.makeObservable(myPromise, callback);
   }
 
-  // $event: ITaskList[]
-  private onTaskListsLoaded($event) {
-    this.taskListsLoaded.emit($event);
+  private onTaskListsLoaded(taskLists: ITaskList[]) {
+    this.taskListsLoaded.next(taskLists);
   }
 
   public getTasks(taskList: any): Observable<ITask[]> {
@@ -101,7 +100,7 @@ export class GoogleTaskServiceService extends TaskServiceBase implements OnDestr
           resolve(tasks);
         }
       }).catch((errorHandler) => {
-        this.errorLoadingTasks.emit();
+        this.errorLoadingTasks.next();
         reject(errorHandler);
       });
     });
@@ -113,9 +112,8 @@ export class GoogleTaskServiceService extends TaskServiceBase implements OnDestr
   }
 
   // invoked with a taskEventContainer object
-  // $event: TaskArrayEventContainer
-  private onTasksLoaded($event) {
-    this.tasksLoaded.emit($event);
+  private onTasksLoaded(taskArrayEventContainer: TaskArrayEventContainer) {
+    this.tasksLoaded.next(taskArrayEventContainer);
   }
 
   public getTask(taskId: string, taskListId: string): Observable<ITask> {
@@ -138,7 +136,7 @@ export class GoogleTaskServiceService extends TaskServiceBase implements OnDestr
           resolve(task);
         }
       }).catch((errorHandler) => {
-        this.errorLoadingTasks.emit();
+        this.errorLoadingTasks.next();
         reject(errorHandler);
       });
     });
@@ -167,7 +165,7 @@ export class GoogleTaskServiceService extends TaskServiceBase implements OnDestr
           resolve(task);
         }
       }).catch((errorHandler) => {
-        this.errorLoadingTasks.emit();
+        this.errorLoadingTasks.next();
         reject(errorHandler);
       });
     });
