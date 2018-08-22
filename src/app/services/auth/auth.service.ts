@@ -16,9 +16,7 @@ export class AuthService extends GoogleAuthServiceBase {
   private _scope: string = null;
   private _discoveryDocs: string[] = null;
 
-  constructor(private gapiWrapper: GapiWrapperService) {
-    super();
-  }
+  private halted: boolean = false;
 
   set api_key(newValue: string) {
     this._api_key = newValue;
@@ -36,23 +34,12 @@ export class AuthService extends GoogleAuthServiceBase {
     this._discoveryDocs = newValue;
   }
 
-  // return auth status
-  public isAuthenticated(): boolean {
-    var googleAuthInstance = this.googleAuthInstance();
 
-    if (googleAuthInstance == null) {
-      return false;
-    }
-    
-    try {
-      return googleAuthInstance.isSignedIn.get();
-    }
-    catch(err) {
-      // suppress errors due to API load issues
-      return false;
-    }
+  constructor(private gapiWrapper: GapiWrapperService) {
+    super();
   }
 
+  // Method used internally to fetch auth instance
   private googleAuthInstance(): any {
     // Check to make sure that API script wasn't blocked
     if (this.gapiWrapper.instance == null || this.gapiWrapper.instance.auth2 == null) {
@@ -67,23 +54,9 @@ export class AuthService extends GoogleAuthServiceBase {
     return googleAuth;
   }
 
-  // trigger sign-in
-  signIn() {
-    this.loadGoogleClients();
-  }
-
-  private loadGoogleClients() {
-    if (this.shouldHaltDueToLoadIssue()) {
-      return;
-    }
-
-    this.gapiWrapper.instance.load('client:auth2', () => {
-      this.onGoogleLoad();
-    });
-  }
-
+  // Method used at specific moments to determine if auth instance has failed to initialize
   private shouldHaltDueToLoadIssue(): boolean {
-    if (this.googleAuthInstance() == null) {
+    if (this.halted || this.googleAuthInstance() == null) {
       // Fatal issue: Google Javascript likely hasn't loaded due to ad blocker
       this.halt();
       return true;
@@ -92,9 +65,43 @@ export class AuthService extends GoogleAuthServiceBase {
     return false;
   }
 
+  // Method used to notify consumers of desire to halt
   private halt() {
     console.log("Google core content was not loaded!  Halting!");
-    this.failedToLoadAuth.emit();
+    if (this.halted) {
+      this.failedToLoadAuth.emit();
+    }
+    this.halted = true;
+  }
+
+  
+  // return auth status to consumers
+  public isAuthenticated(): boolean {
+    var googleAuthInstance = this.googleAuthInstance();
+
+    if (googleAuthInstance == null) {
+      return false;
+    }
+    
+    try {
+      return googleAuthInstance.isSignedIn.get();
+    }
+    catch(err) {
+      // suppress errors due to API load issues so page can load properly
+      return false;
+    }
+  }
+
+  // trigger sign-in
+  public signIn() {
+    if (this.shouldHaltDueToLoadIssue()) {
+      return;
+    }
+
+    // Load Google client
+    this.gapiWrapper.instance.load('client:auth2', () => {
+      this.onGoogleLoad();
+    });
   }
 
   // Upon API initial load, initialize OAuth2
@@ -103,6 +110,7 @@ export class AuthService extends GoogleAuthServiceBase {
       return;
     }
 
+    // initialize Google client
     var googleAuth = this.gapiWrapper.instance.auth2.init({
       client_id: this._client_id,
       scope: this._scope
@@ -110,7 +118,7 @@ export class AuthService extends GoogleAuthServiceBase {
   }
 
   // Upon successful OAuth2 init
-  onGoogleAuthInitialized(){
+  public onGoogleAuthInitialized(){
     console.log('Success initializing gapi.auth2.');
 
     // Wire up listener to watch for sign-in state change
@@ -125,7 +133,7 @@ export class AuthService extends GoogleAuthServiceBase {
   }
 
   // upon failed OAuth2 init
-  onGoogleAuthError(error:any){
+  public onGoogleAuthError(error:any){
     console.log("Error from GoogleAuth!");
     // TODO: Handle this case
     // this.halt(); <-- test this code for this scenario
@@ -133,7 +141,7 @@ export class AuthService extends GoogleAuthServiceBase {
   }
 
   // Triggered when sign-in status changes
-  updateSigninStatus() {
+  public updateSigninStatus() {
     if (this.isAuthenticated()) {
       console.log("GoogleAuth: Status check: user IS signed in");
       this.loadGapiClient();
@@ -162,12 +170,12 @@ export class AuthService extends GoogleAuthServiceBase {
   }
 
   // Triggered when API client is fully authorized and loaded
-  onAuthenticated() {
+  private onAuthenticated() {
     this.authenticated.emit();
   }
 
-  // Method used to sign out of Google and revoke app access
-  signOut() {
+  // Triggered by consumer to sign out of Google and revoke app access
+  public signOut() {
     // log out
     this.gapiWrapper.instance.auth2.getAuthInstance().disconnect();
     this.gapiWrapper.instance.auth2.getAuthInstance().signOut(
