@@ -5,10 +5,10 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 import { TaskServiceBase } from './task-service-base';
 import { GapiWrapperService } from '../shared/gapi-wrapper.service';
 
-import { TaskFactoryService } from '../../factories/task/task-factory-service';
 import { ITask } from '../../models/task/itask';
 import { ITaskList } from '../../models/task/itask-list';
 import { ITasksInList } from '../../models/task/itasks-in-list';
+import { GoogleTaskBuilderService } from './google-task-builder.service';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -24,19 +24,13 @@ export class GoogleTaskService extends TaskServiceBase implements OnDestroy {
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
-  // Our task factory
-  private taskFactoryService: TaskFactoryService;
-
-  constructor(private gapiWrapper: GapiWrapperService) {  
+  constructor(private gapiWrapper: GapiWrapperService,
+              private googleTaskBuilderService: GoogleTaskBuilderService) {  
     super();
   }
 
   // ngOnDestroy needs to be present for @AutoUnsubscribe to function
   ngOnDestroy() {
-  }
-
-  public SetFactoryStrategy(taskFactoryService: TaskFactoryService) {
-    this.taskFactoryService = taskFactoryService;
   }
 
   private makeObservable<T>(promise: Promise<T>, observer?): Observable<T> {
@@ -65,8 +59,7 @@ export class GoogleTaskService extends TaskServiceBase implements OnDestroy {
         if (response == null || response.result == null || response.result.items == null || response.result.items.length == 0) {
           resolve(null);
         } else {
-          var taskLists: ITaskList[] = this.taskFactoryService.CreateTaskLists(response);
-          resolve(taskLists);
+          resolve(this.googleTaskBuilderService.createTaskLists(response));
         }
       }).catch((errorHandler) => {
         this.errorLoadingTasks.next();
@@ -100,8 +93,7 @@ export class GoogleTaskService extends TaskServiceBase implements OnDestroy {
         if (response == null || response.result == null || response.result.items == null || response.result.items.length == 0) {
           resolve(null);
         } else {
-          var tasks: ITask[] = this.taskFactoryService.CreateTaskArray(response);
-          resolve(tasks);
+          resolve(this.googleTaskBuilderService.createTaskArray(response));
         }
       }).catch((errorHandler) => {
         this.errorLoadingTasks.next();
@@ -110,7 +102,7 @@ export class GoogleTaskService extends TaskServiceBase implements OnDestroy {
     });
     
     var callback: Function;
-    callback = (tasks => this.onTasksLoaded(this.taskFactoryService.CreateTasksInList(tasks, taskList)));
+    callback = (tasks => this.onTasksLoaded(this.googleTaskBuilderService.createTasksInList(tasks, taskList)));
 
     return this.makeObservable(myPromise, callback);
   }
@@ -135,7 +127,7 @@ export class GoogleTaskService extends TaskServiceBase implements OnDestroy {
         if (response == null || response.result == null) {
           resolve(null);
         } else {
-          var task: ITask = this.taskFactoryService.CreateTask(response);
+          var task: ITask = this.googleTaskBuilderService.createTask(response);
           resolve(task);
         }
       }).catch((errorHandler) => {
@@ -163,8 +155,7 @@ export class GoogleTaskService extends TaskServiceBase implements OnDestroy {
         if (response == null || response.result == null) {
           resolve(null);
         } else {
-          var task: ITask = this.taskFactoryService.CreateTask(response);
-          resolve(task);
+          resolve(this.googleTaskBuilderService.createTask(response));
         }
       }).catch((errorHandler) => {
         this.errorLoadingTasks.next();

@@ -6,6 +6,7 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 import { TaskModifierServiceBase } from './task-modifier-service-base';
 import { ITask } from '../../models/task/itask';
 import { TaskServiceBase } from './task-service-base';
+import { TaskConverter } from '../../factories/task/task-converter';
 
 @AutoUnsubscribe({includeArrays: true})
 @Injectable({
@@ -17,7 +18,11 @@ export class TaskModifierService implements TaskModifierServiceBase, OnDestroy {
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
-  constructor() { }
+  private taskConverter: TaskConverter;
+
+  constructor() { 
+    this.taskConverter = new TaskConverter();
+  }
 
   // ngOnDestroy needs to be present for @AutoUnsubscribe to function
   ngOnDestroy() {
@@ -51,59 +56,13 @@ export class TaskModifierService implements TaskModifierServiceBase, OnDestroy {
     this.taskQuadrantUpdated.next();
   }
 
-  setQuadrant(task: ITask, quadrantChar: string) {
-    var tagPositionStart = -1;
-    var tagPositionEnd = -1;
-    var newTaskNotes = "";
+  setQuadrant(task: ITask, quadrantChar: string) {    
+    this.taskConverter.decodeRawNotesForQuadTask(task);
 
-    if (task.notes != null && task.notes.length > 0) {
-      tagPositionStart = task.notes.toUpperCase().indexOf("[QUAD");
-    }
+    this.taskConverter.setQuadrantForQuadTask(task, quadrantChar);
 
-    // If tag was found then
-    if (tagPositionStart >= 0) {
-      // find end of tag
-      tagPositionEnd = task.notes.toUpperCase().indexOf("]", tagPositionStart);
-
-      // if characters exist left of tag then
-      if (tagPositionStart > 0) {
-        // capture prefix characters
-        newTaskNotes = task.notes.substring(0, tagPositionStart - 1);
-      }
-    }
-    else {
-      // we will append a new tag to the existing notes
-      newTaskNotes = (task.notes == null ? "" : task.notes + " ");
-    }
-    
-    // add on new Quadrant identifier
-    newTaskNotes += "[Quad:" + quadrantChar + "]"
-    
-    // add on suffix characters
-    if (tagPositionEnd > 0 && tagPositionEnd < task.notes.length - 1) {
-      newTaskNotes += task.notes.substring(tagPositionEnd + 1);
-    }
-
-    // replace old notes with new
-    task.notes = newTaskNotes;
+    this.taskConverter.encodeRawNotesForQuadTask(task);    
   }
 
-  checkQuadrantMatch(task: ITask, quadrantChar:string): boolean {
-    if (task.title == null || task.title.trim().length == 0) {
-      // do not show "empty" tasks
-      return false;
-    }
-
-    if (task == null || task.notes == null) {
-      // declare match with "unspecified" quadrant
-      return quadrantChar == null;
-    } else {
-      // match up specific quadrants
-      if (quadrantChar == null) {
-        return task.notes.includes("[Quad:0]") || !task.notes.includes("[Quad:");
-      } else {
-        return task.notes.includes("[Quad:" + quadrantChar + "]");
-      }
-    }
-  }
+  
 }

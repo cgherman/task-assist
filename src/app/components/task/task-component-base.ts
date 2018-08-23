@@ -11,6 +11,7 @@ import { ITask } from "../../models/task/itask";
 import { ITaskList } from "../../models/task/itask-list";
 import { CrossComponentEventService } from "../../services/shared/cross-component-event.service";
 import { Output } from "@angular/core";
+import { IQuadTask } from "../../models/task/iquad-task";
 
 export abstract class TaskComponentBase {
     // these subscriptions will be cleaned up by @AutoUnsubscribe
@@ -94,8 +95,9 @@ export abstract class TaskComponentBase {
     private onTaskListsLoaded(taskLists: ITaskList[]){
 
         // activate first list
-        if (taskLists.length == 0) {
+        if (taskLists == null || taskLists.length == 0) {
             this.openingStatement = MSG_GUIDE_NO_LISTS;
+            this.crossComponentEventService.signalHeaderMessageAppend(MSG_GUIDE_NO_LISTS);
         } else {
             this.openingStatement = MSG_GUIDE_CHOOSE_LIST;
             this.quadrantForm.get('taskList').patchValue(taskLists[0].id);
@@ -118,7 +120,7 @@ export abstract class TaskComponentBase {
         // TODO: error handling; can get a 401 when new code is pushed
         console.log("Error during Google API call!");
         this.openingStatement = MSG_GUIDE_GAPI_ERROR;
-        this.authService.signOut();
+        this.crossComponentEventService.signalHeaderMessageAppend(MSG_GUIDE_GAPI_ERROR);
     }
 
     selectTaskAction(selection: any, taskId: any) {
@@ -156,8 +158,12 @@ export abstract class TaskComponentBase {
     }
 
     // Called by repeater to determine appropriate quadrant for each task
-    quadrantMatch(task: ITask, quadrant:string): boolean {
-        return this.taskModifierService.checkQuadrantMatch(task, quadrant);
+    quadrantMatch(task: IQuadTask, quadrant:string): boolean {
+        if (task.quadrant == null || task.quadrant == 0) {
+            return (quadrant == null || quadrant == "0");
+        } else {
+            return quadrant == task.quadrant.toString();
+        }
     }
     
 }

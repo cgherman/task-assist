@@ -1,19 +1,17 @@
-
-import { FlatTask } from "../../models/task/flat-task";
 import { TaskInList } from "../../models/task/task-in-list";
 import { TasksInList } from "../../models/task/tasks-in-list";
 import { ITaskFactory } from "./itask-factory";
 import { FlatTaskList } from "../../models/task/flat-task-list";
+import { QuadTask } from "../../models/task/quad-task";
 
+export class QuadTaskFactory implements ITaskFactory {
 
-export class FlatTaskFactory implements ITaskFactory {
-
-    public createTask(): FlatTask {
-        return new FlatTask();
+    public createTask(): QuadTask {
+        return new QuadTask();
     }
 
-    public createTaskArray(): FlatTask[] {
-        var tasks = [] as FlatTask[];
+    public createTaskArray(): QuadTask[] {
+        var tasks = [] as QuadTask[];
         return tasks;
     }
     

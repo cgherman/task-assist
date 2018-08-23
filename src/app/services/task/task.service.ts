@@ -5,14 +5,12 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 import { TaskServiceBase } from './task-service-base';
 
 import { GoogleTaskService } from './google-task.service';
-import { TaskFactoryService } from '../../factories/task/task-factory-service';
-import { FlatTaskListFactory } from '../../factories/task/flat-task-list-factory';
-import { FlatTaskFactory } from '../../factories/task/flat-task-factory';
 import { IHashTable } from '../../models/shared/ihash-table';
 import { ITask } from '../../models/task/itask';
 import { ITaskList } from '../../models/task/itask-list';
 import { ITasksInList } from '../../models/task/itasks-in-list';
 import { ITaskInList } from '../../models/task/itask-in-list';
+import { GoogleTaskBuilderService } from './google-task-builder.service';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -29,14 +27,11 @@ export class TaskService extends TaskServiceBase implements OnDestroy {
   private subscriptions: Subscription[] = [];
 
   private tasksCacheTable: IHashTable<ITask[]> = {};
-  private taskFactoryService: TaskFactoryService;
 
-  constructor(private googleTaskServiceService: GoogleTaskService) {  
+  constructor(private googleTaskServiceService: GoogleTaskService,
+              private googleTaskBuilderService: GoogleTaskBuilderService
+             ) {  
     super();
-
-    // TODO: parameterize factory/service
-    this.taskFactoryService = new TaskFactoryService(new FlatTaskFactory(), new FlatTaskListFactory());
-    googleTaskServiceService.SetFactoryStrategy(this.taskFactoryService);
 
     var sub = this.googleTaskServiceService.errorLoadingTasks.subscribe(item => this.onErrorLoadingTasks());
     this.subscriptions.push(sub); // capture for destruction
@@ -118,11 +113,12 @@ export class TaskService extends TaskServiceBase implements OnDestroy {
     // set up callback based on caching choice
     if (useCache) {
       // update cache right now
-      this.updateCache(this.taskFactoryService.CreateTaskInList(task, taskListId));
+      var taskInList: ITaskInList = this.googleTaskBuilderService.createTaskInList(task, taskListId);
+      this.updateCache(taskInList);
     } else {
       // internal callback so we can update the cache
       var callback: Function;
-      callback = (task => this.onTaskUpdated(this.taskFactoryService.CreateTaskInList(task, taskListId)));
+      callback = (task => this.onTaskUpdated(this.googleTaskBuilderService.createTaskInList(task, taskListId)));
       this.makeObservable(myPromise, callback);
     }
 

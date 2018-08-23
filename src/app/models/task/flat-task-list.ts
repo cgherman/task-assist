@@ -5,8 +5,6 @@ export class FlatTaskList implements ITaskList {
     id = null;
     title = null;
 
-    constructor (public taskListId: string, title: string) {
-        this.id = taskListId;
-        this.title = title;
+    constructor () {
     }
 }

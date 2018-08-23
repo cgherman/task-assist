@@ -14,5 +14,5 @@ export class GapiWrapperService {
     // Set reference to Google API
     get instance(): any {
       return gapi;
-    }    
+    }
 }

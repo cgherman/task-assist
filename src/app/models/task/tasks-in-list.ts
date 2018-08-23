@@ -3,12 +3,10 @@ import { ITasksInList } from './itasks-in-list';
 
 // basic task object; could be either a parent or child
 export class TasksInList implements ITasksInList {
-    tasks: ITask[] = null;
-    taskListId: string = null;
+    public tasks: ITask[] = null;
+    public taskListId: string = null;
 
-    constructor (tasks: ITask[], taskListId: string) {
-        this.tasks = tasks;
-        this.taskListId = taskListId;
+    constructor () {
     }
 }
 

@@ -24,14 +24,15 @@ You must have a Google Task List set up to use this app.  Tasks must be added vi
 
 ## Feature To-do List
 
-* Optimize update behavior, to reduce lag, by only fetching partial data for refresh
 * Paging mechanism, or similar, to account for large number of tasks
 * Option to hide sub-tasks to reduce clutter
 * Enable auto-refresh when data is edited elsewhere
 * Tool tips to preview task details (due date, notes, links, etc.)
 * Flesh out UI for tighter integration with task creation
-* Enable text edits and resorts and save to Google's Task repository
+* Ability to "send" items to calendar
+* Ability to move items between task lists to allow for more context/priority management
 * Ability to tag items with cost/complexity and identify items that may not be in the right quadrant
+* Enable resorting and save to Google's Task repository
 * If API key changes, an invalid credentials error will occur, so log out the user
 
 ## Technical To-do List
