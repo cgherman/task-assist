@@ -29,3 +29,5 @@
 .null-as-blank:after {
     content: '\200b';
 }
+
+#loadOverlay{display: none;}
