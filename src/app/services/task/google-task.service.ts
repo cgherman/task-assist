@@ -11,9 +11,7 @@ import { ITasksInList } from '../../models/task/itasks-in-list';
 import { GoogleTaskBuilderService } from './google-task-builder.service';
 import { take } from 'rxjs/operators';
 import { ITaskInList } from '../../models/task/itask-in-list';
-import { TaskConverter } from '../../factories/task/task-converter';
 import { Quadrant } from '../../models/task/quadrant';
-import { QuadTask } from '../../models/task/quad-task';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -30,14 +28,9 @@ export class GoogleTaskService extends QuadTaskServiceBase implements OnDestroy 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
-  private taskConverter: TaskConverter;
-
   constructor(private gapiWrapper: GapiWrapperService,
               private googleTaskBuilderService: GoogleTaskBuilderService) {  
     super();
-    
-    // create instance of task converter for string-qudrant conversion
-    this.taskConverter = new TaskConverter();
   }
 
   // ngOnDestroy needs to be present for @AutoUnsubscribe to function

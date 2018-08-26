@@ -112,7 +112,7 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
     var myPromise: Promise<ITask>;
     var useCache = this.tasksCacheTable[taskListId] != null;
 
-    // POSSIBLE ISSUE: Subscribers of the promise MAY get old data, b/c onTaskUpdated may fire AFTER the promise
+    // TODO: POSSIBLE ISSUE: Subscribers of the promise MAY get old data, b/c onTaskUpdated may fire AFTER the promise
     // TODO: create new promise that calls google and resolves cache before resolving for consumer
     myPromise = this.googleTaskService.updateTask(task, taskListId);
 

@@ -8,7 +8,6 @@ import { MENU_QUAD_FOCUS, MENU_QUAD_PLAN, MENU_QUAD_DELEGATE, MENU_QUAD_ELIMINAT
 import { QuadTaskServiceBase } from "../../services/task/quad-task-service-base";
 import { AuthServiceBase } from "../../services/auth/auth-service-base";
 import { CrossComponentEventService } from "../../services/shared/cross-component-event.service";
-import { TaskConverter } from "../../factories/task/task-converter";
 import { ITask } from "../../models/task/itask";
 import { ITaskList } from "../../models/task/itask-list";
 import { IQuadTask } from "../../models/task/iquad-task";
@@ -41,17 +40,11 @@ export abstract class TaskComponentBase {
         'Assign Quadrant': ['Focus: Urgent & Important', 'Plan: Important but Not Urgent', 'Delegate: Urgent but Not Important', 'Eliminate: Not urgent & Not Important'],
         'Create Reminder': ['Today AM', 'Today Afternoon', 'Today Evening'],
     };*/
-
-    private taskConverter: TaskConverter;
-
     constructor(protected formBuilder: FormBuilder,
                 protected taskService: QuadTaskServiceBase,
                 protected authService: AuthServiceBase,
                 protected crossComponentEventService: CrossComponentEventService
             ) {
-
-        // create instance of task converter for string-qudrant conversion
-        this.taskConverter = new TaskConverter();
 
         // initialize form
         this.createForm();

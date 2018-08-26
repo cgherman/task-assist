@@ -1,6 +1,5 @@
 import { ITask } from "../../models/task/itask";
 import { QuadTask } from "../../models/task/quad-task";
-import { Quadrant } from "../../models/task/quadrant";
 
 export class TaskConverter {
 
