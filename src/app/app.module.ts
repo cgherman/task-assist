@@ -11,10 +11,8 @@ import { AppRoutingModule } from './routing/app-routing.module';
 import { AuthServiceBase } from './services/auth/auth-service-base';
 import { GoogleAuthServiceBase } from './services/auth/google-auth-service-base';
 import { TaskServiceBase } from './services/task/task-service-base';
-import { TaskModifierServiceBase } from './services/task/task-modifier-service-base';
-import { TaskModifierService } from './services/task/task-modifier.service';
 import { AuthService } from './services/auth/auth.service';
-import { TaskService } from './services/task/task.service';
+import { CachedGoogleTaskService } from './services/task/cached-google-task.service';
 import { GapiWrapperService } from './services/shared/gapi-wrapper.service';
 import { FileFetchService } from './services/shared/file-fetch.service';
 import { CrossComponentEventService } from './services/shared/cross-component-event.service';
@@ -53,8 +51,7 @@ import { ViewControlsComponent } from './components/common/view-controls/view-co
   ],
   providers: [{ provide: AuthServiceBase, useClass: AuthService },
               { provide: GoogleAuthServiceBase, useClass: AuthService },
-              { provide: TaskModifierServiceBase, useClass: TaskModifierService },
-              { provide: TaskServiceBase, useClass: TaskService },
+              { provide: TaskServiceBase, useClass: CachedGoogleTaskService },
               { provide: FileFetchService, useClass: FileFetchService },
               CrossComponentEventService,
               ConfigAppService,

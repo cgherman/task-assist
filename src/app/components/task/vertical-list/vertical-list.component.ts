@@ -4,10 +4,9 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 import { MSG_TITLE_LIST } from '../../../user-messages';
 import { TaskComponentBase } from '../../task/task-component-base';
-import { TaskModifierServiceBase } from '../../../services/task/task-modifier-service-base';
 import { TaskServiceBase } from '../../../services/task/task-service-base';
 import { AuthServiceBase } from '../../../services/auth/auth-service-base';
-import { TaskService } from '../../../services/task/task.service';
+import { CachedGoogleTaskService } from '../../../services/task/cached-google-task.service';
 import { CrossComponentEventService } from '../../../services/shared/cross-component-event.service';
 
 
@@ -16,15 +15,14 @@ import { CrossComponentEventService } from '../../../services/shared/cross-compo
   selector: 'app-vertical-list',
   templateUrl: './vertical-list.component.html',
   styleUrls: ['./vertical-list.component.css', '../task-component-base.css'],
-  providers:  [{ provide: TaskServiceBase, useClass: TaskService }]
+  providers:  [{ provide: TaskServiceBase, useClass: CachedGoogleTaskService }]
 })
 export class VerticalListComponent extends TaskComponentBase implements OnInit, OnDestroy {
   constructor(formBuilder: FormBuilder,
-              taskService: TaskServiceBase, 
-              taskModifierService: TaskModifierServiceBase,
+              taskService: TaskServiceBase,
               authService: AuthServiceBase,
               crossComponentEventService: CrossComponentEventService) {
-    super(formBuilder, taskService, taskModifierService, authService, crossComponentEventService);
+    super(formBuilder, taskService, authService, crossComponentEventService);
   }
 
   ngOnInit() {

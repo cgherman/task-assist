@@ -18,28 +18,32 @@ import { GoogleTaskBuilderService } from './google-task-builder.service';
   providedIn: 'root'
 })
 
-export class TaskService extends TaskServiceBase implements OnDestroy {  
+export class CachedGoogleTaskService extends TaskServiceBase implements OnDestroy {  
   public errorLoadingTasks: Subject<any> = new Subject();
   public taskListsLoaded: Subject<ITaskList[]> = new Subject();
   public tasksLoaded: Subject<ITasksInList> = new Subject();
+  public taskQuadrantUpdated: Subject<ITaskInList> = new Subject();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
   private tasksCacheTable: IHashTable<ITask[]> = {};
 
-  constructor(private googleTaskServiceService: GoogleTaskService,
+  constructor(private googleTaskService: GoogleTaskService,
               private googleTaskBuilderService: GoogleTaskBuilderService
              ) {  
     super();
 
-    var sub = this.googleTaskServiceService.errorLoadingTasks.subscribe(item => this.onErrorLoadingTasks());
+    var sub = this.googleTaskService.errorLoadingTasks.subscribe(item => this.onErrorLoadingTasks());
     this.subscriptions.push(sub); // capture for destruction
 
-    var sub = this.googleTaskServiceService.taskListsLoaded.subscribe(taskLists => this.onTaskListsLoaded(taskLists));
+    var sub = this.googleTaskService.taskListsLoaded.subscribe(taskLists => this.onTaskListsLoaded(taskLists));
     this.subscriptions.push(sub); // capture for destruction
 
-    var sub = this.googleTaskServiceService.tasksLoaded.subscribe(tasksInList => this.onTasksLoaded(tasksInList));
+    var sub = this.googleTaskService.tasksLoaded.subscribe(tasksInList => this.onTasksLoaded(tasksInList));
+    this.subscriptions.push(sub); // capture for destruction
+
+    var sub = this.googleTaskService.taskQuadrantUpdated.subscribe(taskInList => this.onTaskQuadrantUpdated(taskInList));
     this.subscriptions.push(sub); // capture for destruction
   }
 
@@ -73,7 +77,7 @@ export class TaskService extends TaskServiceBase implements OnDestroy {
   }
 
   public getTaskLists(): Observable<ITaskList[]> {
-    return this.googleTaskServiceService.getTaskLists();
+    return this.googleTaskService.getTaskLists();
   }
 
   public getTasks(taskList: any, preferFreshData: boolean = false): Observable<ITask[]> {
@@ -97,18 +101,20 @@ export class TaskService extends TaskServiceBase implements OnDestroy {
   }
 
   private getTasks_Fresh(taskList: any): Observable<ITask[]> {
-    return this.googleTaskServiceService.getTasks(taskList);
+    return this.googleTaskService.getTasks(taskList);
   }
 
   public getTask(taskId: string, taskListId: string): Observable<ITask> {
-    return this.googleTaskServiceService.getTask(taskId, taskListId);
+    return this.googleTaskService.getTask(taskId, taskListId);
   }
 
   public updateTask(task: ITask, taskListId: string): Promise<ITask> {
     var myPromise: Promise<ITask>;
     var useCache = this.tasksCacheTable[taskListId] != null;
 
-    myPromise = this.googleTaskServiceService.updateTask(task, taskListId);
+    // POSSIBLE ISSUE: Subscribers of the promise MAY get old data, b/c onTaskUpdated may fire AFTER the promise
+    // TODO: create new promise that calls google and resolves cache before resolving for consumer
+    myPromise = this.googleTaskService.updateTask(task, taskListId);
 
     // set up callback based on caching choice
     if (useCache) {
@@ -132,8 +138,8 @@ export class TaskService extends TaskServiceBase implements OnDestroy {
     }
   }
 
-  private onTaskUpdated(taskEventContainer: ITaskInList) {
-    this.updateCache(taskEventContainer);
+  private onTaskUpdated(taskInList: ITaskInList) {    
+    this.updateCache(taskInList);
   }
 
   private updateCache(taskEventContainer: ITaskInList) {
@@ -144,6 +150,18 @@ export class TaskService extends TaskServiceBase implements OnDestroy {
         cachcedTasks[index] = taskEventContainer.task;
       }
     }
+  }
+
+  public updateTaskQuadrant(taskId: string, taskListId: string, quadrantChar: string) {
+    this.googleTaskService.updateTaskQuadrant(taskId, taskListId, quadrantChar);
+
+     // TODO: return an observer/promise from this method that resolves after the cache has been updated
+  }
+
+  private onTaskQuadrantUpdated(taskInList: ITaskInList) {
+    // TODO: make this process consistent with onTaskUpdated process; 
+    this.updateCache(taskInList);
+    this.taskQuadrantUpdated.next(taskInList);
   }
 
 }

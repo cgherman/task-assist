@@ -6,10 +6,9 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 import { MSG_TITLE_QUAD } from '../../../user-messages';
 import { TaskComponentBase } from '../task-component-base';
-import { TaskModifierServiceBase } from '../../../services/task/task-modifier-service-base';
 import { TaskServiceBase } from '../../../services/task/task-service-base';
 import { AuthServiceBase } from '../../../services/auth/auth-service-base';
-import { TaskService } from '../../../services/task/task.service';
+import { CachedGoogleTaskService } from '../../../services/task/cached-google-task.service';
 import { CrossComponentEventService } from '../../../services/shared/cross-component-event.service';
 
 
@@ -19,7 +18,7 @@ import { CrossComponentEventService } from '../../../services/shared/cross-compo
   templateUrl: './quadrant.component.html',
   styleUrls: ['./quadrant.component.css', '../task-component-base.css'],
   providers:  [[DragulaService],
-               { provide: TaskServiceBase, useClass: TaskService }]
+               { provide: TaskServiceBase, useClass: CachedGoogleTaskService }]
 })
 export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDestroy {
 
@@ -32,12 +31,11 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
   }
   
   constructor(formBuilder: FormBuilder,
-              taskService: TaskServiceBase, 
-              taskModifierService: TaskModifierServiceBase,
+              taskService: TaskServiceBase,
               authService: AuthServiceBase,
               crossComponentEventService: CrossComponentEventService,
               private dragulaService: DragulaService) {
-    super(formBuilder, taskService, taskModifierService, authService, crossComponentEventService);
+    super(formBuilder, taskService, authService, crossComponentEventService);
   }
 
   ngOnInit() {
@@ -76,6 +74,6 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
     var drake = this.dragulaService.find('taskBag').drake;
 
     // Write update to API and refresh data model
-    this.taskModifierService.updateTaskQuadrant(this.taskService, element.id, this.selectedTaskList, targetQuadrant);
+    this.taskService.updateTaskQuadrant(element.id, this.selectedTaskList, targetQuadrant);
   }
 }

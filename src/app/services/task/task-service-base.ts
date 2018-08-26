@@ -2,6 +2,7 @@ import { Observable, Subject } from 'rxjs';
 import { ITaskList } from '../../models/task/itask-list';
 import { ITask } from '../../models/task/itask';
 import { ITasksInList } from '../../models/task/itasks-in-list';
+import { ITaskInList } from '../../models/task/itask-in-list';
 
 export abstract class TaskServiceBase {
     // event fired upon error
@@ -12,6 +13,9 @@ export abstract class TaskServiceBase {
 
     // event fired upon task list load
     public abstract tasksLoaded: Subject<ITasksInList>;
+    
+    // event fired when authentication is complete
+    public abstract taskQuadrantUpdated: Subject<ITaskInList>;
 
     // method to fetch task lists (without child task objects)
     public abstract getTaskLists(): Observable<ITaskList[]>;
@@ -24,4 +28,7 @@ export abstract class TaskServiceBase {
 
     // method to patch/update single task
     public abstract updateTask(task: ITask, taskListId: string): Promise<ITask>;
+
+    // handle task quadrant update
+    public abstract updateTaskQuadrant(taskId: string, taskListId: string, quadrantChar: string);
 }

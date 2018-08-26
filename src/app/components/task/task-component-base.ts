@@ -5,7 +5,6 @@ import { finalize } from "rxjs/operators";
 import { MSG_GUIDE_SIGNIN, MSG_GUIDE_CHOOSE_LIST, MSG_GUIDE_NO_LISTS, MSG_GUIDE_GAPI_ERROR } from '../../user-messages';
 import { MENU_QUAD_FOCUS, MENU_QUAD_PLAN, MENU_QUAD_DELEGATE, MENU_QUAD_ELIMINATE, MENU_QUAD_UNSPECIFIED } from './task-menu-values';
 import { TaskServiceBase } from "../../services/task/task-service-base";
-import { TaskModifierServiceBase } from "../../services/task/task-modifier-service-base";
 import { AuthServiceBase } from "../../services/auth/auth-service-base";
 import { ITask } from "../../models/task/itask";
 import { ITaskList } from "../../models/task/itask-list";
@@ -43,7 +42,6 @@ export abstract class TaskComponentBase {
 
     constructor(protected formBuilder: FormBuilder,
                 protected taskService: TaskServiceBase,
-                protected taskModifierService: TaskModifierServiceBase,
                 protected authService: AuthServiceBase,
                 protected crossComponentEventService: CrossComponentEventService
             ) {
@@ -63,7 +61,7 @@ export abstract class TaskComponentBase {
         var sub = this.crossComponentEventService.dataReadyToLoad.subscribe(item => this.onDataReadyToLoad());
         this.subscriptions.push(sub); // capture for destruction
 
-        var sub = this.taskModifierService.taskQuadrantUpdated.subscribe(item => this.onTaskQuadrantUpdated());
+        var sub = this.taskService.taskQuadrantUpdated.subscribe(item => this.onTaskQuadrantUpdated());
         this.subscriptions.push(sub); // capture for destruction
 
         var sub = this.taskService.errorLoadingTasks.subscribe(item => this.onErrorLoadingTasks());
@@ -144,7 +142,7 @@ export abstract class TaskComponentBase {
 
         console.log("Requested move of element " + taskId + " (to " + targetQuadrant + ")");
         if (targetQuadrant != null) {
-            this.taskModifierService.updateTaskQuadrant(this.taskService, taskId, this.selectedTaskList, targetQuadrant);
+            this.taskService.updateTaskQuadrant(taskId, this.selectedTaskList, targetQuadrant);
         }
     }
 

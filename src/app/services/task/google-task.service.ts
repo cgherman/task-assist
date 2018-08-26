@@ -9,6 +9,8 @@ import { ITask } from '../../models/task/itask';
 import { ITaskList } from '../../models/task/itask-list';
 import { ITasksInList } from '../../models/task/itasks-in-list';
 import { GoogleTaskBuilderService } from './google-task-builder.service';
+import { take } from 'rxjs/operators';
+import { ITaskInList } from '../../models/task/itask-in-list';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -20,6 +22,7 @@ export class GoogleTaskService extends TaskServiceBase implements OnDestroy {
   public errorLoadingTasks: Subject<any> = new Subject();
   public taskListsLoaded: Subject<ITaskList[]> = new Subject();
   public tasksLoaded: Subject<ITasksInList> = new Subject();
+  public taskQuadrantUpdated: Subject<ITaskInList> = new Subject();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
@@ -166,4 +169,35 @@ export class GoogleTaskService extends TaskServiceBase implements OnDestroy {
     return myPromise;
   }
 
+  public updateTaskQuadrant(taskId: string, taskListId: string, quadrantChar: string) {
+    var sub: Subscription;
+
+    // get fresh task to work upon
+    sub = this.getTask(taskId, taskListId)
+    .pipe(take(1))
+    .subscribe((task: ITask) => 
+      {
+        // Using fresh task, update quadrant so we can save up-to-date info
+        this.googleTaskBuilderService.decodeRawNotesForQuadTask(task);
+        this.googleTaskBuilderService.setQuadrantForQuadTask(task, quadrantChar);
+        this.googleTaskBuilderService.encodeRawNotesForQuadTask(task);    
+
+        // Commit updated task notes via Google API
+        this.updateTask( task, taskListId
+        ).then((task) => {
+          console.log("Task " + task.id + " successfully updated via API.");
+          this.onTaskQuadrantUpdated(this.googleTaskBuilderService.createTaskInList(task, taskListId));
+        }).catch((errorHandler) => {
+          console.log('Error in QuadrantComponent.onDrop: UpdateTask: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
+        });
+      }
+    );
+    this.subscriptions.push(sub); // capture for destruction
+
+    // TODO: return an observer/promise from this method; call this.onTaskQuadrantUpdated after that resolves 
+  }
+
+  private onTaskQuadrantUpdated(taskInList: ITaskInList) {
+    this.taskQuadrantUpdated.next(taskInList);
+  }
 }
