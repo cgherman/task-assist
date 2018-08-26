@@ -10,7 +10,7 @@ import { AppRoutingModule } from './routing/app-routing.module';
 
 import { AuthServiceBase } from './services/auth/auth-service-base';
 import { GoogleAuthServiceBase } from './services/auth/google-auth-service-base';
-import { TaskServiceBase } from './services/task/task-service-base';
+import { QuadTaskServiceBase } from './services/task/quad-task-service-base';
 import { AuthService } from './services/auth/auth.service';
 import { CachedGoogleTaskService } from './services/task/cached-google-task.service';
 import { GapiWrapperService } from './services/shared/gapi-wrapper.service';
@@ -51,7 +51,7 @@ import { ViewControlsComponent } from './components/common/view-controls/view-co
   ],
   providers: [{ provide: AuthServiceBase, useClass: AuthService },
               { provide: GoogleAuthServiceBase, useClass: AuthService },
-              { provide: TaskServiceBase, useClass: CachedGoogleTaskService },
+              { provide: QuadTaskServiceBase, useClass: CachedGoogleTaskService },
               { provide: FileFetchService, useClass: FileFetchService },
               CrossComponentEventService,
               ConfigAppService,

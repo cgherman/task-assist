@@ -4,7 +4,7 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 import { MSG_TITLE_LIST } from '../../../user-messages';
 import { TaskComponentBase } from '../../task/task-component-base';
-import { TaskServiceBase } from '../../../services/task/task-service-base';
+import { QuadTaskServiceBase } from '../../../services/task/quad-task-service-base';
 import { AuthServiceBase } from '../../../services/auth/auth-service-base';
 import { CachedGoogleTaskService } from '../../../services/task/cached-google-task.service';
 import { CrossComponentEventService } from '../../../services/shared/cross-component-event.service';
@@ -15,11 +15,11 @@ import { CrossComponentEventService } from '../../../services/shared/cross-compo
   selector: 'app-vertical-list',
   templateUrl: './vertical-list.component.html',
   styleUrls: ['./vertical-list.component.css', '../task-component-base.css'],
-  providers:  [{ provide: TaskServiceBase, useClass: CachedGoogleTaskService }]
+  providers:  [{ provide: QuadTaskServiceBase, useClass: CachedGoogleTaskService }]
 })
 export class VerticalListComponent extends TaskComponentBase implements OnInit, OnDestroy {
   constructor(formBuilder: FormBuilder,
-              taskService: TaskServiceBase,
+              taskService: QuadTaskServiceBase,
               authService: AuthServiceBase,
               crossComponentEventService: CrossComponentEventService) {
     super(formBuilder, taskService, authService, crossComponentEventService);

@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, Subscription, from, of, Subject } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
-import { TaskServiceBase } from './task-service-base';
+import { QuadTaskServiceBase } from './quad-task-service-base';
 
 import { GoogleTaskService } from './google-task.service';
 import { IHashTable } from '../../models/shared/ihash-table';
@@ -11,14 +11,14 @@ import { ITaskList } from '../../models/task/itask-list';
 import { ITasksInList } from '../../models/task/itasks-in-list';
 import { ITaskInList } from '../../models/task/itask-in-list';
 import { GoogleTaskBuilderService } from './google-task-builder.service';
-
+import { Quadrant } from '../../models/task/quadrant';
 
 @AutoUnsubscribe({includeArrays: true})
 @Injectable({
   providedIn: 'root'
 })
 
-export class CachedGoogleTaskService extends TaskServiceBase implements OnDestroy {  
+export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDestroy {  
   public errorLoadingTasks: Subject<any> = new Subject();
   public taskListsLoaded: Subject<ITaskList[]> = new Subject();
   public tasksLoaded: Subject<ITasksInList> = new Subject();
@@ -152,8 +152,14 @@ export class CachedGoogleTaskService extends TaskServiceBase implements OnDestro
     }
   }
 
-  public updateTaskQuadrant(taskId: string, taskListId: string, quadrantChar: string) {
-    this.googleTaskService.updateTaskQuadrant(taskId, taskListId, quadrantChar);
+  public updateTaskQuadrant(taskId: string, taskListId: string, newQuadrant: Quadrant) {
+    this.googleTaskService.updateTaskQuadrant(taskId, taskListId, newQuadrant);
+
+     // TODO: return an observer/promise from this method that resolves after the cache has been updated
+  }
+
+  public updateTaskQuadrantByChar(taskId: string, taskListId: string, newQuadrantChar: string) {
+    this.googleTaskService.updateTaskQuadrantByChar(taskId, taskListId, newQuadrantChar);
 
      // TODO: return an observer/promise from this method that resolves after the cache has been updated
   }
@@ -163,5 +169,4 @@ export class CachedGoogleTaskService extends TaskServiceBase implements OnDestro
     this.updateCache(taskInList);
     this.taskQuadrantUpdated.next(taskInList);
   }
-
 }

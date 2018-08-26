@@ -6,7 +6,7 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 import { MSG_TITLE_QUAD } from '../../../user-messages';
 import { TaskComponentBase } from '../task-component-base';
-import { TaskServiceBase } from '../../../services/task/task-service-base';
+import { QuadTaskServiceBase } from '../../../services/task/quad-task-service-base';
 import { AuthServiceBase } from '../../../services/auth/auth-service-base';
 import { CachedGoogleTaskService } from '../../../services/task/cached-google-task.service';
 import { CrossComponentEventService } from '../../../services/shared/cross-component-event.service';
@@ -18,7 +18,7 @@ import { CrossComponentEventService } from '../../../services/shared/cross-compo
   templateUrl: './quadrant.component.html',
   styleUrls: ['./quadrant.component.css', '../task-component-base.css'],
   providers:  [[DragulaService],
-               { provide: TaskServiceBase, useClass: CachedGoogleTaskService }]
+               { provide: QuadTaskServiceBase, useClass: CachedGoogleTaskService }]
 })
 export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDestroy {
 
@@ -31,7 +31,7 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
   }
   
   constructor(formBuilder: FormBuilder,
-              taskService: TaskServiceBase,
+              taskService: QuadTaskServiceBase,
               authService: AuthServiceBase,
               crossComponentEventService: CrossComponentEventService,
               private dragulaService: DragulaService) {
@@ -74,6 +74,6 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
     var drake = this.dragulaService.find('taskBag').drake;
 
     // Write update to API and refresh data model
-    this.taskService.updateTaskQuadrant(element.id, this.selectedTaskList, targetQuadrant);
+    this.taskService.updateTaskQuadrantByChar(element.id, this.selectedTaskList, targetQuadrant);
   }
 }

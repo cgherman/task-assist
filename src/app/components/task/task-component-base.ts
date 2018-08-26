@@ -4,13 +4,15 @@ import { finalize } from "rxjs/operators";
 
 import { MSG_GUIDE_SIGNIN, MSG_GUIDE_CHOOSE_LIST, MSG_GUIDE_NO_LISTS, MSG_GUIDE_GAPI_ERROR } from '../../user-messages';
 import { MENU_QUAD_FOCUS, MENU_QUAD_PLAN, MENU_QUAD_DELEGATE, MENU_QUAD_ELIMINATE, MENU_QUAD_UNSPECIFIED } from './task-menu-values';
-import { TaskServiceBase } from "../../services/task/task-service-base";
+
+import { QuadTaskServiceBase } from "../../services/task/quad-task-service-base";
 import { AuthServiceBase } from "../../services/auth/auth-service-base";
+import { CrossComponentEventService } from "../../services/shared/cross-component-event.service";
+import { TaskConverter } from "../../factories/task/task-converter";
 import { ITask } from "../../models/task/itask";
 import { ITaskList } from "../../models/task/itask-list";
-import { CrossComponentEventService } from "../../services/shared/cross-component-event.service";
-import { Output } from "@angular/core";
 import { IQuadTask } from "../../models/task/iquad-task";
+import { Quadrant } from "../../models/task/quadrant";
 
 export abstract class TaskComponentBase {
     // these subscriptions will be cleaned up by @AutoUnsubscribe
@@ -40,11 +42,17 @@ export abstract class TaskComponentBase {
         'Create Reminder': ['Today AM', 'Today Afternoon', 'Today Evening'],
     };*/
 
+    private taskConverter: TaskConverter;
+
     constructor(protected formBuilder: FormBuilder,
-                protected taskService: TaskServiceBase,
+                protected taskService: QuadTaskServiceBase,
                 protected authService: AuthServiceBase,
                 protected crossComponentEventService: CrossComponentEventService
             ) {
+
+        // create instance of task converter for string-qudrant conversion
+        this.taskConverter = new TaskConverter();
+
         // initialize form
         this.createForm();
         this.openingStatement = MSG_GUIDE_SIGNIN;
@@ -122,25 +130,32 @@ export abstract class TaskComponentBase {
     }
 
     selectTaskAction(selection: any, taskId: any) {
-        var targetQuadrant: string = null;
+        var targetQuadrant: Quadrant = null;
 
-        if (selection == MENU_QUAD_FOCUS) {
-            targetQuadrant = "1";
-        }
-        if (selection == MENU_QUAD_PLAN) {
-            targetQuadrant = "2";
-        }
-        if (selection == MENU_QUAD_DELEGATE) {
-            targetQuadrant = "3";
-        }
-        if (selection == MENU_QUAD_ELIMINATE) {
-            targetQuadrant = "4";
-        }
-        if (selection == MENU_QUAD_UNSPECIFIED) {
-            targetQuadrant = "0";
+        switch(selection) { 
+            case MENU_QUAD_FOCUS: { 
+                targetQuadrant = Quadrant.newQuadrant("1");
+               break; 
+            }
+            case MENU_QUAD_PLAN: { 
+                targetQuadrant = Quadrant.newQuadrant("2");
+               break; 
+            }
+            case MENU_QUAD_DELEGATE: { 
+                targetQuadrant = Quadrant.newQuadrant("3");
+               break; 
+            }
+            case MENU_QUAD_ELIMINATE: { 
+                targetQuadrant = Quadrant.newQuadrant("4");
+               break; 
+            }
+            default: { 
+                targetQuadrant = Quadrant.newQuadrantUnselected();
+               break; 
+            }
         }
 
-        console.log("Requested move of element " + taskId + " (to " + targetQuadrant + ")");
+        console.log("Requested move of element " + taskId + " (to " + targetQuadrant.selection.toString() + ")");
         if (targetQuadrant != null) {
             this.taskService.updateTaskQuadrant(taskId, this.selectedTaskList, targetQuadrant);
         }
@@ -156,12 +171,18 @@ export abstract class TaskComponentBase {
     }
 
     // Called by repeater to determine appropriate quadrant for each task
-    quadrantMatch(task: IQuadTask, quadrant:string): boolean {
-        if (task.quadrant == null || task.quadrant == 0) {
-            return (quadrant == null || quadrant == "0");
-        } else {
-            return quadrant == task.quadrant.toString();
+    quadrantMatch(task: IQuadTask, quadrantChar:string): boolean {
+        // if title is empty, then do not show task in UI
+        if (task.title == null || task.title.length == 0) {
+            return false;
         }
-    }
-    
+
+        if (task.quadrant.isUnselected()) {
+            // If quadrant is not specified, match the task to the "unknown" UI category
+            return (quadrantChar == null || quadrantChar == "0");
+        } else {
+            // check for a match
+            return Quadrant.isQuadrantMatch(task.quadrant, quadrantChar);
+        }
+    }    
 }

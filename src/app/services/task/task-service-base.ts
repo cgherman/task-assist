@@ -28,7 +28,4 @@ export abstract class TaskServiceBase {
 
     // method to patch/update single task
     public abstract updateTask(task: ITask, taskListId: string): Promise<ITask>;
-
-    // handle task quadrant update
-    public abstract updateTaskQuadrant(taskId: string, taskListId: string, quadrantChar: string);
 }

@@ -118,12 +118,11 @@ export class GoogleTaskBuilderService {
         return this.taskConverter.decodeRawNotesForQuadTask(task);
     }
 
-    public setQuadrantForQuadTask(task: ITask, quadrantChar: string) {
-        return this.taskConverter.setQuadrantForQuadTask(task, quadrantChar);
+    public setQuadrantForQuadTask(task: ITask, newQuadrantChar: string) {
+        return this.taskConverter.setQuadrantForQuadTask(task, newQuadrantChar);
     }
 
     public encodeRawNotesForQuadTask(task: ITask) {
         return this.taskConverter.encodeRawNotesForQuadTask(task);
     }
-
 }

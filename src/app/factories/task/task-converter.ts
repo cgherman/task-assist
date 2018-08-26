@@ -1,6 +1,6 @@
 import { ITask } from "../../models/task/itask";
-import { IQuadTask } from "../../models/task/iquad-task";
 import { QuadTask } from "../../models/task/quad-task";
+import { Quadrant } from "../../models/task/quadrant";
 
 export class TaskConverter {
 
@@ -17,7 +17,7 @@ export class TaskConverter {
         var tagPositionStart: number = -1;
         var tagPositionEnd: number = -1;
         var newTaskNotes: string = "";
-        var quadrant: number = 0;
+        var quadrantChar: string;
 
         // search for existing "quad" tag in task notes
         if (task.notes != null && task.notes.length > 0) {
@@ -41,12 +41,12 @@ export class TaskConverter {
         }
 
         if (tagPositionEnd >= 0) {
-          quadrant = this.parseNumber(task.notes.substring(tagPositionEnd - 1, tagPositionEnd));
+          quadrantChar = task.notes.substring(tagPositionEnd - 1, tagPositionEnd);
         }
 
         // modify values
         task.notes = newTaskNotes;
-        (task as QuadTask).quadrant = quadrant;
+        (task as QuadTask).quadrant.setFromChar(quadrantChar);
     }
 
     // encode quadrant information into a generic task
@@ -56,30 +56,22 @@ export class TaskConverter {
         return;
       }
 
-      var quadNumber: number = (task as QuadTask).quadrant;
-      
+      // encode the value
+      var quadrantChar: string = (task as QuadTask).quadrant.selection;
       var newTaskNotes: string = (task.notes == null ? "" : task.notes + " ");
-      newTaskNotes += "[Quad:" + (quadNumber == null ? "0" : quadNumber.toString()) + "]";
-      
+      newTaskNotes += "[Quad:" + quadrantChar + "]";
+
+      // set the notes accordingly
       (task as QuadTask).notes = newTaskNotes;
     }
 
     // Set quadrant if object is a QuadTask
     // modifies task
-    public setQuadrantForQuadTask(task: ITask, quadrantChar: string) {
+    public setQuadrantForQuadTask(task: ITask, newQuadrantChar: string) {
       if (!(task instanceof QuadTask)) {
         return;
       }
       
-      (task as QuadTask).quadrant = this.parseNumber(quadrantChar);
-    }
-
-    private parseNumber(text: string): number {
-      var result: number = Number.parseInt(text);
-      if (Number.isNaN(result)) {
-        return 0
-      } else {
-        return result;
-      }
+      (task as QuadTask).quadrant.setFromChar(newQuadrantChar);
     }
 }

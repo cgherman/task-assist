@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, Subscription, from, of, Subject } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
-import { TaskServiceBase } from './task-service-base';
+import { QuadTaskServiceBase } from './quad-task-service-base';
 import { GapiWrapperService } from '../shared/gapi-wrapper.service';
 
 import { ITask } from '../../models/task/itask';
@@ -11,6 +11,9 @@ import { ITasksInList } from '../../models/task/itasks-in-list';
 import { GoogleTaskBuilderService } from './google-task-builder.service';
 import { take } from 'rxjs/operators';
 import { ITaskInList } from '../../models/task/itask-in-list';
+import { TaskConverter } from '../../factories/task/task-converter';
+import { Quadrant } from '../../models/task/quadrant';
+import { QuadTask } from '../../models/task/quad-task';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -18,7 +21,7 @@ import { ITaskInList } from '../../models/task/itask-in-list';
   providedIn: 'root'
 })
 
-export class GoogleTaskService extends TaskServiceBase implements OnDestroy {  
+export class GoogleTaskService extends QuadTaskServiceBase implements OnDestroy {  
   public errorLoadingTasks: Subject<any> = new Subject();
   public taskListsLoaded: Subject<ITaskList[]> = new Subject();
   public tasksLoaded: Subject<ITasksInList> = new Subject();
@@ -27,9 +30,14 @@ export class GoogleTaskService extends TaskServiceBase implements OnDestroy {
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
 
+  private taskConverter: TaskConverter;
+
   constructor(private gapiWrapper: GapiWrapperService,
               private googleTaskBuilderService: GoogleTaskBuilderService) {  
     super();
+    
+    // create instance of task converter for string-qudrant conversion
+    this.taskConverter = new TaskConverter();
   }
 
   // ngOnDestroy needs to be present for @AutoUnsubscribe to function
@@ -169,7 +177,11 @@ export class GoogleTaskService extends TaskServiceBase implements OnDestroy {
     return myPromise;
   }
 
-  public updateTaskQuadrant(taskId: string, taskListId: string, quadrantChar: string) {
+  public updateTaskQuadrant(taskId: string, taskListId: string, newQuadrant: Quadrant) {
+    this.updateTaskQuadrantByChar(taskId, taskListId, newQuadrant.selection);
+  }
+
+  public updateTaskQuadrantByChar(taskId: string, taskListId: string, newQuadrantChar: string) {
     var sub: Subscription;
 
     // get fresh task to work upon
@@ -179,7 +191,7 @@ export class GoogleTaskService extends TaskServiceBase implements OnDestroy {
       {
         // Using fresh task, update quadrant so we can save up-to-date info
         this.googleTaskBuilderService.decodeRawNotesForQuadTask(task);
-        this.googleTaskBuilderService.setQuadrantForQuadTask(task, quadrantChar);
+        this.googleTaskBuilderService.setQuadrantForQuadTask(task, newQuadrantChar);
         this.googleTaskBuilderService.encodeRawNotesForQuadTask(task);    
 
         // Commit updated task notes via Google API
