@@ -165,7 +165,8 @@ export class AuthService extends GoogleAuthServiceBase {
     }).then((response) => {
       this.onAuthenticated();
     }).catch((errorHandler) => {
-      console.log('Error in AppComponent.loadGapiClient: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
+      var errorMessage: string = (errorHandler == null || errorHandler.result == null || errorHandler.result.error == null) ? null : errorHandler.result.error.message;
+      console.log('Error in AuthService.loadGapiClient: ' + (errorMessage == null ? "unknown" : errorMessage));
     });
   }
 
@@ -183,7 +184,8 @@ export class AuthService extends GoogleAuthServiceBase {
       console.log('Successful sign-out.');
       setTimeout(() => location.reload(), 1000);
     }).catch((errorHandler) => {
-      console.log('Error in AuthService.signOut: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
+      var errorMessage: string = (errorHandler == null || errorHandler.result == null || errorHandler.result.error == null) ? null : errorHandler.result.error.message;
+      console.log('Error in AuthService.signOut: ' + (errorMessage == null ? "unknown" : errorMessage));
     });  
   }
 

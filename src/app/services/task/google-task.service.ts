@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Observable, Subscription, from, of, Subject } from 'rxjs';
+import { Observable, Subscription, from, of, Subject, pipe } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 import { QuadTaskServiceBase } from './quad-task-service-base';
@@ -20,7 +20,8 @@ import { Quadrant } from '../../models/task/quadrant';
 })
 
 export class GoogleTaskService extends QuadTaskServiceBase implements OnDestroy {  
-  public errorLoadingTasks: Subject<any> = new Subject();
+  public errorLoading: Subject<string> = new Subject();
+  public errorSaving: Subject<string> = new Subject();
   public taskListsLoaded: Subject<ITaskList[]> = new Subject();
   public tasksLoaded: Subject<ITasksInList> = new Subject();
   public taskQuadrantUpdated: Subject<ITaskInList> = new Subject();
@@ -66,7 +67,9 @@ export class GoogleTaskService extends QuadTaskServiceBase implements OnDestroy 
           resolve(this.googleTaskBuilderService.createTaskLists(response));
         }
       }).catch((errorHandler) => {
-        this.errorLoadingTasks.next();
+        var errorMessage: string = (errorHandler == null || errorHandler.result == null || errorHandler.result.error == null) ? null : errorHandler.result.error.message;
+        console.log('Error in GoogleTaskService.getTaskLists: ' + (errorMessage == null ? "unknown" : errorMessage));
+        this.errorLoading.next(errorMessage);
         reject(errorHandler);
       });
 
@@ -100,7 +103,9 @@ export class GoogleTaskService extends QuadTaskServiceBase implements OnDestroy 
           resolve(this.googleTaskBuilderService.createTaskArray(response));
         }
       }).catch((errorHandler) => {
-        this.errorLoadingTasks.next();
+        var errorMessage: string = (errorHandler == null || errorHandler.result == null || errorHandler.result.error == null) ? null : errorHandler.result.error.message;
+        console.log('Error in GoogleTaskService.getTasks: ' + (errorMessage == null ? "unknown" : errorMessage));
+        this.errorLoading.next(errorMessage);
         reject(errorHandler);
       });
     });
@@ -117,6 +122,10 @@ export class GoogleTaskService extends QuadTaskServiceBase implements OnDestroy 
   }
 
   public getTask(taskId: string, taskListId: string): Observable<ITask> {
+    return this.makeObservable(this.getTaskPromise(taskId, taskListId));
+  }
+
+  private getTaskPromise(taskId: string, taskListId: string): Promise<ITask> {
     var myPromise: Promise<ITask>;
 
     myPromise = new Promise((resolve, reject) => {
@@ -135,12 +144,14 @@ export class GoogleTaskService extends QuadTaskServiceBase implements OnDestroy 
           resolve(task);
         }
       }).catch((errorHandler) => {
-        this.errorLoadingTasks.next();
+        var errorMessage: string = (errorHandler == null || errorHandler.result == null || errorHandler.result.error == null) ? null : errorHandler.result.error.message;
+        console.log('Error in GoogleTaskService.getTaskPromise: ' + (errorMessage == null ? "unknown" : errorMessage));
+        this.errorLoading.next(errorMessage);
         reject(errorHandler);
       });
     });
 
-    return this.makeObservable(myPromise);
+    return myPromise;
   }
 
   public updateTask(task: ITask, taskListId: string): Promise<ITask> {
@@ -162,7 +173,9 @@ export class GoogleTaskService extends QuadTaskServiceBase implements OnDestroy 
           resolve(this.googleTaskBuilderService.createTask(response));
         }
       }).catch((errorHandler) => {
-        this.errorLoadingTasks.next();
+        var errorMessage: string = (errorHandler == null || errorHandler.result == null || errorHandler.result.error == null) ? null : errorHandler.result.error.message;
+        console.log('Error in GoogleTaskService.updateTask: ' + (errorMessage == null ? "unknown" : errorMessage));
+        this.errorSaving.next(errorMessage);
         reject(errorHandler);
       });
     });
@@ -170,36 +183,49 @@ export class GoogleTaskService extends QuadTaskServiceBase implements OnDestroy 
     return myPromise;
   }
 
-  public updateTaskQuadrant(taskId: string, taskListId: string, newQuadrant: Quadrant) {
-    this.updateTaskQuadrantByChar(taskId, taskListId, newQuadrant.selection);
+  public updateTaskQuadrant(taskId: string, taskListId: string, newQuadrant: Quadrant): Promise<ITask> {
+    return this.updateTaskQuadrantByChar(taskId, taskListId, newQuadrant.selection);
   }
 
-  public updateTaskQuadrantByChar(taskId: string, taskListId: string, newQuadrantChar: string) {
-    var sub: Subscription;
+  public updateTaskQuadrantByChar(taskId: string, taskListId: string, newQuadrantChar: string): Promise<ITask> {
+    var myPromise: Promise<ITask>;
 
-    // get fresh task to work upon
-    sub = this.getTask(taskId, taskListId)
-    .pipe(take(1))
-    .subscribe((task: ITask) => 
-      {
-        // Using fresh task, update quadrant so we can save up-to-date info
-        this.googleTaskBuilderService.decodeRawNotesForQuadTask(task);
-        this.googleTaskBuilderService.setQuadrantForQuadTask(task, newQuadrantChar);
-        this.googleTaskBuilderService.encodeRawNotesForQuadTask(task);    
+    myPromise = new Promise((resolve, reject) => {
 
-        // Commit updated task notes via Google API
-        this.updateTask( task, taskListId
-        ).then((task) => {
-          console.log("Task " + task.id + " successfully updated via API.");
-          this.onTaskQuadrantUpdated(this.googleTaskBuilderService.createTaskInList(task, taskListId));
-        }).catch((errorHandler) => {
-          console.log('Error in QuadrantComponent.onDrop: UpdateTask: ' + ((errorHandler == null || errorHandler.result == null) ? "undefined errorHandler" : errorHandler.result.error.message));
-        });
-      }
-    );
-    this.subscriptions.push(sub); // capture for destruction
+      // Use Google API to get tasks
+      this.getTaskPromise(taskId, taskListId
+      ).then((task) => {
+        if (task == null) {
+          resolve(null);
+        } else {
+          // Using fresh task, update quadrant so we can save up-to-date info
+          this.googleTaskBuilderService.decodeRawNotesForQuadTask(task);
+          this.googleTaskBuilderService.setQuadrantForQuadTask(task, newQuadrantChar);
+          this.googleTaskBuilderService.encodeRawNotesForQuadTask(task);    
 
-    // TODO: return an observer/promise from this method; call this.onTaskQuadrantUpdated after that resolves 
+          // Commit updated task notes via Google API
+          this.updateTask(task, taskListId
+          ).then((updatedTask) => {
+            console.log("Task " + updatedTask.id + " successfully updated via API.");
+            var taskInList: ITaskInList = this.googleTaskBuilderService.createTaskInList(updatedTask, taskListId);
+            this.onTaskQuadrantUpdated(taskInList);
+            resolve(taskInList.task);
+          }).catch((errorHandler) => {
+            var errorMessage: string = (errorHandler == null || errorHandler.result == null || errorHandler.result.error == null) ? null : errorHandler.result.error.message;
+            console.log('Error in updateTaskQuadrantByChar.updateTaskQuadrantByChar: ' + (errorMessage == null ? "unknown" : errorMessage));
+            this.errorSaving.next(errorMessage);
+            reject(errorHandler);
+          });
+        }
+      }).catch((errorHandler) => {
+        var errorMessage: string = (errorHandler == null || errorHandler.result == null || errorHandler.result.error == null) ? null : errorHandler.result.error.message;
+        console.log('Error in GoogleTaskService.updateTaskQuadrantByChar: ' + (errorMessage == null ? "unknown" : errorMessage));
+        this.errorSaving.next(errorMessage);
+        reject(errorHandler);
+      });
+    });
+
+    return myPromise;
   }
 
   private onTaskQuadrantUpdated(taskInList: ITaskInList) {

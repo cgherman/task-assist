@@ -5,8 +5,11 @@ import { ITasksInList } from '../../models/task/itasks-in-list';
 import { ITaskInList } from '../../models/task/itask-in-list';
 
 export abstract class TaskServiceBase {
-    // event fired upon error
-    public abstract errorLoadingTasks: Subject<any>;
+    // event fired upon load error
+    public abstract errorLoading: Subject<string>;
+
+    // event fired upon save error
+    public abstract errorSaving: Subject<string>;
 
     // event fired upon task list load
     public abstract taskListsLoaded: Subject<ITaskList[]>;

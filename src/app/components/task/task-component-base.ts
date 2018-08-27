@@ -40,6 +40,7 @@ export abstract class TaskComponentBase {
         'Assign Quadrant': ['Focus: Urgent & Important', 'Plan: Important but Not Urgent', 'Delegate: Urgent but Not Important', 'Eliminate: Not urgent & Not Important'],
         'Create Reminder': ['Today AM', 'Today Afternoon', 'Today Evening'],
     };*/
+
     constructor(protected formBuilder: FormBuilder,
                 protected taskService: QuadTaskServiceBase,
                 protected authService: AuthServiceBase,
@@ -65,7 +66,10 @@ export abstract class TaskComponentBase {
         var sub = this.taskService.taskQuadrantUpdated.subscribe(item => this.onTaskQuadrantUpdated());
         this.subscriptions.push(sub); // capture for destruction
 
-        var sub = this.taskService.errorLoadingTasks.subscribe(item => this.onErrorLoadingTasks());
+        var sub = this.taskService.errorLoading.subscribe(errorMessage => this.onErrorLoading(errorMessage));
+        this.subscriptions.push(sub); // capture for destruction
+
+        var sub = this.taskService.errorSaving.subscribe(errorMessage => this.onErrorSaving(errorMessage));
         this.subscriptions.push(sub); // capture for destruction
 
         var sub = this.taskService.taskListsLoaded.subscribe(taskLists => this.onTaskListsLoaded(taskLists));
@@ -115,9 +119,15 @@ export abstract class TaskComponentBase {
         // TODO: Handle any necessary user dialog here
     }
 
-    private onErrorLoadingTasks() {
+    private onErrorLoading(errorMessage: string) {
         // TODO: error handling; can get a 401 when new code is pushed
-        console.log("Error during Google API call!");
+        console.log("Error during Google API loading!");
+        this.openingStatement = MSG_GUIDE_GAPI_ERROR;
+        this.crossComponentEventService.signalHeaderMessageAppend(MSG_GUIDE_GAPI_ERROR);
+    }
+
+    private onErrorSaving(errorMessage: string) {
+        console.log("Error during Google API saving!");
         this.openingStatement = MSG_GUIDE_GAPI_ERROR;
         this.crossComponentEventService.signalHeaderMessageAppend(MSG_GUIDE_GAPI_ERROR);
     }
