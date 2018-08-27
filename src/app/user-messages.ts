@@ -7,9 +7,11 @@ export const MSG_MISSING_API_KEY = "API key was not found!";
 export const MSG_MISSING_CLIENT_KEY = "Client ID was not found!";
 
 // Messages to guide user to login and load
-export const MSG_GUIDE_SIGNIN = "Sign in!  Then choose here!";
+export const MSG_GUIDE_SIGNIN = "Please sign in to access your Google tasks.";
+export const MSG_GUIDE_SIGNIN_CHOOSE = "Sign in!  Then choose here!";
 export const MSG_GUIDE_CHOOSE_LIST = "Choose a task list";
 export const MSG_GUIDE_NO_LISTS = "No task lists found!";
+export const MSG_GUIDE_NO_TASKS = "No tasks were found.  Please select \"Create & Edit Google Tasks\" from the menu!";
 export const MSG_GUIDE_GAPI_ERROR = "Error during Google API call!";
 
 // Heading title text

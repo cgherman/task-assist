@@ -26,7 +26,7 @@ export class UserFrameComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    var sub = this.configAppService.errorMessage.subscribe(item => this.onConfigError(item));
+    var sub = this.configAppService.configError.subscribe(text => this.onConfigError(text));
     this.subscriptions.push(sub); // capture for destruction
 
     var sub = this.configAppService.configLoaded.subscribe(item => this.onConfigLoaded());
@@ -39,8 +39,8 @@ export class UserFrameComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
   }
 
-  private onConfigError(event: string) {
-    this.crossComponentEventService.signalHeaderMessageAppend(event);
+  private onConfigError(text: string) {
+    this.crossComponentEventService.signalWarningMessageAppend(text);
   }
 
   private onConfigLoaded() {

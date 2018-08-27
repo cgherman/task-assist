@@ -85,7 +85,7 @@ export class GoogleTaskService extends QuadTaskServiceBase implements OnDestroy 
     this.taskListsLoaded.next(taskLists);
   }
 
-  public getTasks(taskList: any): Observable<ITask[]> {
+  public getTasks(taskListId: string): Observable<ITask[]> {
     var myPromise: Promise<ITask[]>;
 
     myPromise = new Promise((resolve, reject) => {
@@ -94,13 +94,14 @@ export class GoogleTaskService extends QuadTaskServiceBase implements OnDestroy 
       }
 
       // Use Google API to get tasks
-      this.gapiWrapper.instance.client.tasks.tasks.list( { tasklist: taskList,
+      this.gapiWrapper.instance.client.tasks.tasks.list( { tasklist: taskListId,
                                                  showCompleted: "false" 
       }).then((response) => {
         if (response == null || response.result == null || response.result.items == null || response.result.items.length == 0) {
           resolve(null);
         } else {
-          resolve(this.googleTaskBuilderService.createTaskArray(response));
+          var tasks: ITask[] = this.googleTaskBuilderService.createTaskArray(response);
+          resolve(tasks);
         }
       }).catch((errorHandler) => {
         var errorMessage: string = (errorHandler == null || errorHandler.result == null || errorHandler.result.error == null) ? null : errorHandler.result.error.message;
@@ -111,7 +112,7 @@ export class GoogleTaskService extends QuadTaskServiceBase implements OnDestroy 
     });
     
     var callback: Function;
-    callback = (tasks => this.onTasksLoaded(this.googleTaskBuilderService.createTasksInList(tasks, taskList)));
+    callback = (tasks => this.onTasksLoaded(this.googleTaskBuilderService.createTasksInList(tasks, taskListId)));
 
     return this.makeObservable(myPromise, callback);
   }

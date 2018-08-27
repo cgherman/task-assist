@@ -14,7 +14,7 @@ import { ConfigEventContainer } from '../../models/config/config-event-container
   providedIn: 'root'
 })
 export class ConfigAppService implements OnDestroy {
-  public errorMessage: Subject<string> = new Subject();
+  public configError: Subject<string> = new Subject();
   public configLoaded: Subject<any> = new Subject();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
@@ -53,14 +53,14 @@ export class ConfigAppService implements OnDestroy {
     // If API keys have not been configured, then show a message
     if (configEventContainer.api_key == null || configEventContainer.client_id == null) {
       if (configEventContainer.api_key == null) {
-        this.errorMessage.next(MSG_MISSING_API_KEY);
+        this.configError.next(MSG_MISSING_API_KEY);
       }
 
       if (configEventContainer.client_id == null) {
-        this.errorMessage.next(MSG_MISSING_CLIENT_KEY);
+        this.configError.next(MSG_MISSING_CLIENT_KEY);
       }
 
-      this.errorMessage.next(MSG_MISSING_CONFIG);
+      this.configError.next(MSG_MISSING_CONFIG);
     }
   }
 

@@ -89,11 +89,11 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
     return this.googleTaskService.getTaskLists();
   }
 
-  public getTasks(taskList: any, preferFreshData: boolean = false): Observable<ITask[]> {
-    if (!preferFreshData && this.tasksCacheTable[taskList] != null) {
-      return this.getTasks_Cached(taskList);
+  public getTasks(taskListId: string, preferFreshData: boolean = false): Observable<ITask[]> {
+    if (!preferFreshData && this.tasksCacheTable[taskListId] != null) {
+      return this.getTasks_Cached(taskListId);
     } else {
-      return this.getTasks_Fresh(taskList);
+      return this.getTasks_Fresh(taskListId);
     }
   }
 
@@ -109,8 +109,8 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
     }
   }
 
-  private getTasks_Fresh(taskList: any): Observable<ITask[]> {
-    return this.googleTaskService.getTasks(taskList);
+  private getTasks_Fresh(taskListId: string): Observable<ITask[]> {
+    return this.googleTaskService.getTasks(taskListId);
   }
 
   public getTask(taskId: string, taskListId: string): Observable<ITask> {

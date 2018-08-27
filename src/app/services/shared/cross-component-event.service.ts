@@ -8,7 +8,8 @@ export class CrossComponentEventService {
   public configLoaded: Subject<any> = new Subject();
   public dataReadyToLoad: Subject<any> = new Subject();
   public requestTitleChange: Subject<string> = new Subject();
-  public requestHeaderMessageAppend: Subject<string> = new Subject();
+  public requestWarningMessageAppend: Subject<string> = new Subject();
+  public requestWarningMessageClear: Subject<any> = new Subject();
 
   constructor() { }
   
@@ -28,8 +29,12 @@ export class CrossComponentEventService {
   }
   
   // Signal when critical user information needs to be relayed
-  public signalHeaderMessageAppend(value: string) {
-    this.requestHeaderMessageAppend.next(value);
+  public signalWarningMessageAppend(value: string) {
+    this.requestWarningMessageAppend.next(value);
   }
 
+  // Signal that critical user information can be cleared
+  public signalWarningMessageClear() {
+    this.requestWarningMessageClear.next();
+  }
 }

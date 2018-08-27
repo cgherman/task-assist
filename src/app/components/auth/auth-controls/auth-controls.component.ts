@@ -1,8 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Meta } from '@angular/platform-browser';
 
-import { MSG_GOOGLE_LOAD_FAILURE } from '../../../user-messages';
+import { MSG_GOOGLE_LOAD_FAILURE, MSG_GUIDE_SIGNIN } from '../../../user-messages';
 import { CrossComponentEventService } from '../../../services/shared/cross-component-event.service';
 import { GoogleAuthServiceBase } from '../../../services/auth/google-auth-service-base';
 
@@ -63,7 +62,7 @@ export class AuthControlsComponent implements OnInit {
   // May occur if render fails
   onGapiLoadError() {
     console.log("Google Auth Failed to Load!");
-    this.crossComponentEventService.signalHeaderMessageAppend(MSG_GOOGLE_LOAD_FAILURE);
+    this.crossComponentEventService.signalWarningMessageAppend(MSG_GOOGLE_LOAD_FAILURE);
   }
 
   // Triggered by Google login button
@@ -93,7 +92,7 @@ export class AuthControlsComponent implements OnInit {
   // Triggered by authorization service
   public onFailedToLoadAuth() {
     console.log("Google Auth Failed to Load!");
-    this.crossComponentEventService.signalHeaderMessageAppend(MSG_GOOGLE_LOAD_FAILURE);
+    this.crossComponentEventService.signalWarningMessageAppend(MSG_GOOGLE_LOAD_FAILURE);
     this.notifyAngularOfGoogleAsyncCompletion();
   }
 

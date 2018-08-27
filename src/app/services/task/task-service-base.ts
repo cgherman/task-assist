@@ -24,7 +24,7 @@ export abstract class TaskServiceBase {
     public abstract getTaskLists(): Observable<ITaskList[]>;
 
     // method to fetch tasks for a given task list
-    public abstract getTasks(taskList: any, preferFreshData?: boolean): Observable<ITask[]>;
+    public abstract getTasks(taskListId: string, preferFreshData?: boolean): Observable<ITask[]>;
 
     // method to get single task
     public abstract getTask(taskId: string, taskListId: string): Observable<ITask>;

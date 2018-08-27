@@ -17,7 +17,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   public title = MSG_TITLE_DEFAULT;
-  public headerMessage = null;
+  public warningMessage = null;
 
   constructor(private crossComponentEventService: CrossComponentEventService) {
   }
@@ -26,7 +26,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     var sub = this.crossComponentEventService.requestTitleChange.subscribe(text => this.onRequestTitleChange(text));
     this.subscriptions.push(sub); // capture for destruction
 
-    var sub = this.crossComponentEventService.requestHeaderMessageAppend.subscribe(text => this.onRequestHeaderMessageAppend(text));
+    var sub = this.crossComponentEventService.requestWarningMessageAppend.subscribe(text => this.onRequestWarningMessageAppend(text));
+    this.subscriptions.push(sub); // capture for destruction
+
+    var sub = this.crossComponentEventService.requestWarningMessageClear.subscribe(item => this.onRequestWarningMessageClear());
     this.subscriptions.push(sub); // capture for destruction
   }
 
@@ -38,9 +41,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.title = text;
   }
 
-  private onRequestHeaderMessageAppend(text: string) {
-    console.log("Message: " + text);
-    this.headerMessage = this.headerMessage == null ? text : this.headerMessage + " " + text;
+  private onRequestWarningMessageAppend(text: string) {
+    console.log("Warning: " + text);
+    this.warningMessage = this.warningMessage == null ? text : this.warningMessage + " " + text;
+  }
+
+  private onRequestWarningMessageClear() {
+    console.log("Warnings cleared.");
+    this.warningMessage = null;
   }
 
 }
