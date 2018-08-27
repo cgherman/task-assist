@@ -115,7 +115,7 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
 
   public updateTask(task: ITask, taskListId: string): Promise<ITask> {
     var promise: Promise<ITask> = this.googleTaskService.updateTask(task, taskListId);
-    return this.createUpdatePromise(taskListId, promise, this.onTaskUpdated);
+    return this.createUpdatePromise(taskListId, promise, (taskInList: ITaskInList)=>{this.onTaskUpdated(taskInList);});
   }
 
   private onTaskUpdated(taskInList: ITaskInList) {
@@ -128,7 +128,7 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
 
   public updateTaskQuadrantByChar(taskId: string, taskListId: string, newQuadrantChar: string): Promise<ITask> {
     var promise: Promise<ITask> = this.googleTaskService.updateTaskQuadrantByChar(taskId, taskListId, newQuadrantChar);
-    return this.createUpdatePromise(taskListId, promise, this.onTaskQuadrantUpdated);
+    return this.createUpdatePromise(taskListId, promise, (taskInList: ITaskInList)=>{this.onTaskQuadrantUpdated(taskInList);});
   }
 
   private onTaskQuadrantUpdated(taskInList: ITaskInList) {
@@ -152,7 +152,7 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
             this.updateCache(taskInList);
           }
 
-          ()=>callbackOnUpdate(taskInList);
+          callbackOnUpdate(taskInList);
           resolve(taskInList.task);
         }
       }).catch((errorHandler) => {
