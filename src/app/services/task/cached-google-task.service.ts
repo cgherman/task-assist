@@ -9,9 +9,10 @@ import { IHashTable } from '../../models/shared/ihash-table';
 import { ITask } from '../../models/task/itask';
 import { ITaskList } from '../../models/task/itask-list';
 import { ITasksInList } from '../../models/task/itasks-in-list';
-import { ITaskInList } from '../../models/task/itask-in-list';
 import { GoogleTaskBuilderService } from './google-task-builder.service';
 import { Quadrant } from '../../models/task/quadrant';
+import { ITaskInListWithState } from '../../models/task/itask-in-list-with-state';
+import { DataState } from '../../models/task/data-state.enum';
 
 @AutoUnsubscribe({includeArrays: true})
 @Injectable({
@@ -23,7 +24,7 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
   public errorSaving: Subject<string> = new Subject();
   public taskListsLoaded: Subject<ITaskList[]> = new Subject();
   public tasksLoaded: Subject<ITasksInList> = new Subject();
-  public taskQuadrantUpdated: Subject<ITaskInList> = new Subject();
+  public taskQuadrantDataEvent: Subject<ITaskInListWithState> = new Subject();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
@@ -45,6 +46,9 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
     this.subscriptions.push(sub); // capture for destruction
 
     var sub = this.googleTaskService.tasksLoaded.subscribe(tasksInList => this.onTasksLoaded(tasksInList));
+    this.subscriptions.push(sub); // capture for destruction
+
+    var sub = this.googleTaskService.taskQuadrantDataEvent.subscribe(taskInListWithState => this.onTaskQuadrantDataEvent(taskInListWithState));
     this.subscriptions.push(sub); // capture for destruction
   }
 
@@ -76,9 +80,9 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
     this.taskListsLoaded.next(taskLists);
   }
 
-  private onTasksLoaded(taskArrayEventContainer: ITasksInList) {
-    this.tasksLoaded.next(taskArrayEventContainer);
-    this.tasksCacheTable[taskArrayEventContainer.taskListId] = taskArrayEventContainer.tasks;
+  private onTasksLoaded(tasksInList: ITasksInList) {
+    this.tasksCacheTable[tasksInList.taskListId] = tasksInList.tasks;
+    this.tasksLoaded.next(tasksInList);    
   }
 
   public getTaskLists(): Observable<ITaskList[]> {
@@ -115,10 +119,11 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
 
   public updateTask(task: ITask, taskListId: string): Promise<ITask> {
     var promise: Promise<ITask> = this.googleTaskService.updateTask(task, taskListId);
-    return this.createUpdatePromise(taskListId, promise, (taskInList: ITaskInList)=>{this.onTaskUpdated(taskInList);});
+    return this.createUpdatePromise(taskListId, promise, (taskInList: ITaskInListWithState)=>{this.onTaskUpdated(taskInList);});
   }
 
-  private onTaskUpdated(taskInList: ITaskInList) {
+  // Invoked after the cache has been updated for updateTask
+  private onTaskUpdated(taskInList: ITaskInListWithState) {
     // TODO: emit here if desired
   }
 
@@ -128,16 +133,25 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
 
   public updateTaskQuadrantByChar(taskId: string, taskListId: string, newQuadrantChar: string): Promise<ITask> {
     var promise: Promise<ITask> = this.googleTaskService.updateTaskQuadrantByChar(taskId, taskListId, newQuadrantChar);
-    return this.createUpdatePromise(taskListId, promise, (taskInList: ITaskInList)=>{this.onTaskQuadrantUpdated(taskInList);});
+    return this.createUpdatePromise(taskListId, promise, (taskInList: ITaskInListWithState)=>{this.onTaskQuadrantUpdated(taskInList);});
   }
 
-  private onTaskQuadrantUpdated(taskInList: ITaskInList) {
-    this.taskQuadrantUpdated.next(taskInList);
+  // Invoked before data has been committed so UI can update early
+  private onTaskQuadrantDataEvent(taskInListEarly: ITaskInListWithState) {
+    // invoke event before commit to data store has occurred for faster response
+    if (this.useCache(taskInListEarly.taskListId)) {
+      this.updateTaskInCache(taskInListEarly);
+      this.taskQuadrantDataEvent.next(taskInListEarly);
+    }
+  }
+
+  // Invoked after the cache has been updated for updateTaskQuadrantByChar
+  private onTaskQuadrantUpdated(taskInList: ITaskInListWithState) {
+    this.taskQuadrantDataEvent.next(taskInList);
   }
   
-  private createUpdatePromise(taskListId: string, func: Promise<ITask>, callbackOnUpdate: (taskInList: ITaskInList)=>void ) {
+  private createUpdatePromise(taskListId: string, func: Promise<ITask>, callbackOnUpdate: (taskInList: ITaskInListWithState)=>void ) {
     var myPromise: Promise<ITask>;
-    var useCache = this.tasksCacheTable[taskListId] != null;
 
     myPromise = new Promise((resolve, reject) => {
 
@@ -146,14 +160,14 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
         if (updatedTask == null) {
           resolve(null);
         } else {
-          var taskInList: ITaskInList = this.googleTaskBuilderService.createTaskInList(updatedTask, taskListId);
+          var taskInListCommitted: ITaskInListWithState = this.googleTaskBuilderService.createTaskInListWithState(updatedTask, taskListId, DataState.Committed);
 
-          if (useCache) {         
-            this.updateCache(taskInList);
+          if (this.useCache(taskListId)) {         
+            this.updateTaskInCache(taskInListCommitted);
           }
 
-          callbackOnUpdate(taskInList);
-          resolve(taskInList.task);
+          callbackOnUpdate(taskInListCommitted);
+          resolve(taskInListCommitted.task);
         }
       }).catch((errorHandler) => {
         var errorMessage: string = (errorHandler == null || errorHandler.result == null || errorHandler.result.error == null) ? null : errorHandler.result.error.message;
@@ -166,12 +180,17 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
     return myPromise;
   }
 
-  private updateCache(taskEventContainer: ITaskInList) {
-    var cachcedTasks = this.tasksCacheTable[taskEventContainer.taskListId];
+  private useCache(taskListId: string) {
+    return this.tasksCacheTable[taskListId] != null;
+  }
+
+  private updateTaskInCache(taskInListWithState: ITaskInListWithState) {
+    var cachcedTasks = this.tasksCacheTable[taskInListWithState.taskListId];
     if (cachcedTasks != null) {
-      var index = cachcedTasks.findIndex(cachedTask => cachedTask.id == taskEventContainer.task.id);
+      var index = cachcedTasks.findIndex(cachedTask => cachedTask.id == taskInListWithState.task.id);
       if (index >= 0) {
-        cachcedTasks[index] = taskEventContainer.task;
+        // update task in cache
+        cachcedTasks[index] = taskInListWithState.task;
       }
     }
   }

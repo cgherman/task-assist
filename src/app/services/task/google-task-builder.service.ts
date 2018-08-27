@@ -7,6 +7,8 @@ import { ITasksInList } from "../../models/task/itasks-in-list";
 import { ITaskList } from "../../models/task/itask-list";
 import { TaskConverter } from '../../factories/task/task-converter';
 import { QuadTaskStrategy } from '../../factories/task/quad-task-strategy';
+import { ITaskInListWithState } from '../../models/task/itask-in-list-with-state';
+import { DataState } from '../../models/task/data-state.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -27,11 +29,23 @@ export class GoogleTaskBuilderService {
         return this.populateTaskInList(this.taskStrategy.createTaskInList(), task, taskListId);
     }
 
+    // Create and populate ITaskInList
+    public createTaskInListWithState(task: ITask, taskListId: string, dataState: DataState): ITaskInListWithState {
+        return this.populateTaskInListWithState(this.taskStrategy.createTaskInListWithState(), task, taskListId, dataState);
+    }
+    
     private populateTaskInList(taskInList: ITaskInList, task: ITask, taskListId: string) {
         taskInList.task = task;
         taskInList.taskListId = taskListId;
         return taskInList;
     }
+
+    private populateTaskInListWithState(taskInListWithState: ITaskInListWithState, task: ITask, taskListId: string, dataState: DataState) {
+        taskInListWithState.task = task;
+        taskInListWithState.taskListId = taskListId;
+        taskInListWithState.dataState = dataState;
+        return taskInListWithState;
+    }    
 
     // Parse data into ITaskList[]
     public createTaskLists(gapiClientTaskListArrayResponse: any): ITaskList[] {

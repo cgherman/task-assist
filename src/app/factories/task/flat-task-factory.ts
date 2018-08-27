@@ -4,6 +4,7 @@ import { TaskInList } from "../../models/task/task-in-list";
 import { TasksInList } from "../../models/task/tasks-in-list";
 import { ITaskFactory } from "./itask-factory";
 import { FlatTaskList } from "../../models/task/flat-task-list";
+import { TaskInListWithState } from "../../models/task/task-in-list-with-state";
 
 
 export class FlatTaskFactory implements ITaskFactory {
@@ -19,6 +20,10 @@ export class FlatTaskFactory implements ITaskFactory {
     
     public createTaskInList(): TaskInList {
         return new TaskInList();
+    }
+
+    public createTaskInListWithState(): TaskInListWithState {
+        return new TaskInListWithState();
     }
     
     public createTasksInList(): TasksInList {

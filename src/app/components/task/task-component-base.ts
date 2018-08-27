@@ -12,6 +12,7 @@ import { ITask } from "../../models/task/itask";
 import { ITaskList } from "../../models/task/itask-list";
 import { IQuadTask } from "../../models/task/iquad-task";
 import { Quadrant } from "../../models/task/quadrant";
+import { ITaskInListWithState } from "../../models/task/itask-in-list-with-state";
 
 export abstract class TaskComponentBase {
     // these subscriptions will be cleaned up by @AutoUnsubscribe
@@ -63,7 +64,7 @@ export abstract class TaskComponentBase {
         var sub = this.crossComponentEventService.dataReadyToLoad.subscribe(item => this.onDataReadyToLoad());
         this.subscriptions.push(sub); // capture for destruction
 
-        var sub = this.taskService.taskQuadrantUpdated.subscribe(item => this.onTaskQuadrantUpdated());
+        var sub = this.taskService.taskQuadrantDataEvent.subscribe(taskInListWithState => this.onTaskQuadrantUpdated(taskInListWithState));
         this.subscriptions.push(sub); // capture for destruction
 
         var sub = this.taskService.errorLoading.subscribe(errorMessage => this.onErrorLoading(errorMessage));
@@ -168,7 +169,7 @@ export abstract class TaskComponentBase {
         this.crossComponentEventService.signalTitleChange(value);
     }
     
-    private onTaskQuadrantUpdated() {
+    private onTaskQuadrantUpdated(taskInListWithState: ITaskInListWithState) {
         // Update model with committed data
         this.loadTasks(this.selectedTaskList);
     }
