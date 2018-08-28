@@ -4,6 +4,10 @@
 @import url('https://fonts.googleapis.com/css?family=Raleway');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
 
+html {
+    overscroll-behavior: contain;
+}
+
 .info-box-main {
     border-radius: 10px;
     background-color: #fff;

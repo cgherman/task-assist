@@ -17,7 +17,7 @@ export class DelayDragDirective {
     // if it's a string, that's because we didn't pass a value (<div delayDragLift></div>)
     return (typeof this.dragDelay === 'number')
       ? this.dragDelay
-      : 200;
+      : 100;
   }
 
   @HostListener('touchstart', ['$event'])
