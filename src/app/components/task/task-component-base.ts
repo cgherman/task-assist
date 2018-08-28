@@ -116,7 +116,8 @@ export abstract class TaskComponentBase {
           console.log("Changing to a different list: " + taskListId);
           this.tasks = this.taskService.getTasks(taskListId, false);
         } else {
-          var thing: Observable<ITask[]> = this.taskService.getTasks(taskListId, false).pipe(take(1));
+            // prevent flicker
+            var thing: Observable<ITask[]> = this.taskService.getTasks(taskListId, false).pipe(take(1));
             thing.toPromise().then((tasksResult) => {
                 this.tasks = of(tasksResult);
             });
