@@ -16,6 +16,7 @@ import { AboutComponent } from './components/common/about/about.component';
 import { HeaderComponent } from './components/common/header/header.component';
 import { AuthControlsComponent } from './components/auth/auth-controls/auth-controls.component';
 import { ViewControlsComponent } from './components/common/view-controls/view-controls.component';
+import { DelayDragDirective } from './components/delay-drag.directive';
 
 import { AuthServiceBase } from './services/auth/auth-service-base';
 import { GoogleAuthServiceBase } from './services/auth/google-auth-service-base';
@@ -37,7 +38,8 @@ import { GoogleTaskService } from './services/task/google-task.service';
     AboutComponent,
     HeaderComponent,
     AuthControlsComponent,
-    ViewControlsComponent
+    ViewControlsComponent,
+    DelayDragDirective
   ],
   imports: [
     BrowserModule,

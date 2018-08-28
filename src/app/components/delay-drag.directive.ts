@@ -1,6 +1,9 @@
 import { Directive, ElementRef, HostListener, Input, OnInit, HostBinding } from '@angular/core';
 
-@Directive({ selector: `[delayDrag]` })
+
+@Directive({
+  selector: '[delayDrag]'
+})
 export class DelayDragDirective {
   @Input('delayDrag')
   public dragDelay: number;
