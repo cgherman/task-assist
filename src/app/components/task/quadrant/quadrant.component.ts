@@ -39,7 +39,7 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
   }
 
   ngOnInit() {
-    this.wireUpEvents();
+    this.wireUpCommonInit();
 
     // tweak title based on component usage
     this.requestTitleChange(MSG_TITLE_QUAD);

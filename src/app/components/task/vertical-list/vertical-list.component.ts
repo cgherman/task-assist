@@ -26,7 +26,7 @@ export class VerticalListComponent extends TaskComponentBase implements OnInit, 
   }
 
   ngOnInit() {
-    this.wireUpEvents();
+    this.wireUpCommonInit();
 
     // tweak title based on component usage
     this.requestTitleChange(MSG_TITLE_LIST);

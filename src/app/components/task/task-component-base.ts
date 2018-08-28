@@ -60,8 +60,7 @@ export abstract class TaskComponentBase {
         });
     }
 
-    protected wireUpEvents() {
-        // wire up data event
+    protected wireUpCommonInit() {
         var sub = this.crossComponentEventService.dataReadyToLoad.subscribe(item => this.onDataReadyToLoad());
         this.subscriptions.push(sub); // capture for destruction
 
