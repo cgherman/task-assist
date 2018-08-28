@@ -2,8 +2,19 @@
     font-variant: small-caps;
 }
 
-.quad-border-1, .quad-border-2, .quad-border-3, .quad-border-4, .quad-border-0 {
+.quad-border-1, .quad-border-2, .quad-border-3, .quad-border-4, .quad-border-0, .quad-border-flex {
     outline-offset: 0px;
+}
+
+.quad-border-flex {
+    border-top: 0px solid rgba(255, 255, 255);
+    border-left: 0px solid rgba(255, 255, 255);
+    border-bottom: 1px solid rgba(170, 170, 170);
+    border-right: 1px solid rgba(170, 170, 170);
+    border-bottom: 1px solid rgba(0, 0, 0, .2);
+    border-right: 1px solid rgba(0, 0, 0, .2);
+    -webkit-background-clip: padding-box; /* for Safari */
+    background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */
 }
 
 .quad-1, .quad-2, .quad-3, .quad-4, .quad-0 {
@@ -19,7 +30,7 @@
 }
 
 .quad-border-1 {
-    outline: 1px solid #e76;
+    outline: 1px solid rgba(204, 123, 109);
 }
 
 .quad-2 {
@@ -31,7 +42,7 @@
 }
 
 .quad-border-2 {
-    outline: 1px solid #ed5;
+    outline: 1px solid rgba(204, 204, 95);
 }
 
 .quad-3 {
@@ -43,7 +54,7 @@
 }
 
 .quad-border-3 {
-    outline: 1px solid #7c6;
+    outline: 1px solid rgba(109, 191, 109);
 }
 
 .quad-4 {
@@ -55,7 +66,7 @@
 }
 
 .quad-border-4 {
-    outline: 1px solid #bba;
+    outline: 1px solid rgba(163, 163, 150);
 }
 
 .quad-0 {
@@ -67,5 +78,5 @@
 }
 
 .quad-border-0 {
-    outline: 1px solid #6af;
+    outline: 1px solid rgba(123, 163, 204);
 }

@@ -8,16 +8,6 @@ import { DragulaModule } from 'ng2-dragula';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './routing/app-routing.module';
 
-import { AuthServiceBase } from './services/auth/auth-service-base';
-import { GoogleAuthServiceBase } from './services/auth/google-auth-service-base';
-import { QuadTaskServiceBase } from './services/task/quad-task-service-base';
-import { AuthService } from './services/auth/auth.service';
-import { CachedGoogleTaskService } from './services/task/cached-google-task.service';
-import { GapiWrapperService } from './services/shared/gapi-wrapper.service';
-import { FileFetchService } from './services/shared/file-fetch.service';
-import { CrossComponentEventService } from './services/shared/cross-component-event.service';
-import { ConfigAppService } from './services/config/config-app.service';
-
 import { AppComponent } from './components/app.component';
 import { QuadrantComponent } from './components/task/quadrant/quadrant.component';
 import { UserFrameComponent } from './components/common/content-frame/content-frame.component';
@@ -26,6 +16,16 @@ import { AboutComponent } from './components/common/about/about.component';
 import { HeaderComponent } from './components/common/header/header.component';
 import { AuthControlsComponent } from './components/auth/auth-controls/auth-controls.component';
 import { ViewControlsComponent } from './components/common/view-controls/view-controls.component';
+
+import { AuthServiceBase } from './services/auth/auth-service-base';
+import { GoogleAuthServiceBase } from './services/auth/google-auth-service-base';
+import { QuadTaskServiceBase } from './services/task/quad-task-service-base';
+import { AuthService } from './services/auth/auth.service';
+import { GapiWrapperService } from './services/shared/gapi-wrapper.service';
+import { FileFetchService } from './services/shared/file-fetch.service';
+import { CrossComponentEventService } from './services/shared/cross-component-event.service';
+import { ConfigAppService } from './services/config/config-app.service';
+import { GoogleTaskService } from './services/task/google-task.service';
 
 @NgModule({
   declarations: [
@@ -51,7 +51,7 @@ import { ViewControlsComponent } from './components/common/view-controls/view-co
   ],
   providers: [{ provide: AuthServiceBase, useClass: AuthService },
               { provide: GoogleAuthServiceBase, useClass: AuthService },
-              { provide: QuadTaskServiceBase, useClass: CachedGoogleTaskService },
+              { provide: QuadTaskServiceBase, useClass: GoogleTaskService },
               { provide: FileFetchService, useClass: FileFetchService },
               CrossComponentEventService,
               ConfigAppService,

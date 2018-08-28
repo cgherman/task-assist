@@ -1,24 +1,22 @@
 import { Component, OnInit, OnDestroy, NgModule } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
-import { DragulaService } from 'ng2-dragula';
+import { DragulaService, dragula } from 'ng2-dragula';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 import { MSG_TITLE_QUAD } from '../../../user-messages';
 import { TaskComponentBase } from '../task-component-base';
 import { QuadTaskServiceBase } from '../../../services/task/quad-task-service-base';
 import { AuthServiceBase } from '../../../services/auth/auth-service-base';
-import { CachedGoogleTaskService } from '../../../services/task/cached-google-task.service';
 import { CrossComponentEventService } from '../../../services/shared/cross-component-event.service';
+import { Quadrant } from '../../../models/task/quadrant';
 
 
 @AutoUnsubscribe({includeArrays: true})
 @Component({
   selector: 'app-quadrant',
   templateUrl: './quadrant.component.html',
-  styleUrls: ['./quadrant.component.css', '../task-component-base.css'],
-  providers:  [[DragulaService],
-               { provide: QuadTaskServiceBase, useClass: CachedGoogleTaskService }]
+  styleUrls: ['./quadrant.component.css', '../task-component-base.css']
 })
 export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDestroy {
 
@@ -58,7 +56,6 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
 
   // fired upon task list selection
   onChangeTaskList($event) {
-    // call super.loadTaskList();
     this.loadTaskList();
   }
 
@@ -69,11 +66,28 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
 
     console.log("Requested move of element " + element.id + " (" + quadrantOld + "->" + targetQuadrant + ")");
 
-    // Get Dragula "drake" API reference (ng2-dragula doc refers to dragula)
-    // https://github.com/bevacqua/dragula#readme
-    var drake = this.dragulaService.find('taskBag').drake;
-
     // Write update to API and refresh data model
     this.taskService.updateTaskQuadrantByChar(element.id, this.selectedTaskList, targetQuadrant);
+  }
+
+  protected executeMenuAction(taskId: string, taskListId: string, targetQuadrant: Quadrant) {
+    this.dragulaManualMove(taskId, targetQuadrant);
+  }
+
+  private dragulaManualMove(taskId: string, targetQuadrant: Quadrant) {
+    var drake = this.getDrake();
+    var quadDivName: string = "QUAD" + targetQuadrant.selection;
+    var elContainer = document.getElementById(quadDivName);
+    var elTask = document.getElementById(taskId);
+
+    drake.start(elTask);
+    elContainer.appendChild(elTask);
+    drake.end();
+  }
+
+  private getDrake() {
+    // Get Dragula "drake" API reference (ng2-dragula doc refers to dragula)
+    // https://github.com/bevacqua/dragula#readme
+    return this.dragulaService.find('taskBag').drake;
   }
 }
