@@ -7,10 +7,10 @@
 }
 
 .quad-border-flex {
-    border-top: 0px solid rgba(255, 255, 255);
-    border-left: 0px solid rgba(255, 255, 255);
-    border-bottom: 1px solid rgba(170, 170, 170);
-    border-right: 1px solid rgba(170, 170, 170);
+    border-top: 0px solid rgb(255, 255, 255);
+    border-left: 0px solid rgb(255, 255, 255);
+    border-bottom: 1px solid rgb(170, 170, 170);
+    border-right: 1px solid rgb(170, 170, 170);
     border-bottom: 1px solid rgba(0, 0, 0, .2);
     border-right: 1px solid rgba(0, 0, 0, .2);
     -webkit-background-clip: padding-box; /* for Safari */
@@ -30,7 +30,7 @@
 }
 
 .quad-border-1 {
-    outline: 1px solid rgba(204, 123, 109);
+    outline: 1px solid rgb(204, 123, 109);
 }
 
 .quad-2 {
@@ -42,7 +42,7 @@
 }
 
 .quad-border-2 {
-    outline: 1px solid rgba(204, 204, 95);
+    outline: 1px solid rgb(204, 204, 95);
 }
 
 .quad-3 {
@@ -54,7 +54,7 @@
 }
 
 .quad-border-3 {
-    outline: 1px solid rgba(109, 191, 109);
+    outline: 1px solid rgb(109, 191, 109);
 }
 
 .quad-4 {
@@ -66,7 +66,7 @@
 }
 
 .quad-border-4 {
-    outline: 1px solid rgba(163, 163, 150);
+    outline: 1px solid rgb(163, 163, 150);
 }
 
 .quad-0 {
@@ -78,5 +78,5 @@
 }
 
 .quad-border-0 {
-    outline: 1px solid rgba(123, 163, 204);
+    outline: 1px solid rgb(123, 163, 204);
 }
