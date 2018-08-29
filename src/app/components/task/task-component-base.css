@@ -1,3 +1,12 @@
+.linkified:before {
+    content: "◄";
+    /* Alternatives: ⋘ x ⋙    ⊰ x ⊱     ≪ x ≫   ◄►    ⇄⇨★☆ */
+ }
+
+ .linkified:after {
+    content: "►";
+ }
+
 .quad-title {
     font-variant: small-caps;
 }

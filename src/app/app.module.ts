@@ -27,6 +27,7 @@ import { FileFetchService } from './services/shared/file-fetch.service';
 import { CrossComponentEventService } from './services/shared/cross-component-event.service';
 import { ConfigAppService } from './services/config/config-app.service';
 import { GoogleTaskService } from './services/task/google-task.service';
+import { LinkifyLinksDirective } from './components/task/linkify-links.directive';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { GoogleTaskService } from './services/task/google-task.service';
     HeaderComponent,
     AuthControlsComponent,
     ViewControlsComponent,
-    DelayDragDirective
+    DelayDragDirective,
+    LinkifyLinksDirective
   ],
   imports: [
     BrowserModule,

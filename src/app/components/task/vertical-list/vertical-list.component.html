@@ -52,7 +52,7 @@
     <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
       <ng-container *ngIf="quadrantMatch(task, 1)">
         <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-flex w3-small">
-          {{task.title}}
+          <div appLinkifyLinks="{{task.title}}"></div>
         </div>
       </ng-container>
     </ng-container>
@@ -67,7 +67,7 @@
     <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
       <ng-container *ngIf="quadrantMatch(task, 2)">
         <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-flex w3-small">
-          {{task.title}}
+          <div appLinkifyLinks="{{task.title}}"></div>
         </div>
       </ng-container>
     </ng-container>
@@ -82,7 +82,7 @@
     <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
       <ng-container *ngIf="quadrantMatch(task, 3)">
         <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-flex w3-small">
-          {{task.title}}
+          <div appLinkifyLinks="{{task.title}}"></div>
         </div>
       </ng-container>
     </ng-container>
@@ -97,7 +97,7 @@
     <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
       <ng-container *ngIf="quadrantMatch(task, 4)">
         <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-flex w3-small">
-          {{task.title}}
+          <div appLinkifyLinks="{{task.title}}"></div>
         </div>
       </ng-container>
     </ng-container>
@@ -112,7 +112,7 @@
     <ng-container *ngFor="let task of (tasks | async); let bagIndex = index;">
       <ng-container *ngIf="quadrantMatch(task, null)">
         <div [attr.id]="task.id" [matMenuTriggerFor]="taskActionMenu" [matMenuTriggerData]="{name: task}" class="w3-padding-small w3-hover-white quad-border-flex w3-small">
-          {{task.title}}
+          <div appLinkifyLinks="{{task.title}}"></div>
         </div>
       </ng-container>
     </ng-container>
