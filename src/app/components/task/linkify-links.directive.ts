@@ -13,11 +13,11 @@ export class LinkifyLinksDirective {
   }
 
   ngOnInit() {
-    this.linkify(this.el, this.appLinkifyLinks, ["www.", "http://", "https://"]);
+    this.linkify(this.el.nativeElement, this.appLinkifyLinks, ["www.", "http://", "https://"]);
   }
   
   // Discover URLs via "link indicators" and convert them to HTML anchor tags in place
-  private linkify(el: any, text: string, linkIndicators: string[]) {
+  private linkify(element: any, text: string, linkIndicators: string[]) {
     var indexMap: number[];
     var posStart: number;
 
@@ -35,7 +35,7 @@ export class LinkifyLinksDirective {
 
       // write out prefix
       if (posStart > 0) {
-        this.addText(el, text.substr(0, posStart));
+        this.addText(element, text.substr(0, posStart));
       }
 
       // capture link
@@ -52,33 +52,41 @@ export class LinkifyLinksDirective {
       }
 
       // write out link
-      this.addLink(el, this.makeLinkDesc(link), link);
+      this.addLink(element, this.makeLinkDesc(link), link);
 
       // transform suffix as needed and append
       if (posEnd >= 0) {
         // recurse
-        this.linkify(el, text.substr(posEnd), linkIndicators);
+        this.linkify(element, text.substr(posEnd), linkIndicators);
       }
 
       return result;
     } else {
-      this.addText(el, text);
+      this.addText(element, text);
     }
   }
 
-  private addText(el: any, text: string) {
-    this.renderer.appendChild(this.el.nativeElement, this.renderer.createText(text));
+  private addText(element: any, value: string) {
+    var text = this.renderer.createText(value);
+    var container = this.renderer.createElement('div');
+    this.renderer.setAttribute(container, 'style', 'display: inline');
+    this.renderer.appendChild(container, text);
+    this.renderer.appendChild(element, container);
+
+    //this.renderer.appendChild(element, this.renderer.createText(text));
   }
 
-  private addLink(el: any, value: string, link: string) {
+  private addLink(element: any, value: string, link: string) {
     // main div container
     var container = this.renderer.createElement('div');
+    this.renderer.setAttribute(container, 'style', 'display: inline');
     this.renderer.setAttribute(container, 'class', 'linkified');
 
     // anchor tag
     var anchor = this.renderer.createElement('a');
     this.renderer.setAttribute(anchor, 'href', link);
-    this.renderer.setAttribute(anchor, 'target', '_blank');    
+    this.renderer.setAttribute(anchor, 'target', '_blank');
+    this.renderer.setAttribute(anchor, 'class', 'linkified-link');
     
     // anchor text
     var text = this.renderer.createText(value);
@@ -86,7 +94,7 @@ export class LinkifyLinksDirective {
     // put it together
     this.renderer.appendChild(anchor, text);
     this.renderer.appendChild(container, anchor);
-    this.renderer.appendChild(el.nativeElement, container);
+    this.renderer.appendChild(element, container);
   }
 
   private makeLinkDesc(link: string): string {
