@@ -9,13 +9,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './routing/app-routing.module';
 
 import { AppComponent } from './components/app.component';
+import { TaskFrameComponent } from './components/task/task-frame/task-frame.component';
 import { QuadrantComponent } from './components/task/quadrant/quadrant.component';
-import { UserFrameComponent } from './components/common/content-frame/content-frame.component';
 import { VerticalListComponent } from './components/task/vertical-list/vertical-list.component';
+import { UserFrameComponent } from './components/common/content-frame/content-frame.component';
+import { ViewControlsComponent } from './components/common/view-controls/view-controls.component';
 import { AboutComponent } from './components/common/about/about.component';
 import { HeaderComponent } from './components/common/header/header.component';
 import { AuthControlsComponent } from './components/auth/auth-controls/auth-controls.component';
-import { ViewControlsComponent } from './components/common/view-controls/view-controls.component';
 import { DelayDragDirective } from './components/delay-drag.directive';
 
 import { AuthServiceBase } from './services/auth/auth-service-base';
@@ -41,7 +42,8 @@ import { LinkifyLinksDirective } from './components/task/linkify-links.directive
     AuthControlsComponent,
     ViewControlsComponent,
     DelayDragDirective,
-    LinkifyLinksDirective
+    LinkifyLinksDirective,
+    TaskFrameComponent
   ],
   imports: [
     BrowserModule,
