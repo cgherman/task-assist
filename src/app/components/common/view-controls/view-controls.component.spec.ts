@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ViewControlsComponent } from './view-controls.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ViewControlsComponent', () => {
   let component: ViewControlsComponent;
@@ -8,7 +9,12 @@ describe('ViewControlsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ViewControlsComponent ]
+      imports: [
+        RouterTestingModule
+      ],
+      declarations: [ 
+        ViewControlsComponent 
+      ]
     })
     .compileComponents();
   }));

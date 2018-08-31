@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { UserFrameComponent } from '../content-frame/content-frame.component';
 import { Subscription } from 'rxjs';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
@@ -13,8 +12,7 @@ import { CrossComponentEventService } from '../../../services/shared/cross-compo
   styleUrls: ['./about.component.css']
 })
 export class AboutComponent implements OnInit, OnDestroy {
-  constructor(private frameComponent: UserFrameComponent,
-              private crossComponentEventService: CrossComponentEventService) { }
+  constructor(private crossComponentEventService: CrossComponentEventService) { }
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];

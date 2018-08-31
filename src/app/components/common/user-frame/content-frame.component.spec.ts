@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserFrameComponent } from './content-frame.component';
+import { UserFrameComponent } from './user-frame.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { GoogleAuthServiceBase } from '../../../services/auth/google-auth-service-base';
 
 describe('UserFrameComponent', () => {
   let component: UserFrameComponent;
@@ -8,7 +10,15 @@ describe('UserFrameComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UserFrameComponent ]
+      imports: [
+        RouterTestingModule
+      ],
+      declarations: [ 
+        UserFrameComponent
+      ],
+      providers: [
+        GoogleAuthServiceBase
+      ]
     })
     .compileComponents();
   }));

@@ -1,10 +1,20 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import { ConfigResolver } from './config-resolver.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+
 
 describe('ConfigResolver', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule
+        //.withRoutes(
+        //  [{path: '', component: BlankCmp}, {path: 'simple', component: SimpleCmp}]
+        //)  
+      ],
       providers: [ConfigResolver]
     });
   });

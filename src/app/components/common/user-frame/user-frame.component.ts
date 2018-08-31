@@ -10,8 +10,8 @@ import { CrossComponentEventService } from '../../../services/shared/cross-compo
 @AutoUnsubscribe({includeArrays: true})
 @Component({
   selector: 'app-frame',
-  templateUrl: './content-frame.component.html',
-  styleUrls: ['./content-frame.component.css']
+  templateUrl: './user-frame.component.html',
+  styleUrls: ['./user-frame.component.css']
 })
 export class UserFrameComponent implements OnInit, OnDestroy {
   // these subscriptions will be cleaned up by @AutoUnsubscribe

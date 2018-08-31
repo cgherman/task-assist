@@ -1,26 +1,30 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TaskFrameComponent } from './task-frame.component';
+import { UserFrameComponent } from './user-frame.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { GoogleAuthServiceBase } from '../../../services/auth/google-auth-service-base';
 
-describe('TaskFrameComponent', () => {
-  let component: TaskFrameComponent;
-  let fixture: ComponentFixture<TaskFrameComponent>;
+describe('UserFrameComponent', () => {
+  let component: UserFrameComponent;
+  let fixture: ComponentFixture<UserFrameComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule
       ],
-      declarations: [
-         TaskFrameComponent 
+      declarations: [ 
+        UserFrameComponent
+      ],
+      providers: [
+        GoogleAuthServiceBase
       ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TaskFrameComponent);
+    fixture = TestBed.createComponent(UserFrameComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
