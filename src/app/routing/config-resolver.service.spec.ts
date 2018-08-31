@@ -11,9 +11,6 @@ describe('ConfigResolver', () => {
       imports: [
         HttpClientTestingModule,
         RouterTestingModule
-        //.withRoutes(
-        //  [{path: '', component: BlankCmp}, {path: 'simple', component: SimpleCmp}]
-        //)  
       ],
       providers: [ConfigResolver]
     });
