@@ -19,7 +19,6 @@ describe('QuadrantComponent', () => {
   beforeEach(async(() => {
     mockAuthService = new MockAuthServiceBase();
     mockQuadTaskServiceBase = new MockQuadTaskServiceBase();
-    mockDragula = dragula;
 
     TestBed.configureTestingModule({
       imports: [

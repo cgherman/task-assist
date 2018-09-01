@@ -2,7 +2,7 @@ import { Observable, Subject } from 'rxjs';
 import { ITaskList } from '../../models/task/itask-list';
 import { ITask } from '../../models/task/itask';
 import { ITasksInList } from '../../models/task/itasks-in-list';
-import { ITaskInListWithState } from '../../models/task/itask-in-list-with-state';
+import { ITaskInList } from '../../models/task/itask-in-list';
 
 export abstract class TaskServiceBase {
     // event fired upon load error
@@ -18,7 +18,7 @@ export abstract class TaskServiceBase {
     public abstract tasksLoaded: Subject<ITasksInList>;
 
     // event fired when authentication is complete
-    public abstract taskQuadrantDataEvent: Subject<ITaskInListWithState>;
+    public abstract taskQuadrantDataEvent: Subject<ITaskInList>;
 
     // method to fetch task lists (without child task objects)
     public abstract getTaskLists(): Observable<ITaskList[]>;

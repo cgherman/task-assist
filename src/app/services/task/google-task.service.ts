@@ -10,8 +10,7 @@ import { ITaskList } from '../../models/task/itask-list';
 import { ITasksInList } from '../../models/task/itasks-in-list';
 import { GoogleTaskBuilderService } from './google-task-builder.service';
 import { Quadrant } from '../../models/task/quadrant';
-import { ITaskInListWithState } from '../../models/task/itask-in-list-with-state';
-import { DataState } from '../../models/task/data-state.enum';
+import { ITaskInList } from '../../models/task/itask-in-list';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -24,7 +23,7 @@ export class GoogleTaskService extends QuadTaskServiceBase implements OnDestroy 
   public errorSaving: Subject<string> = new Subject();
   public taskListsLoaded: Subject<ITaskList[]> = new Subject();
   public tasksLoaded: Subject<ITasksInList> = new Subject();
-  public taskQuadrantDataEvent: Subject<ITaskInListWithState> = new Subject();
+  public taskQuadrantDataEvent: Subject<ITaskInList> = new Subject();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
@@ -204,15 +203,11 @@ export class GoogleTaskService extends QuadTaskServiceBase implements OnDestroy 
           this.googleTaskBuilderService.setQuadrantForQuadTask(task, newQuadrantChar);
           this.googleTaskBuilderService.encodeRawNotesForQuadTask(task);
 
-          // notify of desire to update so UI can update early if desired
-          var taskInListEarly: ITaskInListWithState = this.googleTaskBuilderService.createTaskInListWithState(task, taskListId, DataState.Preparing);
-          this.onTaskQuadrantDataEvent(taskInListEarly);
-
           // Commit updated task notes via Google API
           this.updateTask(task, taskListId
           ).then((updatedTask) => {
             console.log("Task " + updatedTask.id + " successfully updated via API.");
-            var taskInListCommitted: ITaskInListWithState = this.googleTaskBuilderService.createTaskInListWithState(updatedTask, taskListId, DataState.Committed);
+            var taskInListCommitted: ITaskInList = this.googleTaskBuilderService.createTaskInList(updatedTask, taskListId);
             this.onTaskQuadrantDataEvent(taskInListCommitted);
             resolve(taskInListCommitted.task);
           }).catch((errorHandler) => {
@@ -233,7 +228,7 @@ export class GoogleTaskService extends QuadTaskServiceBase implements OnDestroy 
     return myPromise;
   }
 
-  private onTaskQuadrantDataEvent(taskInListWithState: ITaskInListWithState) {
-    this.taskQuadrantDataEvent.next(taskInListWithState);
+  private onTaskQuadrantDataEvent(taskInList: ITaskInList) {
+    this.taskQuadrantDataEvent.next(taskInList);
   }
 }

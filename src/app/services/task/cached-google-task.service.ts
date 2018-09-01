@@ -11,8 +11,7 @@ import { ITaskList } from '../../models/task/itask-list';
 import { ITasksInList } from '../../models/task/itasks-in-list';
 import { GoogleTaskBuilderService } from './google-task-builder.service';
 import { Quadrant } from '../../models/task/quadrant';
-import { ITaskInListWithState } from '../../models/task/itask-in-list-with-state';
-import { DataState } from '../../models/task/data-state.enum';
+import { ITaskInList } from '../../models/task/itask-in-list';
 
 @AutoUnsubscribe({includeArrays: true})
 @Injectable({
@@ -24,7 +23,7 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
   public errorSaving: Subject<string> = new Subject();
   public taskListsLoaded: Subject<ITaskList[]> = new Subject();
   public tasksLoaded: Subject<ITasksInList> = new Subject();
-  public taskQuadrantDataEvent: Subject<ITaskInListWithState> = new Subject();
+  public taskQuadrantDataEvent: Subject<ITaskInList> = new Subject();
 
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   private subscriptions: Subscription[] = [];
@@ -107,11 +106,11 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
 
   public updateTask(task: ITask, taskListId: string): Promise<ITask> {
     var promise: Promise<ITask> = this.googleTaskService.updateTask(task, taskListId);
-    return this.createUpdatePromise(taskListId, promise, (taskInList: ITaskInListWithState)=>{this.onTaskUpdated(taskInList);});
+    return this.createUpdatePromise(taskListId, promise, (taskInList: ITaskInList)=>{this.onTaskUpdated(taskInList);});
   }
 
   // Invoked after the cache has been updated for updateTask
-  private onTaskUpdated(taskInList: ITaskInListWithState) {
+  private onTaskUpdated(taskInList: ITaskInList) {
     // TODO: emit here if desired
   }
 
@@ -121,11 +120,11 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
 
   public updateTaskQuadrantByChar(taskId: string, taskListId: string, newQuadrantChar: string): Promise<ITask> {
     var promise: Promise<ITask> = this.googleTaskService.updateTaskQuadrantByChar(taskId, taskListId, newQuadrantChar);
-    return this.createUpdatePromise(taskListId, promise, (taskInList: ITaskInListWithState)=>{this.onTaskQuadrantUpdated(taskInList);});
+    return this.createUpdatePromise(taskListId, promise, (taskInList: ITaskInList)=>{this.onTaskQuadrantUpdated(taskInList);});
   }
 
   // Invoked before data has been committed so UI can update early
-  private onTaskQuadrantDataEvent(taskInListEarly: ITaskInListWithState) {
+  private onTaskQuadrantDataEvent(taskInListEarly: ITaskInList) {
     // invoke event before commit to data store has occurred for faster response
     if (this.useCache(taskInListEarly.taskListId)) {
       this.updateTaskInCache(taskInListEarly);
@@ -134,11 +133,11 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
   }
 
   // Invoked after the cache has been updated for updateTaskQuadrantByChar
-  private onTaskQuadrantUpdated(taskInList: ITaskInListWithState) {
+  private onTaskQuadrantUpdated(taskInList: ITaskInList) {
     this.taskQuadrantDataEvent.next(taskInList);
   }
   
-  private createUpdatePromise(taskListId: string, func: Promise<ITask>, callbackOnUpdate: (taskInList: ITaskInListWithState)=>void ) {
+  private createUpdatePromise(taskListId: string, func: Promise<ITask>, callbackOnUpdate: (taskInList: ITaskInList)=>void ) {
     var myPromise: Promise<ITask>;
 
     myPromise = new Promise((resolve, reject) => {
@@ -148,7 +147,7 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
         if (updatedTask == null) {
           resolve(null);
         } else {
-          var taskInListCommitted: ITaskInListWithState = this.googleTaskBuilderService.createTaskInListWithState(updatedTask, taskListId, DataState.Committed);
+          var taskInListCommitted: ITaskInList = this.googleTaskBuilderService.createTaskInList(updatedTask, taskListId);
 
           if (this.useCache(taskListId)) {         
             this.updateTaskInCache(taskInListCommitted);
@@ -172,7 +171,7 @@ export class CachedGoogleTaskService extends QuadTaskServiceBase implements OnDe
     return this.tasksCacheTable[taskListId] != null;
   }
 
-  private updateTaskInCache(taskInListWithState: ITaskInListWithState) {
+  private updateTaskInCache(taskInListWithState: ITaskInList) {
     var cachcedTasks = this.tasksCacheTable[taskInListWithState.taskListId];
     if (cachcedTasks != null) {
       var index = cachcedTasks.findIndex(cachedTask => cachedTask.id == taskInListWithState.task.id);

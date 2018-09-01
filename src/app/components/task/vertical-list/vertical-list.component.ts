@@ -5,8 +5,7 @@ import { MSG_TITLE_LIST } from '../../../user-messages';
 import { CrossComponentEventService } from '../../../services/shared/cross-component-event.service';
 import { TaskComponentBase } from '../../task/task-component-base';
 import { QuadTaskServiceBase } from '../../../services/task/quad-task-service-base';
-import { ITaskInListWithState } from '../../../models/task/itask-in-list-with-state';
-import { DataState } from '../../../models/task/data-state.enum';
+import { ITaskInList } from '../../../models/task/itask-in-list';
 import { Quadrant } from '../../../models/task/quadrant';
 import { TaskFrameComponent } from '../task-frame/task-frame.component';
 
@@ -27,7 +26,7 @@ export class VerticalListComponent extends TaskComponentBase implements OnInit, 
   ngOnInit() {
     this.wireUpCommonInit();
 
-    var sub = this.taskService.taskQuadrantDataEvent.subscribe(taskInListWithState => this.onTaskQuadrantUpdated(taskInListWithState));
+    var sub = this.taskService.taskQuadrantDataEvent.subscribe(taskInList => this.onTaskQuadrantUpdated(taskInList));
     this.subscriptions.push(sub); // capture for destruction
 
     // tweak title based on component usage
@@ -45,10 +44,8 @@ export class VerticalListComponent extends TaskComponentBase implements OnInit, 
     this.taskService.updateTaskQuadrant(taskId, taskListId, targetQuadrant);
   }
 
-  private onTaskQuadrantUpdated(taskInListWithState: ITaskInListWithState) {
+  private onTaskQuadrantUpdated(taskInListWithState: ITaskInList) {
     // Update model with committed data
-    if (taskInListWithState.dataState == DataState.Committed) {
-      this.loadTasks(this.taskFrame.selectedTaskList, false);
-    }
+    this.loadTasks(this.taskFrame.selectedTaskList, false);
   }
 }
