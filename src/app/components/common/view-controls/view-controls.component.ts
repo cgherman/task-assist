@@ -27,10 +27,10 @@ export class ViewControlsComponent implements OnInit {
     var currentView = this.currentView();
     if (currentView == "Quad") {
       // We're on quadrant, switch to vertical-list
-      window.location.assign("/vertical-list");
+      this.router.navigateByUrl("/vertical-list");
     } else {
       // We're on quadrant, switch to vertical-list
-      window.location.assign("/quadrant");
+      this.router.navigateByUrl("/quadrant");
     }
   }
 }

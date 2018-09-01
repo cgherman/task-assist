@@ -1,5 +1,4 @@
-import { Component, OnInit, OnDestroy, NgModule } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { DragulaService, dragula } from 'ng2-dragula';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
@@ -7,9 +6,9 @@ import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 import { MSG_TITLE_QUAD } from '../../../user-messages';
 import { TaskComponentBase } from '../task-component-base';
 import { QuadTaskServiceBase } from '../../../services/task/quad-task-service-base';
-import { AuthServiceBase } from '../../../services/auth/auth-service-base';
 import { CrossComponentEventService } from '../../../services/shared/cross-component-event.service';
 import { Quadrant } from '../../../models/task/quadrant';
+import { TaskFrameComponent } from '../task-frame/task-frame.component';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -19,7 +18,6 @@ import { Quadrant } from '../../../models/task/quadrant';
   styleUrls: ['./quadrant.component.css', '../task-component-base.css']
 })
 export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDestroy {
-
   // Dragula options
   dragulaOptions: any = {
     revertOnSpill: true,
@@ -28,12 +26,11 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
     ignoreInputTextSelection: true
   }
   
-  constructor(formBuilder: FormBuilder,
+  constructor(taskFrame: TaskFrameComponent,
               taskService: QuadTaskServiceBase,
-              authService: AuthServiceBase,
               crossComponentEventService: CrossComponentEventService,
               private dragulaService: DragulaService) {
-    super(formBuilder, taskService, authService, crossComponentEventService);
+    super(taskFrame, taskService, crossComponentEventService);
   }
 
   ngOnInit() {
@@ -54,11 +51,6 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
   ngDoCheck() {
   }
 
-  // fired upon task list selection
-  onChangeTaskList($event) {
-    this.loadTaskList();
-  }
-
   onDrop(args) {
     let [bagName, element, target, source] = args;
     var quadrantOld = source.id.substring(target.id.length - 1)
@@ -67,7 +59,7 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
     console.log("Requested move of element " + element.id + " (" + quadrantOld + "->" + targetQuadrant + ")");
 
     // Write update to API and refresh data model
-    this.taskService.updateTaskQuadrantByChar(element.id, this.selectedTaskList, targetQuadrant);
+    this.taskService.updateTaskQuadrantByChar(element.id, this.taskFrame.selectedTaskList, targetQuadrant);
   }
 
   protected executeMenuAction(taskId: string, taskListId: string, targetQuadrant: Quadrant) {

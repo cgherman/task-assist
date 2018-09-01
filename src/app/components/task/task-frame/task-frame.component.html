@@ -1,2 +1,25 @@
 <!-- TODO: Move shared task logic here to allow route switching between views -->
-<router-outlet></router-outlet>
+
+<!-- Form Elements -->
+<div class="w3-animate-opacity">
+    <form [formGroup]="quadrantForm">
+      <div class="form-group">
+        <div class="w3-row w3-section w3-row-padding">
+          <div class="w3-container">
+            <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-book"></i></div>
+            <div class="w3-rest" >
+              <select class="w3-select" (ngModelChange)="onChangeTaskList($event)" formControlName="taskList" id="taskListDropDown">
+                <option [selected]="true" disabled>{{openingStatement}}</option>
+                <option *ngFor="let i = index; let taskList of taskLists | async "
+                        [value]="taskList.id">
+                  {{taskList.title}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  
+  <router-outlet></router-outlet>

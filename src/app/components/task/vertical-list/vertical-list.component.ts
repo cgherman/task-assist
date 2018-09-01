@@ -1,15 +1,14 @@
-import { Component, OnInit, OnDestroy, NgModule } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Component, OnInit, OnDestroy, NgModule, Input } from '@angular/core';
 import { AutoUnsubscribe } from "ngx-auto-unsubscribe";
 
 import { MSG_TITLE_LIST } from '../../../user-messages';
 import { CrossComponentEventService } from '../../../services/shared/cross-component-event.service';
 import { TaskComponentBase } from '../../task/task-component-base';
 import { QuadTaskServiceBase } from '../../../services/task/quad-task-service-base';
-import { AuthServiceBase } from '../../../services/auth/auth-service-base';
 import { ITaskInListWithState } from '../../../models/task/itask-in-list-with-state';
 import { DataState } from '../../../models/task/data-state.enum';
 import { Quadrant } from '../../../models/task/quadrant';
+import { TaskFrameComponent } from '../task-frame/task-frame.component';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -19,11 +18,10 @@ import { Quadrant } from '../../../models/task/quadrant';
   styleUrls: ['./vertical-list.component.css', '../task-component-base.css']
 })
 export class VerticalListComponent extends TaskComponentBase implements OnInit, OnDestroy {
-  constructor(formBuilder: FormBuilder,
+  constructor(taskFrame: TaskFrameComponent,
               taskService: QuadTaskServiceBase,
-              authService: AuthServiceBase,
               crossComponentEventService: CrossComponentEventService) {
-    super(formBuilder, taskService, authService, crossComponentEventService);
+    super(taskFrame, taskService, crossComponentEventService);
   }
 
   ngOnInit() {
@@ -43,12 +41,6 @@ export class VerticalListComponent extends TaskComponentBase implements OnInit, 
   ngDoCheck() {
   }
 
-  // fired upon task list selection
-  onChangeTaskList($event) {
-    // call super.loadTaskList();
-    this.loadTaskList();
-  }
-
   protected executeMenuAction(taskId: string, taskListId: string, targetQuadrant: Quadrant) {
     this.taskService.updateTaskQuadrant(taskId, taskListId, targetQuadrant);
   }
@@ -56,7 +48,7 @@ export class VerticalListComponent extends TaskComponentBase implements OnInit, 
   private onTaskQuadrantUpdated(taskInListWithState: ITaskInListWithState) {
     // Update model with committed data
     if (taskInListWithState.dataState == DataState.Committed) {
-      this.loadTasks(this.selectedTaskList, false);
+      this.loadTasks(this.taskFrame.selectedTaskList, false);
     }
   }
 }
