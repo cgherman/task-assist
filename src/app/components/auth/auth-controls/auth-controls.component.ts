@@ -36,8 +36,6 @@ export class AuthControlsComponent implements OnInit {
   }
 
   ngOnInit() {
-    /*
- 
     // intercept config completion
     var sub = this.crossComponentEventService.configLoaded.subscribe(item => this.onConfigLoaded());
     this.subscriptions.push(sub); // capture for destruction
@@ -49,8 +47,6 @@ export class AuthControlsComponent implements OnInit {
     // intercept auth failure
     sub = this.authService.failedToLoadAuth.subscribe(item => this.onFailedToLoadAuth());
     this.subscriptions.push(sub); // capture for destruction
-
-    */
   }
 
   isSignedIn(): boolean {
