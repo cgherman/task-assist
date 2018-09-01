@@ -7,7 +7,7 @@ import { TaskComponentBase } from '../../task/task-component-base';
 import { QuadTaskServiceBase } from '../../../services/task/quad-task-service-base';
 import { ITaskInList } from '../../../models/task/itask-in-list';
 import { Quadrant } from '../../../models/task/quadrant';
-import { TaskFrameComponent } from '../task-frame/task-frame.component';
+import { TaskFrameShared } from '../task-frame/task-frame-shared';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -17,10 +17,10 @@ import { TaskFrameComponent } from '../task-frame/task-frame.component';
   styleUrls: ['./vertical-list.component.css', '../task-component-base.css']
 })
 export class VerticalListComponent extends TaskComponentBase implements OnInit, OnDestroy {
-  constructor(taskFrame: TaskFrameComponent,
+  constructor(sharedService: TaskFrameShared,
               taskService: QuadTaskServiceBase,
               crossComponentEventService: CrossComponentEventService) {
-    super(taskFrame, taskService, crossComponentEventService);
+    super(sharedService, taskService, crossComponentEventService);
   }
 
   ngOnInit() {
@@ -46,6 +46,6 @@ export class VerticalListComponent extends TaskComponentBase implements OnInit, 
 
   private onTaskQuadrantUpdated(taskInListWithState: ITaskInList) {
     // Update model with committed data
-    this.loadTasks(this.taskFrame.selectedTaskList, false);
+    this.loadTasks(this.sharedService.selectedTaskList, false);
   }
 }

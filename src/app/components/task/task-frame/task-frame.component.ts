@@ -1,10 +1,11 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { ITaskList } from '../../../models/task/itask-list';
 import { QuadTaskServiceBase } from '../../../services/task/quad-task-service-base';
 import { CrossComponentEventService } from '../../../services/shared/cross-component-event.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { MSG_GUIDE_SIGNIN_CHOOSE, MSG_GUIDE_NO_LISTS, MSG_GUIDE_CHOOSE_LIST } from '../../../user-messages';
+import { MSG_GUIDE_SIGNIN_CHOOSE, MSG_GUIDE_NO_LISTS, MSG_GUIDE_CHOOSE_LIST, MSG_GUIDE_GAPI_ERROR } from '../../../user-messages';
+import { TaskFrameShared } from './task-frame-shared';
 
 @Component({
   selector: 'app-task',
@@ -12,8 +13,6 @@ import { MSG_GUIDE_SIGNIN_CHOOSE, MSG_GUIDE_NO_LISTS, MSG_GUIDE_CHOOSE_LIST } fr
   styleUrls: ['./task-frame.component.css']
 })
 export class TaskFrameComponent implements OnInit {
-  @Output() taskListChange = new EventEmitter<string>();
-
   // these subscriptions will be cleaned up by @AutoUnsubscribe
   protected subscriptions: Subscription[] = [];
   
@@ -24,7 +23,8 @@ export class TaskFrameComponent implements OnInit {
   public openingStatement: string;
   public quadrantForm: FormGroup;
 
-  constructor(protected formBuilder: FormBuilder,
+  constructor(protected sharedService: TaskFrameShared,
+              protected formBuilder: FormBuilder,
               protected taskService: QuadTaskServiceBase,
               protected crossComponentEventService: CrossComponentEventService) 
   {    
@@ -45,6 +45,12 @@ export class TaskFrameComponent implements OnInit {
     
     var sub = this.taskService.taskListsLoaded.subscribe(taskLists => this.onTaskListsLoaded(taskLists));
     this.subscriptions.push(sub); // capture for destruction
+
+    var sub = this.taskService.errorLoading.subscribe(errorMessage => this.onErrorLoading(errorMessage));
+    this.subscriptions.push(sub); // capture for destruction
+
+    sub = this.taskService.errorSaving.subscribe(errorMessage => this.onErrorSaving(errorMessage));
+    this.subscriptions.push(sub); // capture for destruction
   }
 
   // value of currently selected task list in dropdown
@@ -54,7 +60,8 @@ export class TaskFrameComponent implements OnInit {
   
   // fired upon task list selection
   onChangeTaskList($event) {
-    this.taskListChange.emit(this.selectedTaskList);
+    this.sharedService.selectedTaskList = this.selectedTaskList;
+
   }
 
   // Triggered by app component after user is authorized
@@ -79,7 +86,19 @@ export class TaskFrameComponent implements OnInit {
         this.openingStatement = MSG_GUIDE_CHOOSE_LIST;
         this.quadrantForm.get('taskList').patchValue(taskLists[0].id);
     }
-}
+  }
+  
+  private onErrorLoading(errorMessage: string) {
+    // TODO: error handling; logged-in users can get a 401 when new code is pushed
+    console.log("Error during Google API loading!");
+    this.openingStatement = MSG_GUIDE_GAPI_ERROR;
+    this.crossComponentEventService.signalWarningMessageAppend(MSG_GUIDE_GAPI_ERROR);
+  }
 
+  private onErrorSaving(errorMessage: string) {
+      console.log("Error during Google API saving!");
+      this.openingStatement = MSG_GUIDE_GAPI_ERROR;
+      this.crossComponentEventService.signalWarningMessageAppend(MSG_GUIDE_GAPI_ERROR);
+  }
 }
 

@@ -9,29 +9,37 @@ import { AuthServiceBase } from '../../../services/auth/auth-service-base';
 import { dragula, DragulaService, DragulaDirective } from 'ng2-dragula';
 import { MockAuthServiceBase } from '../../../mocks/mock-auth-service-base';
 import { MockQuadTaskServiceBase } from '../../../mocks/mock-quad-task-service-base';
+import { TaskFrameComponent } from '../task-frame/task-frame.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { TaskFrameShared } from '../task-frame/task-frame-shared';
 
 describe('QuadrantComponent', () => {
   let component: QuadrantComponent;
   let fixture: ComponentFixture<QuadrantComponent>;
   let mockAuthService;
   let mockQuadTaskServiceBase;
+  let taskFrameShared;
 
   beforeEach(async(() => {
     mockAuthService = new MockAuthServiceBase();
     mockQuadTaskServiceBase = new MockQuadTaskServiceBase();
+    taskFrameShared = new TaskFrameShared();
 
     TestBed.configureTestingModule({
       imports: [
+        RouterTestingModule,
         ReactiveFormsModule
       ],
       declarations: [ 
-        QuadrantComponent,
+        QuadrantComponent,        
+        TaskFrameComponent,
         MatMenu,
         MatMenuTrigger,
         LinkifyLinksDirective,
         DragulaDirective
       ],
       providers: [
+        { provide: TaskFrameShared, useValue: taskFrameShared },
         { provide: QuadTaskServiceBase, useValue: mockQuadTaskServiceBase },
         { provide: AuthServiceBase, useValue: mockAuthService },
         DragulaService

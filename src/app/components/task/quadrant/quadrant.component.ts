@@ -9,6 +9,7 @@ import { QuadTaskServiceBase } from '../../../services/task/quad-task-service-ba
 import { CrossComponentEventService } from '../../../services/shared/cross-component-event.service';
 import { Quadrant } from '../../../models/task/quadrant';
 import { TaskFrameComponent } from '../task-frame/task-frame.component';
+import { TaskFrameShared } from '../task-frame/task-frame-shared';
 
 
 @AutoUnsubscribe({includeArrays: true})
@@ -26,11 +27,11 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
     ignoreInputTextSelection: true
   }
   
-  constructor(taskFrame: TaskFrameComponent,
+  constructor(sharedService: TaskFrameShared,
               taskService: QuadTaskServiceBase,
               crossComponentEventService: CrossComponentEventService,
               private dragulaService: DragulaService) {
-    super(taskFrame, taskService, crossComponentEventService);
+    super(sharedService, taskService, crossComponentEventService);
   }
 
   ngOnInit() {
@@ -59,7 +60,7 @@ export class QuadrantComponent extends TaskComponentBase implements OnInit, OnDe
     console.log("Requested move of element " + element.id + " (" + quadrantOld + "->" + targetQuadrant + ")");
 
     // Write update to API and refresh data model
-    this.taskService.updateTaskQuadrantByChar(element.id, this.taskFrame.selectedTaskList, targetQuadrant);
+    this.taskService.updateTaskQuadrantByChar(element.id, this.sharedService.selectedTaskList, targetQuadrant);
   }
 
   protected executeMenuAction(taskId: string, taskListId: string, targetQuadrant: Quadrant) {

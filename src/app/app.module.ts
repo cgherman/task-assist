@@ -29,6 +29,7 @@ import { CrossComponentEventService } from './services/shared/cross-component-ev
 import { ConfigAppService } from './services/config/config-app.service';
 import { GoogleTaskService } from './services/task/google-task.service';
 import { LinkifyLinksDirective } from './components/task/linkify-links.directive';
+import { TaskFrameShared } from './components/task/task-frame/task-frame-shared';
 
 @NgModule({
   declarations: [
@@ -55,13 +56,16 @@ import { LinkifyLinksDirective } from './components/task/linkify-links.directive
     MatButtonModule,
     MatMenuModule
   ],
-  providers: [{ provide: AuthServiceBase, useClass: AuthService },
-              { provide: GoogleAuthServiceBase, useClass: AuthService },
-              { provide: QuadTaskServiceBase, useClass: GoogleTaskService },
-              { provide: FileFetchService, useClass: FileFetchService },
-              CrossComponentEventService,
-              ConfigAppService,
-              GapiWrapperService],
+  providers: [
+    { provide: AuthServiceBase, useClass: AuthService },
+    { provide: GoogleAuthServiceBase, useClass: AuthService },
+    { provide: QuadTaskServiceBase, useClass: GoogleTaskService },
+    { provide: FileFetchService, useClass: FileFetchService },
+    CrossComponentEventService,
+    ConfigAppService,
+    GapiWrapperService,
+    TaskFrameShared
+  ],
   bootstrap: [AppComponent]
 })
 

@@ -10,7 +10,7 @@ import { ITask } from "../../models/task/itask";
 import { Quadrant } from "../../models/task/quadrant";
 import { ITasksInList } from "../../models/task/itasks-in-list";
 import { IQuadTask } from "../../models/task/iquad-task";
-import { TaskFrameComponent } from "./task-frame/task-frame.component";
+import { TaskFrameShared } from "./task-frame/task-frame-shared";
 
 export abstract class TaskComponentBase {
     // these subscriptions will be cleaned up by @AutoUnsubscribe
@@ -34,7 +34,7 @@ export abstract class TaskComponentBase {
         'Create Reminder': ['Today AM', 'Today Afternoon', 'Today Evening'],
     };*/
 
-    constructor(protected taskFrame: TaskFrameComponent,
+    constructor(protected sharedService: TaskFrameShared,
                 protected taskService: QuadTaskServiceBase,
                 protected crossComponentEventService: CrossComponentEventService
             )
@@ -51,11 +51,11 @@ export abstract class TaskComponentBase {
         sub = this.taskService.tasksLoaded.subscribe(tasksInList => this.onTasksLoaded(tasksInList));
         this.subscriptions.push(sub); // capture for destruction
 
-        sub = this.taskFrame.taskListChange.subscribe(taskListId => this.onTaskListChange(taskListId));
+        sub = this.sharedService.taskListChange.subscribe(taskListId => this.onTaskListChange(taskListId));
         this.subscriptions.push(sub); // capture for destruction
 
-        if (this.taskFrame.selectedTaskList != null && this.taskFrame.selectedTaskList.length > 0) {
-            this.refreshTasks(this.taskFrame.selectedTaskList);
+        if (this.sharedService.selectedTaskList != null && this.sharedService.selectedTaskList.length > 0) {
+            this.refreshTasks(this.sharedService.selectedTaskList);
         }
     }
 
@@ -93,13 +93,11 @@ export abstract class TaskComponentBase {
     private onErrorLoading(errorMessage: string) {
         // TODO: error handling; can get a 401 when new code is pushed
         console.log("Error during Google API loading!");
-        this.taskFrame.openingStatement = MSG_GUIDE_GAPI_ERROR;
         this.crossComponentEventService.signalWarningMessageAppend(MSG_GUIDE_GAPI_ERROR);
     }
 
     private onErrorSaving(errorMessage: string) {
         console.log("Error during Google API saving!");
-        this.taskFrame.openingStatement = MSG_GUIDE_GAPI_ERROR;
         this.crossComponentEventService.signalWarningMessageAppend(MSG_GUIDE_GAPI_ERROR);
     }
 
@@ -131,7 +129,7 @@ export abstract class TaskComponentBase {
 
         console.log("Requested move of element " + taskId + " (to " + targetQuadrant.selection.toString() + ")");
         if (targetQuadrant != null) {
-            this.executeMenuAction(taskId, this.taskFrame.selectedTaskList, targetQuadrant);
+            this.executeMenuAction(taskId, this.sharedService.selectedTaskList, targetQuadrant);
         }
     }
 
