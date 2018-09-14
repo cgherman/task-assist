@@ -1,8 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule, MatMenuModule } from '@angular/material';
+import { MatNativeDateModule, MatInputModule, MatButtonModule, MatMenuModule, MatFormField } from '@angular/material';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 import { DragulaModule } from 'ng2-dragula';
 import { HttpClientModule } from '@angular/common/http';
@@ -30,6 +31,8 @@ import { ConfigAppService } from './services/config/config-app.service';
 import { GoogleTaskService } from './services/task/google-task.service';
 import { LinkifyLinksDirective } from './components/task/linkify-links.directive';
 import { TaskFrameShared } from './components/task/task-frame/task-frame-shared';
+import { TaskPanelComponent } from './components/task/task-panel/task-panel.component';
+import { TaskPanelsComponent } from './components/task/task-panels/task-panels.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,9 @@ import { TaskFrameShared } from './components/task/task-frame/task-frame-shared'
     ViewControlsComponent,
     DelayDragDirective,
     LinkifyLinksDirective,
-    TaskFrameComponent
+    TaskFrameComponent,
+    TaskPanelComponent,
+    TaskPanelsComponent
   ],
   imports: [
     BrowserModule,
@@ -54,7 +59,11 @@ import { TaskFrameShared } from './components/task/task-frame/task-frame-shared'
     AppRoutingModule,
     BrowserAnimationsModule,
     MatButtonModule,
-    MatMenuModule
+    MatMenuModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule,
+    FormsModule
   ],
   providers: [
     { provide: AuthServiceBase, useClass: AuthService },

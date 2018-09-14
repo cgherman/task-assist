@@ -1,0 +1,17 @@
+<div>
+  <ng-container *ngIf="selectedTask">
+      <app-task-panel [task]="selectedTask.id" (childClick)="onChildClick"></app-task-panel>
+  </ng-container>
+  <ng-container *ngIf="!selectedTask">
+    <ng-container *ngFor="let task of tasks; let i = index; let even = even">
+      <div class="w3-row" *ngIf="even">
+        <div class="w3-half w3-container">
+          <app-task-panel [task]="tasks[i]" (childClick)="onChildClick"></app-task-panel>
+        </div>
+        <div class="w3-half w3-container" *ngIf="i < tasks.length - 1">
+          <app-task-panel [task]="tasks[i+1]" (childClick)="onChildClick"></app-task-panel>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

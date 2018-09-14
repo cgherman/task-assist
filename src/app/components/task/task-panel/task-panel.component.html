@@ -1,0 +1,23 @@
+<div class="panel panel-success">
+  <div class="panel-heading">
+    {{task}}
+  </div>
+  <div class="panel-body">
+    <form [formGroup]="myform" class="form-group">    
+      <div>
+        <label>Date</label>
+        <mat-form-field>
+          <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="date">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </form>
+    
+    <div>
+      <button (click)="onGet()">GET</button>
+      <button (click)="onSet()">SET</button>
+      <button (click)="emitSomething()">EMIT</button>
+    </div>
+  </div>
+</div>
