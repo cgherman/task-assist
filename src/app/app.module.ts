@@ -18,7 +18,10 @@ import { ViewControlsComponent } from './components/common/view-controls/view-co
 import { AboutComponent } from './components/common/about/about.component';
 import { HeaderComponent } from './components/common/header/header.component';
 import { AuthControlsComponent } from './components/auth/auth-controls/auth-controls.component';
+import { TaskPanelComponent } from './components/task/task-panel/task-panel.component';
+import { TaskPanelsComponent } from './components/task/task-panels/task-panels.component';
 import { DelayDragDirective } from './components/delay-drag.directive';
+import { LinkifyLinksDirective } from './components/task/linkify-links.directive';
 
 import { AuthServiceBase } from './services/auth/auth-service-base';
 import { GoogleAuthServiceBase } from './services/auth/google-auth-service-base';
@@ -29,10 +32,8 @@ import { FileFetchService } from './services/shared/file-fetch.service';
 import { CrossComponentEventService } from './services/shared/cross-component-event.service';
 import { ConfigAppService } from './services/config/config-app.service';
 import { GoogleTaskService } from './services/task/google-task.service';
-import { LinkifyLinksDirective } from './components/task/linkify-links.directive';
 import { TaskFrameShared } from './components/task/task-frame/task-frame-shared';
-import { TaskPanelComponent } from './components/task/task-panel/task-panel.component';
-import { TaskPanelsComponent } from './components/task/task-panels/task-panels.component';
+import { TaskExtrasService } from './services/task/task-extras.service';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { TaskPanelsComponent } from './components/task/task-panels/task-panels.c
     CrossComponentEventService,
     ConfigAppService,
     GapiWrapperService,
-    TaskFrameShared
+    TaskFrameShared,
+    TaskExtrasService
   ],
   bootstrap: [AppComponent]
 })
